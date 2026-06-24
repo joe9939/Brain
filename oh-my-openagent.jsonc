@@ -1,0 +1,227 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "categories": {
+    "brain-thalamus": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Sensory gating filter on every message — gates input, extracts priority",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-amygdala": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Detect emotion mode from keywords — URGENT/EXPLORE/SUPPORT/NORMAL",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-hippocampus": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Retrieve relevant memories and store new ones — episodic/semantic/procedural",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-world-cortex": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Query codebase structure and impact analysis",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-attention": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Priority scheduling when todo count > 3",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-reward": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Deep risk assessment when score_action() < 3",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-safety": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "high",
+      "description": "Deep safety review on danger patterns",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-basal": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Go/NoGo decision when SOP matched — procedural memory lookup",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-cerebellum": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Implicit tool recommendation when tool selection is ambiguous",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-self-enhance": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Post-task reflection — extracts lessons, suggests skill improvements",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-swarm-planner": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "high",
+      "description": "DAG decomposition for complex tasks — breaks into parallelizable nodes",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-swarm-coder": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Implements assigned DAG node — coding only, no planning/reviewing",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-swarm-reviewer": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "high",
+      "description": "Validates coder implementation — plan alignment, code quality, security",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-swarm-tester": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "high",
+      "description": "Executes verification tests for reviewed implementation",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-insula": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Self-monitoring on system anomaly — detects tool failures, unexpected outputs",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-hypothalamus": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Autonomic timer trigger — 30m health check, 6h consolidation trigger",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-dmn": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Idle mind-wandering reflection — connects disparate memories for insights",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-self-optimizer": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Prompt evolution every 3 tasks — reviews performance, suggests brain prompt updates",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-consolidation": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Sleep consolidation — strengthens SOPs, prunes memories during idle/scheduled",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-coordinator": {
+      "model": "zen/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Executive coordinator — synthesizes all agent outputs, enforces layer ordering, delegates to swarm",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    }
+  },
+  "team_mode": {
+    "enabled": true,
+    "lead": "brain-coordinator",
+    "members": [
+      "brain-swarm-planner",
+      "brain-swarm-coder",
+      "brain-swarm-reviewer",
+      "brain-swarm-tester"
+    ],
+    "shared_task_list": true,
+    "file_locked_claims": true,
+    "git_worktrees": false,
+    "tmux_monitoring": false
+  },
+  "commands": {
+    "ulw-loop": {
+      "agent": "brain-consolidation",
+      "description": "Run offline consolidation until complete — strengthens SOPs, prunes memories, generates insights",
+      "max_iterations": 10,
+      "continue_on_stall": true
+    }
+  }
+}
