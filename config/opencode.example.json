@@ -1,0 +1,34 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["{CONFIG_DIR}/claude_md.txt"],
+  "default_agent": "build",
+  "agent": {
+    "brain": {"mode":"primary","model":"zen/deepseek-v4-flash-free","description":"Brain Orchestrator","color":"#7C3AED","prompt":"{file:{PROJECT_DIR}/.opencode/skills/brain-master.md}","permission":{"edit":"deny","bash":"deny","read":"allow","write":"deny","task":"allow","lsp":"allow","skill":"allow","todowrite":"allow","grep":"allow","glob":"allow","webfetch":"allow","websearch":"allow"}},
+    "amygdala": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch6 detect emotion mode from keywords","permission":{"read":"allow"}},
+    "hippocampus": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch3 retrieve relevant memories","permission":{"read":"allow"}},
+    "world-cortex": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch4 query codebase structure","permission":{"read":"allow"}},
+    "reward-cortex": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch5 deep risk assessment when score<3","permission":{"read":"allow"}},
+    "attention-cortex": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch2.2.3 priority scheduling when >3 todos","permission":{"read":"allow"}},
+    "safety-cortex": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Part IV deep safety review on danger","permission":{"read":"allow"}},
+    "basal-ganglia": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch3.3.4 Go/NoGo when SOP matched","permission":{"read":"allow"}},
+    "cerebellum": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch2.2 implicit tool recommendation","permission":{"read":"allow"}},
+    "thalamus": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Sensory gating filter on message arrive","permission":{"read":"allow"}},
+    "self-enhance-cortex": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch9 post-task reflection","permission":{"read":"allow"}},
+    "swarm-planner": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"DLPFC Ch13 DAG decomposition","permission":{"read":"allow","task":"allow"}},
+    "swarm-coder": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Motor Cortex Ch8 code execution","permission":{"read":"allow","write":"allow","edit":"allow","bash":"allow"}},
+    "swarm-reviewer": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"ACC Ch15 conflict detection","permission":{"read":"allow","lsp":"allow"}},
+    "swarm-tester": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Cerebellum Ch8 test execution","permission":{"read":"allow","bash":"allow"}},
+    "insula": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Self-monitoring on system anomaly","permission":{"read":"allow"}},
+    "hypothalamus": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch1.2 autonomic timer trigger","permission":{"read":"allow"}},
+    "dmn": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Idle mind-wandering reflection","permission":{"read":"allow"}},
+    "self-optimizer": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch9 prompt evolution every 3 tasks","permission":{"read":"allow"}},
+    "offline-consolidation": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch3.2.1+Ch11.2 sleep consolidation","permission":{"read":"allow"}}
+  },
+  "permission": {"read":{"{CONFIG_DIR}/get-shit-done/*":"allow"},"external_directory":{"{CONFIG_DIR}/get-shit-done/*":"allow"}},
+  "mcp": {
+    "memory-store": {"type":"local","command":["node","{MCP_DIR}/memory-store/dist/server.js"],"enabled":true},
+    "world-model": {"type":"local","command":["node","{MCP_DIR}/world-model/dist/server.js"],"enabled":true},
+    "reward-system": {"type":"local","command":["node","{MCP_DIR}/reward-system/dist/server.js"],"enabled":true}
+  },
+  "plugin": ["oh-my-openagent@latest", "file:///{PLUGIN_DIR}/brain-plugin.mjs"]
+}

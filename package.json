@@ -1,0 +1,19 @@
+﻿{
+  "name": "brain-agent",
+  "version": "1.0.0",
+  "description": "Brain-inspired Foundation Agent for OpenCode — arXiv 2504.01990 · 20 brain region agents · 98% paper alignment",
+  "main": "install.js",
+  "bin": {"brain-agent": "install.js"},
+  "scripts": {
+    "publish:patch": "node install.js --publish patch",
+    "publish:minor": "node install.js --publish minor",
+    "publish:major": "node install.js --publish major"
+  },
+  "keywords": ["opencode","agent","brain","neuroscience","foundation-agent","multi-agent","arxiv"],
+  "license": "MIT",
+  "repository": "github:joe9939/brain-agent",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "better-sqlite3": "^11.0.0"
+  }
+}
