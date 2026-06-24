@@ -3,7 +3,7 @@
   "instructions": ["{CONFIG_DIR}/claude_md.txt"],
   "default_agent": "build",
   "agent": {
-    "brain": {"mode":"primary","model":"zen/deepseek-v4-flash-free","description":"Brain Orchestrator","color":"#7C3AED","prompt":"{file:{PROJECT_DIR}/.opencode/skills/brain-master.md}","permission":{"edit":"deny","bash":"deny","read":"allow","write":"deny","task":"allow","lsp":"allow","skill":"allow","todowrite":"allow","grep":"allow","glob":"allow","webfetch":"allow","websearch":"allow"}},
+    "brain": {"mode":"primary","model":"zen/deepseek-v4-flash-free","description":"Brain Orchestrator","color":"#7C3AED","prompt":"{file:{PROJECT_DIR}/.opencode/skills/brain-master.md}","permission":{"task":"allow","skill":"allow","todowrite":"allow"}},
     "amygdala": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch6 detect emotion mode from keywords","permission":{"read":"allow"}},
     "hippocampus": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch3 retrieve relevant memories","permission":{"read":"allow"}},
     "world-cortex": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch4 query codebase structure","permission":{"read":"allow"}},
@@ -15,7 +15,7 @@
     "thalamus": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Sensory gating filter on message arrive","permission":{"read":"allow"}},
     "self-enhance-cortex": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch9 post-task reflection","permission":{"read":"allow"}},
     "swarm-planner": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"DLPFC Ch13 DAG decomposition","permission":{"read":"allow","task":"allow"}},
-    "swarm-coder": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Motor Cortex Ch8 code execution","permission":{"read":"allow","write":"allow","edit":"allow","bash":"allow"}},
+    "swarm-coder": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Motor Cortex Ch8 code execution","permission":{"read":"allow","write":"allow","edit":"allow","bash":"allow","webfetch":"allow","websearch":"allow","grep":"allow","glob":"allow"}},
     "swarm-reviewer": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"ACC Ch15 conflict detection","permission":{"read":"allow","lsp":"allow"}},
     "swarm-tester": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Cerebellum Ch8 test execution","permission":{"read":"allow","bash":"allow"}},
     "insula": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Self-monitoring on system anomaly","permission":{"read":"allow"}},
