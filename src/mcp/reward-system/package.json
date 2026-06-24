@@ -1,0 +1,1 @@
+﻿{"name":"reward-system","version":"1.0.0","type":"module","scripts":{"build":"tsc","start":"node dist/server.js"},"dependencies":{"@modelcontextprotocol/sdk":"^1.0.0"},"devDependencies":{"@types/node":"^22.0.0","typescript":"^5.5.0"}}

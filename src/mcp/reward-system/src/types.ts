@@ -1,0 +1,4 @@
+﻿export interface ScoreInput { action_type: "read"|"write"|"edit"|"delete"|"bash"|"task"|"question"; target: string; context?: string; step_number?: number; total_steps?: number; }
+export interface ScoreOutput { total_score: number; extrinsic: {score:number;breakdown:string}; intrinsic: {score:number;breakdown:string}; risk_level: "low"|"medium"|"high"; explanation: string; }
+export interface OutcomeInput { action_id: string; success: boolean; level: "atomic"|"step"|"task"; metrics?: {time_spent_ms?:number;files_changed?:number;tests_passed?:number;tests_failed?:number}; }
+export interface RewardReport { total_actions: number; success_rate: number; avg_score: number; most_rewarded: Array<{action_type:string;avg_score:number}>; most_punished: Array<{action_type:string;avg_score:number}>; intrinsic_breakdown: {curiosity:number;competence:number;info_gain:number;diversity:number}; }
