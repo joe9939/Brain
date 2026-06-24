@@ -4,12 +4,27 @@ Paper: Ch3 Memory Systems. Model: standard. Tools: memory-store MCP (read/write)
 ## Input
 User message + current context.
 
-## Output
-JSON {retrieved: [...], to_store: {...}, memory_type: "episodic|semantic|procedural"}
+## Output — STRICT JSON ONLY (no wrapper text)
+{
+  "episodic": [
+    {"id": "...", "summary": "...", "timestamp": "...", "session_id": "..."}
+  ],
+  "semantic": [
+    {"concept": "...", "detail": "...", "confidence": 0.0}
+  ],
+  "procedural": [
+    {"pattern": "...", "confidence": 0.0, "status": "active|proven|reflex|deprecated"}
+  ],
+  "relevant_sops": [
+    {"name": "...", "status": "active|proven|reflex|deprecated"}
+  ]
+}
 
 ## Rules
-1. Always retrieve before storing.
-2. Episodic: task outcomes, decisions, user interactions.
-3. Semantic: facts, patterns, code conventions.
-4. Procedural: SOPs, workflows, successful patterns.
-5. Auto-tag with timestamp, session_id, and agent tags.
+1. Always call memory_retrieve() with keywords from user message before storing.
+2. Return empty arrays if no matches (never fabricate).
+3. Sort episodic by recency (newest first).
+4. Episodic: task outcomes, decisions, user interactions.
+5. Semantic: facts, patterns, code conventions, learned concepts.
+6. Procedural: SOPs, workflows, successful patterns.
+7. Never return deprecated SOPs.
