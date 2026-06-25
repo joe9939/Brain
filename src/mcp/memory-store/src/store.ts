@@ -208,6 +208,51 @@ export class MemoryStore {
     return groups.map(g => ({ batch_id: batchId, episodes: g.episodes.slice(0, topK), theme: g.theme }));
   }
 
+  // ─── Associative Memory Recall (Ch3.3 Neural Memory alternative) ───
+
+  associativeRecall(fragments: string[], k: number = 5): RetrievalResult[] {
+    if (!fragments || fragments.length === 0) return [];
+
+    // Step 1: Search each fragment independently
+    const perFragmentResults: Map<string, { entry: RetrievalResult; fragmentIdx: number }[]> = new Map();
+
+    for (let i = 0; i < fragments.length; i++) {
+      const frag = fragments[i];
+      const results = this.search(frag, 'all', k * 2, this._ollamaAvail ? 'hybrid' : 'keyword');
+      for (const r of results) {
+        const key = r.id;
+        if (!perFragmentResults.has(key)) perFragmentResults.set(key, []);
+        perFragmentResults.get(key)!.push({ entry: r, fragmentIdx: i });
+      }
+    }
+
+    // Step 2: Fuse — boost scores by how many fragments matched
+    const fused: RetrievalResult[] = [];
+    for (const [id, matches] of perFragmentResults) {
+      const bestEntry = matches.reduce((a, b) => a.entry.score > b.entry.score ? a : b).entry;
+      const fragmentCoverage = matches.length / fragments.length; // 0..1
+      const fragmentSet = new Set(matches.map(m => m.fragmentIdx));
+
+      // Fusion formula: base score + coverage bonus (0.3 weight)
+      const fusionScore = bestEntry.score + fragmentCoverage * 0.3;
+
+      fused.push({
+        ...bestEntry,
+        score: Math.min(fusionScore, 1.0), // cap at 1.0
+        _fusion: {
+          fragment_count: matches.length,
+          total_fragments: fragments.length,
+          contributing_fragments: Array.from(fragmentSet).sort(),
+          fragment_coverage: fragmentCoverage,
+        } as any,
+      });
+    }
+
+    // Step 3: Sort by fusion score, return top-k
+    fused.sort((a, b) => b.score - a.score);
+    return fused.slice(0, k);
+  }
+
   // ─── Mood Tracking (Wave 10) ───
 
   moodSet(sessionId: string, mode: string, confidence: number): void {

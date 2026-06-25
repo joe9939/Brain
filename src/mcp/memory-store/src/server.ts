@@ -63,6 +63,28 @@ server.tool("memory_forget", { key: z.string() }, async ({ key }) => {
   } catch (e: any) { return err(e.message || "forget failed"); }
 });
 
+server.tool("memory_associative_recall", {
+  fragments: z.array(z.string()).min(1).max(10).describe("Clue fragments to associate — each is searched independently, results fused"),
+  k: z.number().default(5).describe("Number of results to return"),
+}, async ({ fragments, k }) => {
+  try {
+    const results = store.associativeRecall(fragments, k);
+    return ok({
+      fragments_used: fragments.length,
+      results: results.map(r => ({
+        key: r.id,
+        content: r.content,
+        score: Math.round(r.score * 100) / 100,
+        fusion: (r as any)._fusion || null,
+        type: r.type,
+        last_accessed: r.last_accessed || r.created_at,
+      })),
+    });
+  } catch (e: any) {
+    return err(e.message || "associative_recall failed");
+  }
+});
+
 server.tool("memory_stats", {}, async () => {
   try {
     const s = store.stats();

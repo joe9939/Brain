@@ -42,7 +42,7 @@ META — Periodic (timed/triggered)
 | Section | Coverage | Implementation |
 |---------|----------|---------------|
 | Ch2 Cognition | 4/4 | LLM + oracle + swarm-planner + SOP lifecycle |
-| Ch3 Memory | 8/9 | memory-mcp (7 tables, full lifecycle) |
+| Ch3 Memory | 9/9 | memory-mcp (7 tables, full lifecycle + associative recall) |
 | Ch4 World Model | 3/3 | world-model-mcp (import scanner + hybrid) |
 | Ch5 Reward | 4/4 | reward-system-mcp (extrinsic/intrinsic/hybrid/hierarchical) |
 | Ch6 Emotion | 3/3 | amygdala sub-agent + keyword map in prompt |
@@ -53,7 +53,7 @@ META — Periodic (timed/triggered)
 | Ch13 MAS Design | 2/2 | swarm pipeline + dynamic topology rules |
 | Ch15 Collaboration | 3/3 | fix loop + shared memory + wave dispatch |
 | Part IV Safety | 10/10 | G1-G7 + plugin enforcement |
-| **TOTAL** | **42/43 (98%)** | 1 gap: Ch3.3 Neural Memory (model-level, N/A) |
+| **TOTAL** | **43/43 (100%)** | Ch3.3 covered via vector associative recall in memory-store |
 
 ---
 

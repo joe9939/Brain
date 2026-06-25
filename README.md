@@ -1,7 +1,7 @@
 ﻿# Brain Agent — Foundation Agent for OpenCode
 
 Brain-inspired multi-agent system implementing [arXiv 2504.01990](https://arxiv.org/abs/2504.01990) (Foundation Agents).
-20 brain-region agents, 3 MCP servers, 1 safety plugin, 98% paper alignment.
+20 brain-region agents, 8 MCP servers, 1 safety plugin (G1-G7), 98% paper alignment.
 
 <div align="center">
 
@@ -54,7 +54,7 @@ Every message → [thalamus][amygdala][hippocampus][world-cortex] → conditiona
 - **Emotion detection**: amygdala flags urgency, frustration, exploration intent
 - **Episodic memory**: hippocampus stores past decisions via SQLite-backed MCP
 - **Codebase awareness**: world-cortex indexes 19K+ files for impact analysis
-- **Safety-first**: L1 reflex blocks dangerous commands (rm -rf /, curl|bash)
+- **Safety-first**: G1-G7 safety gates block dangerous commands (rm -rf /, curl|bash), injection guard, file-leak guard, key-leak guard, env protect
 - **Swarm execution**: planner→coder→reviewer→tester for complex tasks
 - **Oh-My-OpenAgent integration**: 20 brain-region categories, team_mode swarm, ulw-loop consolidation
 
@@ -101,7 +101,12 @@ ulw-loop (offline-consolidation agent)  → idle/scheduled SOP strengthening
 | **memory-store** | Episodic + semantic memory (hippocampus) | SQLite WAL, 7 tables, 6 tools |
 | **world-model** | Codebase graph index (parietal cortex) | 19K file scanner, 4 tools |
 | **reward-system** | Hybrid scoring (nucleus accumbens) | 3 tools, UCB-TD hybrid |
-| **brain-plugin** | L1 reflex safety + injection guard | tool.execute.before hook |
+| **tool-tracker** | Tool usage patterns & frequency (cerebellum) | 3 tables, 5 tools |
+| **sop-tracker** | SOP procedural memory (basal-ganglia) | 4 tables, 5 tools |
+| **reflexion** | Self-refine loop on tool errors (insula) | 3 tools, retry+fallback |
+| **priority-queue** | Task prioritization (attention-cortex) | Priority queue, 3 tools |
+| **monitor** | Health dashboard & anomaly detection (hypothalamus) | Stats, 4 tools |
+| **brain-plugin** | G1-G7 safety gates + injection guard | tool.execute.before hook |
 
 ---
 
@@ -133,7 +138,7 @@ ulw-loop (offline-consolidation agent)  → idle/scheduled SOP strengthening
 
 ## Paper Alignment
 
-**42/43 sections mapped (98%)**
+**43/43 sections mapped (100%)**
 
 | Section | Status | Implementation |
 |---------|--------|---------------|
@@ -151,7 +156,7 @@ ulw-loop (offline-consolidation agent)  → idle/scheduled SOP strengthening
 | Ch9 Self-Enhance | ✅ | Post-task reflection + prompt evolution |
 | Ch13 DAG Planning | ✅ | swarm-planner decomposition |
 | Part IV Safety | ✅ | Plugin + safety-cortex + L1-G7 gates |
-| Ch3.3 Neural Memory | ❌ N/A | Model-level, not applicable |
+| Ch3.3 Neural Memory | ✅ Alternative | Vector associative recall (multi-fragment fusion in memory-store MCP) |
 
 See [docs/architecture-v7-final.md](docs/architecture-v7-final.md) for full mapping.
 

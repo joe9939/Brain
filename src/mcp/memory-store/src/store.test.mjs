@@ -84,5 +84,47 @@ if (!nativeOK) {
       assert.ok(typeof st.counts.episodic === "number");
       assert.ok(typeof st.counts.semantic === "number");
     });
+
+    it("associative recall with overlapping fragments", () => {
+      store.insert("episodic", "ar1", "Payment failed with error 500 for user Zhang San", ["payment","error"]);
+      store.insert("episodic", "ar2", "User Li Si reported login timeout", ["login"]);
+      store.insert("episodic", "ar3", "Error 500 in payment gateway for user Wang Wu", ["payment","error"]);
+      store.insert("semantic", "ar4", "Payment gateway error handling procedure", ["payment","procedure"]);
+      
+      // Two fragments that both match the payment-error topic but not the login topic
+      const results = store.associativeRecall(["error 500", "payment"], 5);
+      assert.ok(results.length >= 2, "should find at least 2 payment-error results");
+      
+      // The first result should have a high score (boosted by multi-fragment overlap)
+      assert.ok(results[0].score > 0, "first result should have positive score");
+      
+      // Results should contain the payment-error memories
+      const contents = results.map(r => r.content);
+      assert.ok(contents.some(c => c.includes("Payment failed")), "should find payment failed memory");
+      assert.ok(contents.some(c => c.includes("Wang Wu")), "should find Wang Wu memory");
+    });
+
+    it("associative recall with non-overlapping fragments", () => {
+      // "zzzznonexistentzzzz" won't match anything — should still return results from the other fragment
+      const results = store.associativeRecall(["zzzznonexistentzzzz", "Zhang San"], 5);
+      assert.ok(results.length > 0, "should find results from the matching fragment");
+      assert.ok(results.some(r => r.content.includes("Zhang San")), "should find Zhang San memory");
+    });
+
+    it("associative recall with single fragment", () => {
+      const results = store.associativeRecall(["login timeout"], 5);
+      assert.ok(results.length > 0, "single fragment should return matches");
+    });
+
+    it("associative recall with empty fragments returns empty", () => {
+      const results = store.associativeRecall([], 5);
+      assert.equal(results.length, 0, "empty fragments should return empty");
+    });
+
+    it("associative recall with no match returns empty or partial", () => {
+      const results = store.associativeRecall(["xyznonexistent"], 5);
+      // May return 0 if no match at all — acceptable
+      assert.ok(Array.isArray(results), "should always return array");
+    });
   });
 }
