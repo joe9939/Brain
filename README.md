@@ -1,7 +1,7 @@
 ﻿# Brain Agent — Foundation Agent for OpenCode
 
 Brain-inspired multi-agent system implementing [arXiv 2504.01990](https://arxiv.org/abs/2504.01990) (Foundation Agents).
-20 brain-region agents, 8 MCP servers, 1 safety plugin (G1-G7), 98% paper alignment.
+20 brain-region agents, 8 MCP servers, 1 safety plugin (G1-G7), 100% paper alignment.
 
 <div align="center">
 
