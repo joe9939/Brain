@@ -5,6 +5,7 @@
   "main": "install.js",
   "bin": {"brain-agent": "install.js"},
   "scripts": {
+    "test": "bun test",
     "publish:patch": "node install.js --publish patch",
     "publish:minor": "node install.js --publish minor",
     "publish:major": "node install.js --publish major"
