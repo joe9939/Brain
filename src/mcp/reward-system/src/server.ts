@@ -1,7 +1,7 @@
 ﻿import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { scorer } from "./scorer.js";
+import { scorer, getHierarchicalScore, recordHierarchical, tdUpdate } from "./scorer.js";
 
 const actionLog: Array<{id:string;type:string;success:boolean;level:string;ts:string}> = [];
 const server = new McpServer({ name: "reward-system", version: "1.0.0" });
@@ -36,6 +36,13 @@ server.tool("reward_report", {}, async () => {
     intrinsic_breakdown: { curiosity: 0, competence: 0, info_gain: 0, diversity: 0 },
     message: "Statistics — full aggregation pending"
   }) }] };
+});
+
+server.tool("score_hierarchy", {
+  action_ids: z.array(z.string()),
+}, async ({ action_ids }) => {
+  const result = getHierarchicalScore(action_ids);
+  return { content: [{ type: "text", text: JSON.stringify(result) }] };
 });
 
 const transport = new StdioServerTransport();
