@@ -21,6 +21,15 @@ server.tool("world_query", {
   }
   let result: any = {};
   switch (what) {
+    case "symbols": {
+      if (!target) { result = { error: "target file required for symbols query" }; break; }
+      const symbols = graph.getSymbols(target);
+      const allSymbols = target === "*" 
+        ? Array.from(graph.getAllSymbols())
+        : symbols;
+      result = { file: target, symbols_found: allSymbols, count: allSymbols.length };
+      break;
+    }
     case "callers": result = { callers: graph.getCallers(target || "") }; break;
     case "callees": result = { callees: graph.getCallees(target || "") }; break;
     case "dependencies": result = graph.getDependencies(target || ""); break;
