@@ -336,7 +336,18 @@ if (fs.existsSync(examplePath)) {
   if (fs.existsSync(CONFIG_FILE)) {
     try { config = JSON.parse(fs.readFileSync(CONFIG_FILE,'utf8')); } catch(e) {}
   }
-  const example = JSON.parse(fs.readFileSync(examplePath,'utf8'));
+  // Replace template placeholders with actual installation paths
+  let exampleStr = fs.readFileSync(examplePath, 'utf8');
+  const mcpDir = path.join(PROJECT, '.opencode', 'mcp').replace(/\\/g, '/');
+  const projectDir = PROJECT.replace(/\\/g, '/');
+  const configDir = CONFIG_DIR.replace(/\\/g, '/');
+  const pluginDir = path.join(CONFIG_DIR, 'plugins').replace(/\\/g, '/');
+  exampleStr = exampleStr
+    .replace(/\{MCP_DIR\}/g, mcpDir)
+    .replace(/\{PROJECT_DIR\}/g, projectDir)
+    .replace(/\{CONFIG_DIR\}/g, configDir)
+    .replace(/\{PLUGIN_DIR\}/g, pluginDir);
+  const example = JSON.parse(exampleStr);
 
   // Merge agent section
   config.agent = {...(config.agent||{}), ...(example.agent||{})};
