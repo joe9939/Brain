@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
   "categories": {
     "brain-thalamus": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Sensory gating filter on every message — gates input, extracts priority",
       "fallback_models": [
@@ -12,7 +12,7 @@
       ]
     },
     "brain-amygdala": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Detect emotion mode from keywords — URGENT/EXPLORE/SUPPORT/NORMAL",
       "fallback_models": [
@@ -22,7 +22,7 @@
       ]
     },
     "brain-hippocampus": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Retrieve relevant memories and store new ones — episodic/semantic/procedural",
       "fallback_models": [
@@ -32,7 +32,7 @@
       ]
     },
     "brain-world-cortex": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Query codebase structure and impact analysis",
       "fallback_models": [
@@ -42,7 +42,7 @@
       ]
     },
     "brain-attention": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Priority scheduling when todo count > 3",
       "fallback_models": [
@@ -52,7 +52,7 @@
       ]
     },
     "brain-reward": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Deep risk assessment when score_action() < 3",
       "fallback_models": [
@@ -62,7 +62,7 @@
       ]
     },
     "brain-safety": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "high",
       "description": "Deep safety review on danger patterns",
       "fallback_models": [
@@ -72,7 +72,7 @@
       ]
     },
     "brain-basal": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Go/NoGo decision when SOP matched — procedural memory lookup",
       "fallback_models": [
@@ -82,7 +82,7 @@
       ]
     },
     "brain-cerebellum": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Implicit tool recommendation when tool selection is ambiguous",
       "fallback_models": [
@@ -92,7 +92,7 @@
       ]
     },
     "brain-self-enhance": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Post-task reflection — extracts lessons, suggests skill improvements",
       "fallback_models": [
@@ -102,7 +102,7 @@
       ]
     },
     "brain-swarm-planner": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "high",
       "description": "DAG decomposition for complex tasks — breaks into parallelizable nodes",
       "fallback_models": [
@@ -112,7 +112,7 @@
       ]
     },
     "brain-swarm-coder": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Implements assigned DAG node — coding only, no planning/reviewing",
       "fallback_models": [
@@ -122,7 +122,7 @@
       ]
     },
     "brain-swarm-reviewer": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "high",
       "description": "Validates coder implementation — plan alignment, code quality, security",
       "fallback_models": [
@@ -132,7 +132,7 @@
       ]
     },
     "brain-swarm-tester": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "high",
       "description": "Executes verification tests for reviewed implementation",
       "fallback_models": [
@@ -142,7 +142,7 @@
       ]
     },
     "brain-insula": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Self-monitoring on system anomaly — detects tool failures, unexpected outputs",
       "fallback_models": [
@@ -152,7 +152,7 @@
       ]
     },
     "brain-hypothalamus": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Autonomic timer trigger — 30m health check, 6h consolidation trigger",
       "fallback_models": [
@@ -162,7 +162,7 @@
       ]
     },
     "brain-dmn": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Idle mind-wandering reflection — connects disparate memories for insights",
       "fallback_models": [
@@ -172,7 +172,7 @@
       ]
     },
     "brain-self-optimizer": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Prompt evolution every 3 tasks — reviews performance, suggests brain prompt updates",
       "fallback_models": [
@@ -182,7 +182,7 @@
       ]
     },
     "brain-consolidation": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Sleep consolidation — strengthens SOPs, prunes memories during idle/scheduled",
       "fallback_models": [
@@ -192,7 +192,7 @@
       ]
     },
     "brain-coordinator": {
-      "model": "zen/deepseek-v4-flash-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",
       "description": "Executive coordinator — synthesizes all agent outputs, enforces layer ordering, delegates to swarm",
       "fallback_models": [
@@ -200,10 +200,54 @@
         { "model": "zen/north-mini-code-free" },
         { "model": "zen/mimo-v2.5-free" }
       ]
+    },
+    // Built-in category overrides — force free model for OMO built-in categories
+    "writing": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Documentation, prose, technical writing"
+    },
+    "quick": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Trivial tasks - single file changes, typo fixes, simple modifications"
+    },
+    "deep": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Goal-oriented autonomous problem-solving on hairy problems"
+    },
+    "ultrabrain": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Use ONLY for genuinely hard, logic-heavy tasks"
+    },
+    "visual-engineering": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Frontend, UI/UX, design, styling, animation"
+    },
+    "artistry": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Complex problem-solving with unconventional, creative approaches"
+    },
+    "unspecified-low": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Tasks that don't fit other categories, low effort required"
+    },
+    "unspecified-high": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Tasks that don't fit other categories, high effort required"
     }
   },
+  // Brain Mode does NOT use OMO Team Mode.
+  // Brain uses brain-master.md orchestrator with task(category="brain-*") routing.
+  // OMO Team Mode (planner→coder→reviewer→tester) is a separate, parallel mode.
   "team_mode": {
-    "enabled": true,
+    "enabled": false,
     "lead": "brain-coordinator",
     "members": [
       "brain-swarm-planner",
