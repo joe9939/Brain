@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS episodic_memory (
   steps_taken TEXT, key_decisions TEXT, errors TEXT, lessons TEXT,
   success INTEGER DEFAULT 0, tags TEXT,
   access_count INTEGER DEFAULT 0, last_accessed TEXT,
-  active INTEGER DEFAULT 1, created_at TEXT DEFAULT (datetime('now'))
+  active INTEGER DEFAULT 1, created_at TEXT DEFAULT (datetime('now')),
+  embedding BLOB
 );
 
 CREATE TABLE IF NOT EXISTS semantic_memory (
@@ -76,3 +77,23 @@ CREATE TABLE IF NOT EXISTS timeline_memory (
 );
 CREATE INDEX IF NOT EXISTS idx_timeline_ts ON timeline_memory(timestamp);
 CREATE INDEX IF NOT EXISTS idx_timeline_type ON timeline_memory(event_type);
+
+-- Mood state (amygdala — Ch6 emotion tracking)
+CREATE TABLE IF NOT EXISTS mood_state (
+  session_id TEXT NOT NULL,
+  mode TEXT NOT NULL,
+  confidence REAL NOT NULL DEFAULT 1.0,
+  timestamp TEXT DEFAULT (datetime('now')),
+  decay_rate REAL DEFAULT 0.5,
+  PRIMARY KEY (session_id, mode)
+);
+
+-- Replay log (hippocampus — Ch3.2.1 episodic replay)
+CREATE TABLE IF NOT EXISTS replay_log (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  batch_id TEXT NOT NULL,
+  episode_ids TEXT NOT NULL,
+  theme TEXT,
+  timestamp TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_replay_batch ON replay_log(batch_id);

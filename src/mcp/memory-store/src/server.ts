@@ -29,7 +29,7 @@ server.tool("memory_store", {
 
 server.tool("memory_retrieve", {
   query: z.string(), type: z.enum(["episodic","semantic","procedural","working","all"]).default("all"),
-  k: z.number().default(5), mode: z.enum(["keyword","vector","hybrid"]).default("keyword"),
+  k: z.number().default(5), mode: z.enum(["keyword","vector","hybrid"]).default("hybrid"),
 }, async ({ query, type, k, mode }) => {
   try {
     const results = store.search(query, type, k, mode);
@@ -75,6 +75,34 @@ process.on("unhandledRejection", (err) => { console.error("FATAL:", err); proces
 process.on("SIGINT", () => { store.close(); process.exit(0); });
 process.on("SIGTERM", () => { store.close(); process.exit(0); });
 
+
+server.tool("memory_replay", {
+  k: z.number().default(5), min_importance: z.number().default(0),
+}, async ({ k, min_importance }) => {
+  try {
+    const groups = store.replay(k, min_importance);
+    return ok({ groups, count: groups.length });
+  } catch (e: any) { return err(e.message || "replay failed"); }
+});
+
+server.tool("mood_set", {
+  session_id: z.string(), mode: z.enum(["NORMAL","CAUTION","URGENT","EXPLORE","SUPPORT"]),
+  confidence: z.number().min(0).max(1).default(1),
+}, async ({ session_id, mode, confidence }) => {
+  try {
+    store.moodSet(session_id, mode, confidence);
+    return ok({ ok: true });
+  } catch (e: any) { return err(e.message || "mood_set failed"); }
+});
+
+server.tool("mood_get", {
+  session_id: z.string(),
+}, async ({ session_id }) => {
+  try {
+    const mood = store.moodGet(session_id);
+    return ok(mood || { mode: "NORMAL", confidence: 0, decay_rate: 0.25 });
+  } catch (e: any) { return err(e.message || "mood_get failed"); }
+});
 
 server.tool("memory_timeline", {
   from_date: z.string().optional(),

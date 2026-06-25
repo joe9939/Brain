@@ -1,0 +1,14 @@
+{
+  "schema_version": 2,
+  "active_work_id": "brain-agent-paper-upgrade",
+  "works": {
+    "brain-agent-paper-upgrade": {
+      "work_id": "brain-agent-paper-upgrade",
+      "active_plan": ".omo/plans/brain-agent-paper-upgrade.md",
+      "plan_name": "brain-agent-paper-upgrade",
+      "session_ids": ["current"],
+      "status": "active",
+      "worktree_path": null
+    }
+  }
+}
