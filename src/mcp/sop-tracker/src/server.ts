@@ -2,8 +2,10 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { SOPMatcher } from "./matcher.js";
+import { SkillExtractor, NonParametricPPO } from "./extractor.js";
 
 const matcher = new SOPMatcher();
+const ppo = new NonParametricPPO();
 
 const server = new McpServer({ name: "sop-tracker", version: "1.0.0" });
 
@@ -73,6 +75,64 @@ server.tool("sop_list", {
     const sops = matcher.list(status);
     return {
       content: [{ type: "text", text: JSON.stringify({ sops, count: sops.length }) }],
+    };
+  } catch (e: any) {
+    return { content: [{ type: "text", text: JSON.stringify({ success: false, error: e.message }) }] };
+  }
+});
+
+server.tool("sop_extract_skill", {
+  trajectories: z.string().describe("JSON array of SkillTrajectory objects"),
+  min_success_rate: z.number().min(0).max(1).optional().default(0.5),
+  min_trajectories: z.number().min(1).optional().default(1),
+  persist: z.boolean().optional().default(false).describe("If true, register top skills as SOPs"),
+}, async ({ trajectories, min_success_rate, min_trajectories, persist }) => {
+  try {
+    const extractor = new SkillExtractor({ minSuccessRate: min_success_rate, minTrajectories: min_trajectories });
+    const parsed = JSON.parse(trajectories);
+    const skills = extractor.extract(parsed);
+
+    if (persist) {
+      for (const skill of skills.slice(0, 5)) {
+        matcher.register(skill.triggerPattern, skill.steps, skill.preconditions, "skill-pro");
+      }
+    }
+
+    return {
+      content: [{ type: "text", text: JSON.stringify({ skills, skill_count: skills.length, persisted: persist }) }],
+    };
+  } catch (e: any) {
+    return { content: [{ type: "text", text: JSON.stringify({ success: false, error: e.message }) }] };
+  }
+});
+
+server.tool("sop_ppo_score", {
+  skill_id: z.string().describe("Skill ID from sop_extract_skill"),
+  trigger_pattern: z.string().describe("Trigger pattern for display"),
+  success: z.boolean().describe("Whether the skill execution was successful"),
+}, async ({ skill_id, trigger_pattern, success }) => {
+  try {
+    ppo.update(skill_id, trigger_pattern, success);
+    const score = ppo.getScore(skill_id, trigger_pattern);
+    return {
+      content: [{ type: "text", text: JSON.stringify(score) }],
+    };
+  } catch (e: any) {
+    return { content: [{ type: "text", text: JSON.stringify({ success: false, error: e.message }) }] };
+  }
+});
+
+server.tool("sop_ppo_scores", {
+  min_observations: z.number().optional().default(0),
+  min_score: z.number().optional().default(0),
+}, async ({ min_observations, min_score }) => {
+  try {
+    let scores = ppo.getAllScores();
+    if (min_observations > 0 || min_score > 0) {
+      scores = scores.filter(s => s.observations >= min_observations && s.shrunkenScore >= min_score);
+    }
+    return {
+      content: [{ type: "text", text: JSON.stringify({ scores, count: scores.length }) }],
     };
   } catch (e: any) {
     return { content: [{ type: "text", text: JSON.stringify({ success: false, error: e.message }) }] };
