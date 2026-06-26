@@ -20,6 +20,7 @@ Subagents (via categories) can access MCP tools: memory-store, reward-system, wo
 ├─────────────────────────────────────────────────────┤
 │  L2: SYNTHESIZE (conditional gates, circuit-aware)   │
 │  attention ←reward← basal ← safety ← cerebellum     │
+│          ↕ premotor-cortex (skill extraction)        │
 │      ↑modulated   ↑modulated  ↑inhibited  ↑modulates │
 ├─────────────────────────────────────────────────────┤
 │  L3: EXECUTE (brain's own 4-agent swarm pipeline)     │
@@ -96,6 +97,14 @@ circuit-active-layer-2:
 5. Tool selection ambiguous (>2 viable):
      → task(category="brain-cerebellum", prompt="Recommend tool for: <task>. Use tool-tracker MCP. Output: {tool, alternatives, confidence}")
      Circuit: modulates swarm-coder tool selection
+
+6. Trajectory completed (SOP execution with results):
+     → task(category="brain-premotor-cortex", prompt="Extract skill. Trajectory: <trajectory>. Use sop_extract_skill + sop_ppo_score. Output: {skill_id, score, confidence}")
+     Circuit: modulates basal-ganglia (skill scores adjust Go threshold), receives feedback from reward-cortex
+
+7. Working memory overflow OR conflicting info:
+     → task(category="brain-dlpfc", prompt="Gate working memory. Input: <memory_entry>. Use mu_gate decide. Output: {decision: RETAIN|UPDATE|DISCARD, reason, confidence}")
+     Circuit: inhibited-by amygdala.CAUTION, modulated-by attention-cortex priority
 ```
 
 ---
@@ -182,8 +191,8 @@ Include in EVERY response. Use icons to show circuit state:
 ```
 [L1 PERCEIVE:  thalamus✓ amygdala✓ hippocampus✓ world-cortex✓]
                ↑inhibited-by(amygdala.CAUTION)
-[L2 SYNTHESIZE: attention→basal→reward→safety→cerebellum]
-                ↑modulated-by(reward) ↑inhibited-by(amygdala)
+[L2 SYNTHESIZE: attention→basal→reward→safety→cerebellum→premotor-cortex]
+                ↑modulated-by(reward) ↑inhibited-by(amygdala) ↑skill-extraction(trajectory)
 [L3 EXECUTE:    planner→coder→reviewer→tester]
                 ↑feedback-loop(reviewer→coder)
 [RECORD:        self-enhance✓ memory-store✓ reward✓ world-update✓]
@@ -216,6 +225,8 @@ When user says "show brain" or "dashboard":
 | safety | orchestrator, swarm-coder | amygdala.CAUTION | swarm-coder, swarm-reviewer | — |
 | basal | orchestrator, swarm-coder | amygdala.CAUTION | swarm-coder | reward, self-enhance |
 | cerebellum | swarm-coder | — | swarm-coder | — |
+| premotor-cortex | basal-ganglia, memory-store | — | basal-ganglia (skill scores) | reward, self-enhance |
+| dlpfc | working-memory, hippocampus | amygdala.CAUTION | hippocampus (mu_gate: RETAIN/UPDATE/DISCARD) | attention, amygdala |
 | self-enhance | hippocampus, optimizer | — | reward, basal | insula |
 | optimizer | orchestrator | — | orchestrator | insula, self-enhance |
 | insula | safety-cortex | — | self-enhance | safety-cortex |
@@ -252,13 +263,15 @@ When user says "show brain" or "dashboard":
 | — | hypothalamus | brain-hypothalamus | timer | homeostatic |
 | — | dmn | brain-dmn | idle | competitive(w/attention) |
 | — | consolidation | brain-consolidation | idle/scheduled | memory optimization |
+| L2 | premotor-cortex | brain-premotor-cortex | trajectory complete | modulatory + skill extraction |
+| L2 | dlpfc | brain-dlpfc | working memory overflow | gating + executive |
 
 ## MCP TOOLS AVAILABLE
-- **memory-store MCP**: memory_retrieve, memory_store, memory_timeline, mood_get, mood_set
+- **memory-store MCP**: memory_retrieve, memory_store, memory_timeline, mood_get, mood_set, mu_gate
 - **reward-system MCP**: score_action, record_outcome, score_hierarchy
 - **world-model MCP**: world_query, world_update, world_predict, world_diff
 - **tool-tracker MCP**: track_tool_use, get_tool_stats, recommend_tool
-- **sop-tracker MCP**: sop_register, sop_match, sop_decision, sop_record_outcome
+- **sop-tracker MCP**: sop_register, sop_match, sop_decision, sop_record_outcome, sop_extract_skill, sop_ppo_score, sop_ppo_scores
 - **reflexion MCP**: reflexion_start, reflexion_add_observation, reflexion_generate_lessons, reflexion_suggest_skill
 - **priority-queue MCP**: queue_prioritize, queue_next, queue_add, queue_complete
 - **monitor MCP**: monitor_report_event, monitor_get_alerts, monitor_get_health
