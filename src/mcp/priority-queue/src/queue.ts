@@ -117,7 +117,7 @@ export class PriorityQueue {
     ).all(k) as TaskItem[];
   }
 
-  complete(id: string): TaskItem | null {
+  complete(id: string): TaskItem | undefined {
     this.db.prepare(`
       UPDATE tasks SET status = 'completed', completed_at = datetime('now')
       WHERE id = ?
@@ -146,7 +146,7 @@ export class PriorityQueue {
     const deps: string[] = JSON.parse(task.dependencies || "[]");
     const blockers = deps
       .map((depId) => this.get(depId))
-      .filter((d): d is TaskItem => d !== null && d.status !== "completed");
+      .filter((d): d is TaskItem => d != null && d.status !== "completed");
     return { task, blockers };
   }
 

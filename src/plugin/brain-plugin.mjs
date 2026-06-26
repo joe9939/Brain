@@ -113,12 +113,15 @@ export const BrainPlugin = async (ctx) => {
         }
       }
 
-      // ─── G3: Prompt injection ───
+      // ─── G3: Prompt injection (exempt .opencode/skills/ — legit system prompts) ───
       if (["write", "edit"].includes(tool) && content) {
-        for (const r of INJECTION) {
-          if (r.test(content)) {
-            audit({ gate: "G3_inject", action: "block", tool, content_snippet: content.slice(0, 100) });
-            throw new Error("G3 BLOCK: prompt injection detected");
+        const isSkillFile = filePath && filePath.includes(".opencode\\skills") || filePath?.includes(".opencode/skills");
+        if (!isSkillFile) {
+          for (const r of INJECTION) {
+            if (r.test(content)) {
+              audit({ gate: "G3_inject", action: "block", tool, content_snippet: content.slice(0, 100) });
+              throw new Error("G3 BLOCK: prompt injection detected");
+            }
           }
         }
       }
