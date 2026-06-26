@@ -1,7 +1,7 @@
 ﻿# Brain Agent — Foundation Agent for OpenCode
 
 Brain-inspired multi-agent system implementing [arXiv 2504.01990](https://arxiv.org/abs/2504.01990) (Foundation Agents).
-20 brain-region agents, 8 MCP servers, 1 safety plugin (G1-G7), 100% paper alignment.
+20 brain-region agents, 8 MCP servers, 1 safety plugin (G1-G7), 43/43 paper sections referenced.
 
 <div align="center">
 
@@ -36,8 +36,8 @@ node install.js --version
 
 Restart OpenCode. Press Tab → select **[brain]**. That's it.
 
-> Requires [Node.js](https://nodejs.org) 18+ and [OpenCode](https://opencode.ai).
-> Optional: [Oh My OpenCode](https://github.com/code-yeongyu/oh-my-opencode) enables brain-region categories, team_mode swarm, and ulw-loop.
+> Requires [Node.js](https://nodejs.org) 18+, [OpenCode](https://opencode.ai), and [Oh My OpenCode](https://github.com/code-yeongyu/oh-my-opencode).
+> Brain Agent is built ON TOP of Oh My OpenCode — OMO categories, team_mode swarm, and ulw-loop are the architecture foundation.
 
 ---
 
@@ -88,7 +88,7 @@ Layer 3: Complex Task (swarm pipeline)
   swarm-tester   → verify with tests
 ```
 
-### Oh-My-OpenAgent Layer (optional, requires OMO)
+### Oh-My-OpenAgent Layer (Architecture Foundation)
 
 ```
 Categories (20 brain-region agents)     → category-based routing
@@ -189,7 +189,7 @@ See [docs/architecture-v7-final.md](docs/architecture-v7-final.md) for full mapp
 | `node install.js --uninstall` | Remove brain-agent and restore original config backups |
 | `node install.js --version` | Show brain-agent version |
 
-### Oh-My-OpenAgent Features (requires OMO)
+### Oh-My-OpenAgent Features
 
 | Feature | Description |
 |---------|-------------|
@@ -198,6 +198,8 @@ See [docs/architecture-v7-final.md](docs/architecture-v7-final.md) for full mapp
 | **ulw-loop** | `/ulw-loop` command triggers offline-consolidation agent for memory/SOP strengthening |
 
 All 20 category agents default to `zen/deepseek-v4-flash-free` with 3-level fallback: `zen/nemotron-3-ultra-free` → `zen/north-mini-code-free` → `zen/mimo-v2.5-free`.
+
+> OMO is not optional — it is the foundation. All brain-region agents, swarm execution, and consolidation run through OMO's category and team_mode system.
 
 ---
 
@@ -239,7 +241,7 @@ See [benchmarks/](benchmarks/) for details.
 
 - **Node.js** 18+
 - **OpenCode** (latest)
-- **Oh My OpenCode** (optional, for categories/team_mode/ulw-loop)
+- **Oh My OpenCode** (required — architecture foundation for categories, team_mode, and ulw-loop)
 - **OS**: macOS, Linux, or Windows
 
 ---

@@ -126,8 +126,8 @@ module.exports = {
         results.push({ name: 'Post-install: OMO has brain-* categories', pass: false });
       }
     } else {
-      // OMO config is optional — not a failure if missing
-      results.push({ name: 'Post-install: OMO config exists (optional)', pass: true });
+      // OMO config is REQUIRED — brain-agent is built on OMO foundation
+      results.push({ name: 'Post-install: OMO config exists (required)', pass: false });
     }
 
     // ─── Phase 3: --status check ───────────────────────────────────────

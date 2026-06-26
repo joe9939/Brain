@@ -241,6 +241,7 @@ When user says "show brain" or "dashboard":
 ---
 
 ## OMO CATEGORY REFERENCE
+<!-- OMO is the required architecture foundation — brain-agent runs entirely on OMO categories, team_mode, and ulw-loop -->
 
 | Layer | Agent | Category | Trigger | Circuit Pattern |
 |-------|-------|----------|---------|----------------|

@@ -292,14 +292,18 @@ console.log('\n' + CYAN + 'Brain Agent v' + BRAIN_VERSION + ' - Installing...' +
 
 const steps = [];
 
-// 0. Check Oh My OpenCode dependency
+// 0. Check Oh My OpenCode dependency (REQUIRED — brain-agent is built on OMO)
 const OMO_CONFIG_FILE = path.join(CONFIG_DIR, 'oh-my-openagent.json');
 const OMO_INSTALLED = fs.existsSync(OMO_CONFIG_FILE);
 if (!OMO_INSTALLED) {
-  warn('Oh My OpenCode not found — categories, team_mode, and ulw-loop require it');
-  warn('Install: npm install -g oh-my-opencode  (https://github.com/code-yeongyu/oh-my-opencode)');
-  console.log('');
+  console.error('\n  ' + RED + '\u2717' + RESET + ' Oh My OpenCode is REQUIRED');
+  console.error('  Brain Agent is built ON TOP of Oh My OpenCode as its architecture foundation.');
+  console.error('  Install OMO first:');
+  console.error('    npm install -g oh-my-opencode');
+  console.error('  Then run install.js again.\n');
+  process.exit(1);
 }
+ok('Oh My OpenCode found');
 
 // 1. Plugin
 fs.mkdirSync(path.join(CONFIG_DIR, 'plugins'), {recursive:true});

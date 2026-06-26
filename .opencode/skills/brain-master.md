@@ -381,6 +381,7 @@ Replace ✓ with ✗ on failure, use → for pending/in-progress.
 - **monitor**: monitor_report_event/get_alerts/get_health
 
 ## OMO CATEGORY REFERENCE
+<!-- OMO is the required architecture foundation — brain-agent runs entirely on OMO categories, team_mode, and ulw-loop -->
 
 L1: thalamus | amygdala | hippocampus | world-cortex
 L2: attention-cortex | reward-cortex | safety-cortex | basal-ganglia | cerebellum
