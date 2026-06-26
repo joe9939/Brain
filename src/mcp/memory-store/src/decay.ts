@@ -1,15 +1,15 @@
-﻿export const DECAY_LAMBDAS: Record<string, number> = {
-  episodic: 0.05, procedural: 0.15, semantic: 0.02, working: 0.3,
-};
-export function applyDecay(score: number, type: string, lastAccessed: string): number {
-  const lambda = DECAY_LAMBDAS[type] || 0.1;
-  const lastAccess = new Date(lastAccessed).getTime();
-  const now = Date.now();
-  const daysSince = (now - lastAccess) / (1000 * 60 * 60 * 24);
-  return score * Math.exp(-lambda * daysSince);
-}
-export function getDecayThreshold(days: number = 30): string {
-  const date = new Date();
-  date.setDate(date.getDate() - days);
-  return date.toISOString();
-}
+﻿/**
+ * FadeMem adaptive decay — 4-factor exponential forgetting.
+ *
+ * Architecture:
+ *   decay/constants.ts   — Types (FadeMemConfig, DecayContext) + base parameters
+ *   decay/adaptive.ts    — λ_adaptive, applyDecay, getDecayThreshold
+ *   decay/frequency.ts   — δ(access): access-frequency modulation
+ *   decay/relevance.ts   — γ(relevance): semantic relevance modulation
+ *   decay/temporal.ts    — τ(hour): circadian temporal modulation
+ *   decay/index.ts       — Unified public API (this file re-exports from it)
+ *
+ * All backwards-compatible exports (applyDecay, getDecayThreshold, DECAY_LAMBDAS)
+ * are available at this same import path.
+ */
+export * from './decay/index.js';
