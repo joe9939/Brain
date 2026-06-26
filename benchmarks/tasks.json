@@ -1,4 +1,4 @@
-﻿[
+[
   {"id":"T1","name":"fix-auth-timeout","description":"Fix hardcoded 300s timeout in auth.ts to 3600s","files":1,"complexity":"simple","expected_score":">7"},
   {"id":"T2","name":"add-login-validation","description":"Add email format validation to login endpoint","files":2,"complexity":"medium","expected_score":">6"},
   {"id":"T3","name":"fix-null-pointer","description":"Fix null pointer in session manager when user not found","files":1,"complexity":"simple","expected_score":">7"},
