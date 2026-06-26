@@ -413,7 +413,25 @@ if (fs.existsSync(promptSrc)) {
   warn('prompt source not found — skipping prompt setup');
 }
 
-// 8. ulw-loop command registration
+// 8. MCP servers (copy pre-compiled dist files)
+const MCP_NAMES = ['memory-store', 'world-model', 'reward-system'];
+const mcpSrcBase = path.join(HERE, 'src', 'mcp');
+const mcpDstBase = path.join(PROJECT, '.opencode', 'mcp');
+let mcpCount = 0;
+for (const name of MCP_NAMES) {
+  const srcFile = path.join(mcpSrcBase, name, 'dist', 'server.js');
+  const dstFile = path.join(mcpDstBase, name, 'dist', 'server.js');
+  if (fs.existsSync(srcFile)) {
+    fs.mkdirSync(path.dirname(dstFile), { recursive: true });
+    fs.copyFileSync(srcFile, dstFile);
+    mcpCount++;
+  } else {
+    warn('MCP dist not found: ' + name + ' — skipping');
+  }
+}
+steps.push('MCP servers (' + mcpCount + '/' + MCP_NAMES.length + ')');
+
+// 9. ulw-loop command registration
 const ulwLoopSrc = path.join(HERE, 'src', 'commands', 'ulw-loop.md');
 if (fs.existsSync(ulwLoopSrc)) {
   fs.mkdirSync(path.join(CONFIG_DIR, 'command'), { recursive: true });

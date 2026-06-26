@@ -77,6 +77,8 @@ Layer 2: Conditional (event-driven)
   safety-cortex     → audit on danger patterns
   basal-ganglia     → go/no-go on matched SOPs
   cerebellum        → tool recommendation when uncertain
+  premotor-cortex   → skill extraction when trajectory complete
+  dlpfc             → working memory gating on overflow
   self-enhance-cortex → reflect after task completion
 
 Layer 3: Complex Task (swarm pipeline)
@@ -98,7 +100,7 @@ ulw-loop (offline-consolidation agent)  → idle/scheduled SOP strengthening
 
 | Component | Description | Technology |
 |-----------|-------------|------------|
-| **memory-store** | Episodic + semantic memory (hippocampus) | SQLite WAL, 7 tables, 6 tools |
+| **memory-store** | Episodic + semantic memory (hippocampus) | SQLite WAL, 7 tables, 12 tools |
 | **world-model** | Codebase graph index (parietal cortex) | 19K file scanner, 4 tools |
 | **reward-system** | Hybrid scoring (nucleus accumbens) | 3 tools, UCB-TD hybrid |
 | **tool-tracker** | Tool usage patterns & frequency (cerebellum) | 3 tables, 5 tools |
@@ -123,6 +125,8 @@ ulw-loop (offline-consolidation agent)  → idle/scheduled SOP strengthening
 | safety-cortex | Part IV | danger pattern | Security audit |
 | basal-ganglia | 3.3.4 | SOP matched | Go/NoGo decision |
 | cerebellum | 2.2 | tool uncertain | Tool recommendation |
+| premotor-cortex | — | trajectory complete | Skill extraction via Non-Parametric PPO |
+| dlpfc | — | working memory overflow | Working memory gating via μ head |
 | self-enhance-cortex | 9 | after task | Post-task reflection |
 | swarm-planner | 13 | complex task | Decompose into DAG |
 | swarm-coder | 8 | need code | Implement each node |
