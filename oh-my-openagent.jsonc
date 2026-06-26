@@ -81,6 +81,26 @@
         { "model": "zen/mimo-v2.5-free" }
       ]
     },
+    "brain-premotor-cortex": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Skill-MDP extraction from agent trajectories — skill learning via Non-Parametric PPO",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
+    "brain-dlpfc": {
+      "model": "opencode/deepseek-v4-flash-free",
+      "variant": "medium",
+      "description": "Working memory gating via μ head — RETAIN/UPDATE/DISCARD decisions",
+      "fallback_models": [
+        { "model": "zen/nemotron-3-ultra-free" },
+        { "model": "zen/north-mini-code-free" },
+        { "model": "zen/mimo-v2.5-free" }
+      ]
+    },
     "brain-cerebellum": {
       "model": "opencode/deepseek-v4-flash-free",
       "variant": "medium",

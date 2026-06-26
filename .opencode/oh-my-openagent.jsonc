@@ -1,0 +1,33 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/master/assets/oh-my-openagent.schema.json",
+  "categories": {
+    "brain-thalamus": { "model": "opencode/mimo-v2.5-free" },
+    "brain-amygdala": { "model": "opencode/mimo-v2.5-free" },
+    "brain-hippocampus": { "model": "opencode/mimo-v2.5-free" },
+    "brain-world-cortex": { "model": "opencode/mimo-v2.5-free" },
+    "brain-safety": { "model": "opencode/mimo-v2.5-free" },
+    "brain-reward": { "model": "opencode/mimo-v2.5-free" },
+    "brain-basal": { "model": "opencode/mimo-v2.5-free" },
+    "brain-cerebellum": { "model": "opencode/mimo-v2.5-free" },
+    "brain-self-enhance": { "model": "opencode/mimo-v2.5-free" },
+    "brain-swarm-planner": { "model": "opencode/mimo-v2.5-free" },
+    "brain-swarm-coder": { "model": "opencode/mimo-v2.5-free" },
+    "brain-swarm-reviewer": { "model": "opencode/mimo-v2.5-free" },
+    "brain-swarm-tester": { "model": "opencode/mimo-v2.5-free" },
+    "brain-insula": { "model": "opencode/mimo-v2.5-free" },
+    "brain-hypothalamus": { "model": "opencode/mimo-v2.5-free" },
+    "brain-dmn": { "model": "opencode/mimo-v2.5-free" },
+    "brain-self-optimizer": { "model": "opencode/mimo-v2.5-free" },
+    "brain-consolidation": { "model": "opencode/mimo-v2.5-free" },
+    "brain-coordinator": { "model": "opencode/mimo-v2.5-free" },
+    "brain-attention": { "model": "opencode/mimo-v2.5-free" }
+  },
+  "fallback_models": {
+    "default": [
+      "opencode/nemotron-3-ultra-free",
+      "opencode/mimo-v2.5-free",
+      "opencode/north-mini-code-free",
+      "opencode/deepseek-v4-flash-free"
+    ]
+  }
+}
