@@ -88,9 +88,10 @@ if (process.argv.includes('--status')) {
   }
   // MCP compiled
   const mcpBase = path.join(PROJECT,'.opencode','mcp');
-  checks.push({ name: 'memory-mcp', ok: fs.existsSync(path.join(mcpBase,'memory-store','dist','server.js')) });
-  checks.push({ name: 'world-model', ok: fs.existsSync(path.join(mcpBase,'world-model','dist','server.js')) });
-  checks.push({ name: 'reward-system', ok: fs.existsSync(path.join(mcpBase,'reward-system','dist','server.js')) });
+  const ALL_MCPS = ['memory-store', 'world-model', 'reward-system', 'tool-tracker', 'sop-tracker', 'reflexion', 'priority-queue', 'monitor'];
+  for (const m of ALL_MCPS) {
+    checks.push({ name: m + ' MCP', ok: fs.existsSync(path.join(mcpBase, m, 'dist', 'server.js')) });
+  }
   // Oh-My-OpenAgent categories
   const ohmFile = path.join(CONFIG_DIR, 'oh-my-openagent.json');
   const hasBrainCategory = fs.existsSync(ohmFile)
@@ -205,7 +206,7 @@ if (process.argv.includes('--uninstall') || process.argv.includes('--cleanup')) 
           }
         }
         if (cfg.mcp) {
-          for (const key of ['memory-store', 'world-model', 'reward-system']) {
+          for (const key of ['memory-store', 'world-model', 'reward-system', 'tool-tracker', 'sop-tracker', 'reflexion', 'priority-queue', 'monitor']) {
             if (cfg.mcp[key]) { delete cfg.mcp[key]; changed = true; }
           }
         }
@@ -276,7 +277,7 @@ if (process.argv.includes('--uninstall') || process.argv.includes('--cleanup')) 
 
   // 8. Remove MCP compiled files
   const mcpBase = path.join(PROJECT, '.opencode', 'mcp');
-  for (const mcp of ['memory-store', 'world-model', 'reward-system']) {
+  for (const mcp of ['memory-store', 'world-model', 'reward-system', 'tool-tracker', 'sop-tracker', 'reflexion', 'priority-queue', 'monitor']) {
     if (rm(path.join(mcpBase, mcp, 'dist', 'server.js'))) removed.push(mcp + ' MCP removed');
   }
 
@@ -418,7 +419,7 @@ if (fs.existsSync(promptSrc)) {
 }
 
 // 8. MCP servers (copy pre-compiled dist files)
-const MCP_NAMES = ['memory-store', 'world-model', 'reward-system'];
+const MCP_NAMES = ['memory-store', 'world-model', 'reward-system', 'tool-tracker', 'sop-tracker', 'reflexion', 'priority-queue', 'monitor'];
 const mcpSrcBase = path.join(HERE, 'src', 'mcp');
 const mcpDstBase = path.join(PROJECT, '.opencode', 'mcp');
 let mcpCount = 0;

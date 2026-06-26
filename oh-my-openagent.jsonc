@@ -263,9 +263,39 @@
       "description": "Tasks that don't fit other categories, high effort required"
     }
   },
-  // Brain Mode does NOT use OMO Team Mode.
-  // Brain uses brain-master.md orchestrator with task(category="brain-*") routing.
-  // OMO Team Mode (planner→coder→reviewer→tester) is a separate, parallel mode.
+
+  "brain_mode": {
+    "enabled": true,
+    "name": "Brain Mode (Neuroscience 20-Region)",
+    "fallback_to_team": false,
+    "verbose_logging": true,
+    "perception": {
+      "enabled": true,
+      "layers": ["brain-thalamus", "brain-amygdala", "brain-hippocampus", "brain-world-cortex"],
+      "trigger_strategy": "every_message",
+      "parallel": true
+    },
+    "gates": ["brain-attention", "brain-reward", "brain-safety", "brain-basal-ganglia"],
+    "swarm": {
+      "enabled": true,
+      "planner": "brain-swarm-planner",
+      "executor": ["brain-swarm-coder", "brain-swarm-reviewer", "brain-swarm-tester"],
+      "use_team_tools": false,
+      "dag_mode": true
+    },
+    "consolidation": {
+      "enabled": true,
+      "interval_minutes": 30,
+      "agent": "brain-consolidation",
+      "modes": ["hippocampus-replay", "dmn-wandering"]
+    }
+  },
+
+  // Brain Mode is a first-class OMO execution mode — a neuroscience-inspired parallel mode
+  // built on top of OMO's category system. Brain uses brain-master.md orchestrator with
+  // task(category="brain-*") routing for its 3-layer pipeline (L1 perception → L2 gates → L3 swarm).
+  // OMO Team Mode (planner→coder→reviewer→tester) is a separate, standard multi-agent mode;
+  // Brain Mode supercedes it with always-on perception, conditional gates, and emergent circuit behavior.
   "team_mode": {
     "enabled": false,
     "lead": "brain-coordinator",

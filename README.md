@@ -209,7 +209,7 @@ All 20 category agents default to `zen/deepseek-v4-flash-free` with 3-level fall
 brain-agent/
 ├── src/
 │   ├── plugin/                brain-plugin.mjs (L1 safety)
-│   ├── skills/                brain-master.md (system prompt), brain-master.md (skill)
+│   ├── skills/                brain-master.md (master skill template), brain-premotor-cortex.md, brain-dlpfc.md
 │   ├── agents/                20 brain-region agent definitions (*.md)
 │   ├── commands/              brain.md (slash command), ulw-loop.md (OMO command)
 │   └── mcp/                   MCP server source (TypeScript)

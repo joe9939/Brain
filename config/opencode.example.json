@@ -28,7 +28,12 @@
   "mcp": {
     "memory-store": {"type":"local","command":["node","{MCP_DIR}/memory-store/dist/server.js"],"enabled":true},
     "world-model": {"type":"local","command":["node","{MCP_DIR}/world-model/dist/server.js"],"enabled":true},
-    "reward-system": {"type":"local","command":["node","{MCP_DIR}/reward-system/dist/server.js"],"enabled":true}
+    "reward-system": {"type":"local","command":["node","{MCP_DIR}/reward-system/dist/server.js"],"enabled":true},
+    "tool-tracker": {"type":"local","command":["node","{MCP_DIR}/tool-tracker/dist/server.js"],"enabled":true},
+    "sop-tracker": {"type":"local","command":["node","{MCP_DIR}/sop-tracker/dist/server.js"],"enabled":true},
+    "reflexion": {"type":"local","command":["node","{MCP_DIR}/reflexion/dist/server.js"],"enabled":true},
+    "priority-queue": {"type":"local","command":["node","{MCP_DIR}/priority-queue/dist/server.js"],"enabled":true},
+    "monitor": {"type":"local","command":["node","{MCP_DIR}/monitor/dist/server.js"],"enabled":true}
   },
   "plugin": ["oh-my-openagent@latest", "file:///{PLUGIN_DIR}/brain-plugin.mjs"]
 }

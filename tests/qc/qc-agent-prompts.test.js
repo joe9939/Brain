@@ -52,15 +52,15 @@ module.exports = {
         const hasDescription = /^description:\s*(\||\S)/m.test(yaml);
         fileResults.push({ name: basename + ' has description field', pass: hasDescription });
 
-        // model: field exists
+        // model: field should NOT exist (model selection is handled by OMO categories)
         const hasModel = /^model:\s*\S+/m.test(yaml);
-        fileResults.push({ name: basename + ' has model field', pass: hasModel });
+        fileResults.push({ name: basename + ' no model field (OMO categories handle routing)', pass: !hasModel });
       } else {
         // No YAML frontmatter — all these checks fail
         fileResults.push({ name: basename + ' has name field', pass: false });
         fileResults.push({ name: basename + ' name matches filename', pass: false });
         fileResults.push({ name: basename + ' has description field', pass: false });
-        fileResults.push({ name: basename + ' has model field', pass: false });
+        fileResults.push({ name: basename + ' no model field (OMO categories handle routing)', pass: true });
       }
 
       // Check corresponding .opencode/agents/ file exists
