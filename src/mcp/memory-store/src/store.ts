@@ -14,6 +14,9 @@ export class MemoryStore {
   private stmts: Map<string, Database.Statement> = new Map();
   private _ollamaAvail: boolean | null = null;
 
+  private static readonly SIMILARITY_MERGE_THRESHOLD = 0.85;
+  private static readonly SIMILARITY_CONFLICT_THRESHOLD = 0.50;
+
   constructor(dbPath: string = DB_PATH) {
     this.db = new Database(dbPath);
     this.db.pragma('journal_mode = WAL');
@@ -40,21 +43,68 @@ export class MemoryStore {
   insert(type: MemoryType, key: string, content: string, tags: string[] = []): void {
     const table = `${type}_memory`;
     const existing = this.prepare(`SELECT id, content FROM ${table} WHERE id = ?`).get(key) as any;
-    
+
     if (existing) {
-      this.prepare(
-        'INSERT INTO memory_history (memory_id, memory_type, old_content, new_content, change_reason) VALUES (?, ?, ?, ?, ?)'
-      ).run(key, type, existing.content, content, 'update');
-      
-      this.prepare(`UPDATE ${table} SET content = ?, tags = ?, last_accessed = datetime('now') WHERE id = ?`)
-        .run(content, JSON.stringify(tags), key);
+      const similarity = this._computeSimilarity(existing.content, content);
+
+      if (similarity > MemoryStore.SIMILARITY_MERGE_THRESHOLD) {
+        // 🔄 MERGE: Content is very similar — update with new info
+        this._logHistory(key, type, existing.content, content, 'merge');
+        this._updateMemory(type, key, content, tags);
+      } else if (similarity > MemoryStore.SIMILARITY_CONFLICT_THRESHOLD) {
+        // ⚠️ CONFLICT: Related but different — log conflict, update anyway
+        this._logHistory(key, type, existing.content, content, 'conflict');
+        this._updateMemory(type, key, content, tags);
+      } else {
+        // 🔀 DIVERGE: Very different — create new memory with generated-id suffix
+        const divergentKey = `${key}_v${Date.now()}`;
+        this._logHistory(divergentKey, type, existing.content, content, 'divergent');
+        this._insertNew(type, divergentKey, content, tags);
+        // Link the divergent memory to the original
+        this._createRelation(divergentKey, type, key, 'divergent_copy', 0.3);
+      }
     } else {
-      this.prepare(`INSERT INTO ${table} (id, content, tags, last_accessed) VALUES (?, ?, ?, datetime('now'))`)
-        .run(key, content, JSON.stringify(tags));
+      this._insertNew(type, key, content, tags);
     }
 
     // Try async vector embedding (fire and forget — won't block)
     this.tryStoreEmbedding(type, key, content).catch(() => {});
+  }
+
+  // ─── Conflict Resolution Helpers ───
+
+  private _computeSimilarity(a: string, b: string): number {
+    // Use embedding cosine similarity if available
+    // Fall back to Jaccard word-overlap similarity
+    const wordsA = new Set(a.toLowerCase().split(/\s+/).filter(Boolean));
+    const wordsB = new Set(b.toLowerCase().split(/\s+/).filter(Boolean));
+    const intersection = new Set([...wordsA].filter(w => wordsB.has(w)));
+    const union = new Set([...wordsA, ...wordsB]);
+    return union.size === 0 ? 1.0 : intersection.size / union.size;
+  }
+
+  private _logHistory(memoryId: string, type: string, oldContent: string, newContent: string, reason: string): void {
+    this.prepare(
+      'INSERT INTO memory_history (memory_id, memory_type, old_content, new_content, change_reason) VALUES (?, ?, ?, ?, ?)'
+    ).run(memoryId, type, oldContent, newContent, reason);
+  }
+
+  private _updateMemory(type: string, key: string, content: string, tags: string[]): void {
+    const table = `${type}_memory`;
+    this.prepare(`UPDATE ${table} SET content = ?, tags = ?, last_accessed = datetime('now') WHERE id = ?`)
+      .run(content, JSON.stringify(tags), key);
+  }
+
+  private _insertNew(type: string, key: string, content: string, tags: string[]): void {
+    const table = `${type}_memory`;
+    this.prepare(`INSERT INTO ${table} (id, content, tags, last_accessed) VALUES (?, ?, ?, datetime('now'))`)
+      .run(key, content, JSON.stringify(tags));
+  }
+
+  private _createRelation(from: string, fromType: string, to: string, relation: string, strength: number): void {
+    this.prepare(
+      'INSERT INTO memory_relations (from_key, to_key, relation_type, strength) VALUES (?, ?, ?, ?)'
+    ).run(from, to, relation, strength);
   }
 
   private async tryStoreEmbedding(type: MemoryType, key: string, content: string): Promise<void> {
@@ -103,6 +153,7 @@ export class MemoryStore {
       for (const row of rows) {
         let score = keywords.filter(k => row.content.toLowerCase().includes(k)).length / keywords.length;
         score = applyDecay(score, memType, row.last_accessed || row.created_at);
+        this.prepare(`UPDATE ${table} SET access_count = access_count + 1, last_accessed = datetime('now') WHERE id = ?`).run(row.id);
         results.push({ ...row, score, type: memType });
       }
     }
@@ -124,6 +175,7 @@ export class MemoryStore {
         const keywords = query.toLowerCase().split(/\s+/).filter(w => w.length > 0);
         score = keywords.filter(k => row.content.toLowerCase().includes(k)).length / Math.max(keywords.length, 1);
         score = applyDecay(score, memType, row.last_accessed || row.created_at);
+        this.prepare(`UPDATE ${table} SET access_count = access_count + 1, last_accessed = datetime('now') WHERE id = ?`).run(row.id);
         results.push({ ...row, score, type: memType });
       }
     }
@@ -152,6 +204,8 @@ export class MemoryStore {
       const kwScore = kwMap.get(r.id) || 0;
       r.score = kwScore; // simplified hybrid — keyword score only for now
       r.score = applyDecay(r.score, r.type, r.last_accessed || r.created_at);
+      const table = `${r.type}_memory`;
+      this.prepare(`UPDATE ${table} SET access_count = access_count + 1, last_accessed = datetime('now') WHERE id = ?`).run(r.id);
     }
 
     return results;
@@ -253,6 +307,59 @@ export class MemoryStore {
     return fused.slice(0, k);
   }
 
+  /**
+   * FuseSearch — semantic memory fusion.
+   *
+   * Runs search, then clusters results by Jaccard word-overlap similarity.
+   * Clusters with similarity > 0.7 get fused into a single composite entry.
+   *
+   * Fused entries contain:
+   * - content: concatenation of all source contents
+   * - score: highest base score + 0.1 × (cluster_size - 1), capped at 1.0
+   * - _fusion metadata: merged_count, source_ids
+   */
+  fuseSearch(query: string, type: string = 'all', k: number = 5, mode: string = 'keyword'): RetrievalResult[] {
+    const results = this.search(query, type, k * 3, mode);
+
+    const fused: RetrievalResult[] = [];
+    const used = new Set<string>();
+
+    for (let i = 0; i < results.length; i++) {
+      if (used.has(results[i].id)) continue;
+
+      const cluster = [results[i]];
+      used.add(results[i].id);
+
+      for (let j = i + 1; j < results.length; j++) {
+        if (used.has(results[j].id)) continue;
+        const sim = this._computeSimilarity(results[i].content, results[j].content);
+        if (sim > 0.7) {
+          cluster.push(results[j]);
+          used.add(results[j].id);
+        }
+      }
+
+      if (cluster.length > 1) {
+        const best = cluster.reduce((a, b) => a.score > b.score ? a : b);
+        const fusedContent = cluster.map(r => r.content).join('\n---\n');
+        fused.push({
+          ...best,
+          content: fusedContent,
+          score: Math.min(best.score + 0.1 * (cluster.length - 1), 1.0),
+          _fusion: {
+            merged_count: cluster.length,
+            source_ids: cluster.map(r => r.id),
+          } as any,
+        });
+      } else {
+        fused.push(results[i]);
+      }
+    }
+
+    fused.sort((a, b) => b.score - a.score);
+    return fused.slice(0, k);
+  }
+
   // ─── Mood Tracking (Wave 10) ───
 
   moodSet(sessionId: string, mode: string, confidence: number): void {
@@ -339,4 +446,10 @@ export class MemoryStore {
 
   close(): void { this.db.close(); }
   query(sql: string, params: any[] = []): any[] { return this.prepare(sql).all(...params) as any[]; }
+
+  getHistory(memoryId: string): Array<{oldContent: string; newContent: string; changeReason: string; createdAt: string}> {
+    return this.prepare(
+      'SELECT old_content, new_content, change_reason, created_at FROM memory_history WHERE memory_id = ? ORDER BY created_at DESC'
+    ).all(memoryId) as any;
+  }
 }

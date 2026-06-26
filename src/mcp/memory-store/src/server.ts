@@ -4,6 +4,7 @@ import { z } from "zod";
 import { MemoryStore } from "./store.js";
 import { validateContent, validateKey, validateTags } from "./validate.js";
 import { extractSummary } from "./summary.js";
+import { MuGate, DEFAULT_MU_CONFIG } from "./mu-gate.js";
 
 const store = new MemoryStore();
 const server = new McpServer({ name: "memory-store", version: "1.0.0" });
@@ -124,6 +125,23 @@ server.tool("mood_get", {
     const mood = store.moodGet(session_id);
     return ok(mood || { mode: "NORMAL", confidence: 0, decay_rate: 0.25 });
   } catch (e: any) { return err(e.message || "mood_get failed"); }
+});
+
+server.tool("mu_gate", {
+  priorityScore: z.number().min(0).max(10).describe("Importance score 0-10"),
+  status: z.string().default("active").describe("Memory status"),
+  createdAt: z.string().describe("ISO timestamp of creation"),
+  updatedAt: z.string().describe("ISO timestamp of last update"),
+  accessCount: z.number().optional().default(0).describe("Number of times accessed"),
+  id: z.string().optional().default("mu-gate-input").describe("Memory entry ID"),
+}, async ({ priorityScore, status, createdAt, updatedAt, accessCount, id }) => {
+  try {
+    const gate = new MuGate();
+    const result = gate.decide({ id, priorityScore, status, createdAt, updatedAt, accessCount });
+    return { content: [{ type: "text" as const, text: JSON.stringify(result) }] };
+  } catch (e: any) {
+    return { content: [{ type: "text" as const, text: JSON.stringify({ error: e.message }) }] };
+  }
 });
 
 server.tool("memory_timeline", {
