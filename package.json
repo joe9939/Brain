@@ -8,7 +8,11 @@
   },
   "scripts": {
     "test": "node tests/runner.js --all",
-    "test:bun": "bun test",
+    "test:bun": "bun test tests/unit/ tests/circuits/ tests/integration/ tests/e2e/ tests/qc/",
+    "test:all": "bun test tests/ && node tests/runner.js --all",
+    "test:e2e": "node tests/brain-e2e-runner.js",
+    "test:behavioral": "npx agentest run --config agentest.config.ts",
+    "typecheck": "tsc --noEmit --project tests/tsconfig.json",
     "publish:patch": "node install.js --publish patch",
     "publish:minor": "node install.js --publish minor",
     "publish:major": "node install.js --publish major"
