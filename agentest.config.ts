@@ -17,7 +17,7 @@ import { readFileSync, existsSync } from 'fs'
 import { join } from 'path'
 
 // Auto-load .env file (no dotenv dependency needed)
-const envPath = join(import.meta.dir, '..', '..', '.env')
+const envPath = join(process.cwd(), '.env')
 if (existsSync(envPath)) {
   const envContent = readFileSync(envPath, 'utf-8')
   for (const line of envContent.split('\n')) {
