@@ -14,8 +14,6 @@
 import { defineConfig } from '@agentesting/agentest'
 import { createOpencodeClient } from '@opencode-ai/sdk'
 
-const OPENCODE_GO_API_KEY = 'sk-NRkyzN3BqxX15hKXS11kkxqu2WlliP9FTbkPeDuoHoQeAXnQOGKPwlz1oWc49UwY'
-
 const client = createOpencodeClient({ baseUrl: 'http://localhost:4096' })
 let brainSession: any = null
 
