@@ -50,12 +50,13 @@ export default defineConfig({
   },
 
   // LLM for simulated user + evaluation judges
-  // Uses your OpenCode Go subscription (deepseek-v4-flash)
+  // Uses your OpenCode Go subscription
   provider: 'openai-compatible',
-  model: 'minimax-m3',
+  model: 'deepseek-v4-flash',
   providerOptions: {
     baseURL: 'https://opencode.ai/zen/go/v1',
-    apiKey: OPENCODE_GO_API_KEY,
+    apiKey: process.env.OPENCODE_GO_API_KEY || '',
+    extraBody: { _strip_response_format: true },  // triggers customFetch, strips response_format
   },
 
   // Simulation params
