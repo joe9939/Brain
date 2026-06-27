@@ -1,7 +1,7 @@
 ﻿# Brain Agent — Foundation Agent for OpenCode
 
 Brain-inspired multi-agent system implementing [arXiv 2504.01990](https://arxiv.org/abs/2504.01990) (Foundation Agents).
-20 brain-region agents, 8 MCP servers, 1 safety plugin (G1-G7), 43/43 paper sections referenced.
+24 brain-region agents, 4 enhanced MCP servers, 1 safety plugin (G1-G7), 32/32 tests passing.
 
 <div align="center">
 
@@ -9,7 +9,8 @@ Brain-inspired multi-agent system implementing [arXiv 2504.01990](https://arxiv.
 [![arXiv](https://img.shields.io/badge/arXiv-2504.01990-b31b1b.svg)](https://arxiv.org/abs/2504.01990)
 [![OpenCode](https://img.shields.io/badge/OpenCode-plugin-purple)](https://opencode.ai)
 [![Oh-My-OpenAgent](https://img.shields.io/badge/OMO-integrated-blue)](https://github.com/code-yeongyu/oh-my-opencode)
-[![Status](https://img.shields.io/badge/Status-Stable-brightgreen)]()
+[![Tests](https://img.shields.io/badge/Tests-32%2F32-brightgreen)]()
+[![Circuits](https://img.shields.io/badge/Circuits-11%20wired-blue)]()
 
 </div>
 
@@ -24,182 +25,264 @@ node install.js
 # Verify everything is set up
 node install.js --status
 
+# Run all static tests (32 tests, ~500ms)
+node tests/runner.js --all
+
+# Run E2E behavioral test scenarios
+node tests/brain-e2e-runner.js
+
 # Dry-run to check source files without installing
 node install.js --dry-run
-
-# Uninstall and restore originals
-node install.js --uninstall
-
-# Show version
-node install.js --version
 ```
 
 Restart OpenCode. Press Tab → select **[brain]**. That's it.
 
-> Requires [Node.js](https://nodejs.org) 18+, [OpenCode](https://opencode.ai), and [Oh My OpenCode](https://github.com/code-yeongyu/oh-my-opencode).
-> Brain Agent is built ON TOP of Oh My OpenCode — OMO categories, team_mode swarm, and ulw-loop are the architecture foundation.
+> Requires [Node.js](https://nodejs.org) 18+, [OpenCode](https://opencode.ai), and [Oh My OpenAgent](https://github.com/code-yeongyu/oh-my-opencode).
+> Brain Agent is built ON TOP of Oh My OpenAgent — OMO categories and task() delegation are the architecture foundation.
 
 ---
 
 ## What is Brain Agent?
 
-Brain Agent brings neuroscience-inspired architecture to AI coding assistants. Each of the 20 agents maps to a brain region from the Foundation Agent paper, working together as a **perceive → synthesize → decide → execute → record** pipeline.
+Brain Agent implements the Foundation Agent framework as a complete **perceive → orient → decide → act → record** pipeline. Each message triggers a coordinated sequence of sub-agents, MCP tools, and circuit mechanisms.
 
 ```
-Every message → [thalamus][amygdala][hippocampus][world-cortex] → conditional agents → swarm pipeline
+Message → [L1: 5-way perception] → [L1.5: mood/reward modulation] → [L2: gate selection] → [L3: action] → [POST: record + learn]
 ```
 
 **Key capabilities:**
-- **Parallel perception**: 4 agents analyze every message simultaneously
-- **Emotion detection**: amygdala flags urgency, frustration, exploration intent
-- **Episodic memory**: hippocampus stores past decisions via SQLite-backed MCP
-- **Codebase awareness**: world-cortex indexes 19K+ files for impact analysis
-- **Safety-first**: G1-G7 safety gates block dangerous commands (rm -rf /, curl|bash), injection guard, file-leak guard, key-leak guard, env protect
-- **Swarm execution**: planner→coder→reviewer→tester for complex tasks
-- **Oh-My-OpenAgent integration**: 20 brain-region categories, team_mode swarm, ulw-loop consolidation
+- **5-way parallel perception**: thalamus + amygdala + hippocampus + world-cortex + safety, every message
+- **Dynamic L2 gate thresholds**: adaptive via brain-gate-tuner, not hardcoded
+- **Emotional contagion**: swarm agents' moods influence the orchestrator's emotional state
+- **Consensus decision making**: high-risk decisions use 3-agent voting (reward/basal/insula)
+- **Episodic + semantic + procedural memory**: SQLite-backed MCP with vector search
+- **Memory lifecycle**: decay, consolidation, conflict detection, importance-weighted retention
+- **Predictive world model**: BFS dependency impact analysis with precision/recall tracking
+- **Agent reputation system**: reliability tracking per agent, weighted into gate competition
+- **Causal analysis**: transitive dependency tracing for change impact assessment
+- **Versioned shared state**: GLOBAL_STATE changelog with monotonic version counter
+- **Meta-learning**: task pattern analysis every 5 completions
+- **Adversarial testing**: red-team agent generates injection/obfuscation/social tests
+- **Architecture self-optimization**: agent topology analysis every 50 tasks
+- **Intrinsic motivation**: curiosity-driven exploration during idle cycles
+- **Value learning**: captures user feedback to adjust reward model
 
 ---
 
 ## Architecture
 
-### 3-Layer Model
+### 5-Phase OODA Pipeline
 
 ```
-Layer 1: Always-on (every message)
-  thalamus     → gate input
-  amygdala     → detect emotion mode
-  hippocampus  → query episodic memory
-  world-cortex → scan codebase impact
-
-Layer 2: Conditional (event-driven)
-  attention-cortex  → prioritize when >3 todos
-  reward-cortex     → risk assessment when score<3
-  safety-cortex     → audit on danger patterns
-  basal-ganglia     → go/no-go on matched SOPs
-  cerebellum        → tool recommendation when uncertain
-  premotor-cortex   → skill extraction when trajectory complete
-  dlpfc             → working memory gating on overflow
-  self-enhance-cortex → reflect after task completion
-
-Layer 3: Complex Task (swarm pipeline)
-  swarm-planner  → decompose task into DAG
-  swarm-coder    → implement each node
-  swarm-reviewer → validate implementation
-  swarm-tester   → verify with tests
+PHASE    FUNCTION                    AGENTS FIRED
+───────  ──────────────────────────  ───────────────────────────────
+L1       Perceive (parallel)         thalamus, amygdala, hippocampus,
+                                      world-cortex, safety
+L1.5     Orient (modulate)           mood decay, reward bias,
+                                      emotional contagion
+L2       Decide (gate competition)   WTA scoring → top-2 parallel:
+                                      reward, attention, basal,
+                                      cerebellum, safety, insula
+                                      [consensus gate for high-risk]
+L3       Act (swarm or direct)       swarm-planner → coder →
+                                      reviewer → tester (recursive DAG)
+POST     Record + learn              reflexion, memory_store,
+                                      world_update, gate tuning,
+                                      curiosity, meta-learner
 ```
 
-### Oh-My-OpenAgent Layer (Architecture Foundation)
+### Layer Detail
 
 ```
-Categories (20 brain-region agents)     → category-based routing
-Team Mode (coordinator + 4 swarm)       → multi-agent collaboration
-ulw-loop (offline-consolidation agent)  → idle/scheduled SOP strengthening
+Layer 1 — Always-on (every message, 5 parallel)
+  thalamus      → gate input, detect intents, urgency scoring
+  amygdala      → emotion detection (URGENT/EXPLORE/SUPPORT/CAUTION/NORMAL)
+  hippocampus   → memory retrieval (hybrid keyword + vector search)
+  world-cortex  → codebase structure and impact analysis
+  safety        → background security scan
+
+Layer 1.5 — Modulation (after L1 collected)
+  mood_decay    → smooth intensity between cycles, propagate to all layers
+  reward_bias   → attention_priority_bias formula (clamped)
+  contagion     → swarm agent moods vote into orchestrator mood
+  homeostasis   → corrective actions on system anomaly
+
+Layer 2 — Conditional Gate Competition (event-driven)
+  Gate scoring: urgency×0.35 + reward_bias×0.25 + safety×0.25 + reliability×0.15
+  Top-2 gates fire in parallel (bounded by attention budget)
+  Consensus gate: when safety=strict AND uncertainty>threshold, 3-agent vote
+  
+  | Condition | Agent |
+  |-----------|-------|
+  | gate=BLOCK / CAUTION / danger pattern | brain-safety |
+  | score_action < GLOBAL_STATE.gate_thresholds.reward | brain-reward |
+  | todowrite > GLOBAL_STATE.gate_thresholds.attention | brain-attention |
+  | SOP matched | brain-basal |
+  | tool ambiguous | brain-cerebellum |
+  | system alert | brain-insula |
+
+Layer 3 — Action (complex task)
+  swarm-planner  → decompose into recursive DAG (max depth 3)
+  causal_analyze → transitive dependency tracing before coding
+  world_predict  → BFS impact prediction, verified after action
+  swarm-coder    → implement DAG nodes (parallel waves)
+  swarm-reviewer → validate (fix loop, max 2)
+  swarm-tester   → verify
+
+POST — Record
+  reflexion       → self-enhance, store lessons
+  memory_store    → episodic/semantic/procedural
+  score_agent     → update reputation tracking
+  world_update    → compare prediction vs actual (precision/recall)
+  gate_tuner      → adjust L2 thresholds from decision history
+  memory_decay    → reduce importance of stale memories
+  memory_consolidate → merge related low-importance memories
+  memory_detect_conflicts → scan for contradictions, auto-resolve
+  value_learn     → capture user feedback
 ```
 
-### Infrastructure
+### Sub-Agent Skill Files
 
-| Component | Description | Technology |
-|-----------|-------------|------------|
-| **memory-store** | Episodic + semantic memory (hippocampus) | SQLite WAL, 7 tables, 12 tools |
-| **world-model** | Codebase graph index (parietal cortex) | 19K file scanner, 4 tools |
-| **reward-system** | Hybrid scoring (nucleus accumbens) | 3 tools, UCB-TD hybrid |
-| **tool-tracker** | Tool usage patterns & frequency (cerebellum) | 3 tables, 5 tools |
-| **sop-tracker** | SOP procedural memory (basal-ganglia) | 4 tables, 5 tools |
-| **reflexion** | Self-refine loop on tool errors (insula) | 3 tools, retry+fallback |
-| **priority-queue** | Task prioritization (attention-cortex) | Priority queue, 3 tools |
-| **monitor** | Health dashboard & anomaly detection (hypothalamus) | Stats, 4 tools |
-| **brain-plugin** | G1-G7 safety gates + injection guard | tool.execute.before hook |
+| Skill | Trigger | Function |
+|-------|---------|----------|
+| brain-gate-tuner | POST ≥3 decisions | Adjust L2 reward/attention/confidence/urgency thresholds |
+| brain-curiosity | Idle, every 5 tasks | Detect underexplored code, knowledge gaps, patterns |
+| brain-meta-learner | Every 5 tasks | Analyze task patterns, recommend approach optimizations |
+| brain-red-team | Every 20 tasks | Generate adversarial test cases (injection/obfuscation/social/edge) |
+| brain-architect | Every 50 tasks | Agent topology analysis, merge/remove/retune recommendations |
+
+---
+
+## Circuit Mechanisms (11 implemented)
+
+| Circuit | Principle | Implementation |
+|---------|-----------|---------------|
+| **OODA Loop** | Observe→Orient→Decide→Act→Record, closes next cycle | L1→L1.5→L2→L3→POST→next L1 |
+| **Shared Global State** | Cross-circuit shared data with conflict resolution | GLOBAL_STATE (mood, reward, safety, personality, attention_budget, gate_thresholds) |
+| **Versioned State** | Monotonic version counter + changelog per write | GLOBAL_STATE._version, _changelog at 6 write points |
+| **Winner-Take-Most** | Gate scoring + top-2 parallel execution | gate_score = urgency×0.35 + reward×0.25 + safety×0.25 + reliability×0.15 |
+| **Mood→All Layers** | Amygdala → L1.5 decay → L2 thresholds → L3 context → POST | 6-layer propagation path |
+| **Emotional Contagion** | Swarm moods vote into orchestrator mood | L1.5 Step 3b: majority_vote(swarm_moods) |
+| **Personality→L3/Post** | OCEAN traits → swarm context → trait drift | 5-factor model, drift via POST reflexion |
+| **Reward→Attention** | reward.score → attention_priority_bias → budget cap | Modulation within GLOBAL_STATE.attention_budget |
+| **Attention Budget** | 0-1 budget allocation, consumption per gate, renewal per cycle | Budget enforcement before L2 firing |
+| **Safety Continuous** | L1→L1.5→L2→L3→POST, safety_level propagates all layers | 6 safety checkpoints per cycle |
+| **World Predict→Verify** | BFS prediction before L3, precision/recall after action | world_predict + world_diff with trend tracking |
+| **Homeostasis** | Insula fires → corrective actions (non-destructive) | Reduce load, raise safety, log |
+| **Learning Loop** | POST reflexion → memory_store → L1 next cycle | recent_lessons injected into L1_CONTEXT |
+| **Collective Consensus** | High-risk: 3 agents vote (2/3 majority) | reward + basal + insula parallel voting |
+| **Causal Analysis** | BFS dependency tracing, transitive impact categories | world_causal_analyze (direct/indirect/cascade) |
+| **Memory Decay** | Importance reduction, archival at threshold | memory_decay tool, consolidation |
+| **Memory Conflict** | Tag-based grouping, similarity comparison, auto-resolve | memory_detect_conflicts + memory_resolve |
+| **Reputation** | Agent reliability scoring, WTA weight factor | score_agent, agent_reputation (tool-tracker) |
+
+### Conflict Resolution Rules
+
+Three cross-circuit rules governing competing signals:
+
+1. **(D-K) attention_budget is outer cap** — reward modulation within remaining budget
+2. **(B-J) safety=CAUTION freezes trait drift, pauses DMN loop**
+3. **(H-I) threshold = personality_base + mood_offset, clamped [0.0, 1.0]**
+
+---
+
+## MCP Server Tools
+
+| MCP | Tools | Purpose |
+|-----|-------|---------|
+| **memory-store** | memory_store, memory_retrieve, memory_summarize, memory_link, memory_forget, memory_search_semantic, memory_embed, memory_decay, memory_consolidate, memory_detect_conflicts, memory_resolve, memory_replay, mood_set, mood_get | Episodic/semantic/procedural memory with lifecycle |
+| **world-model** | world_query, world_update, world_predict, world_diff, world_causal_analyze | Codebase dependency graph, impact prediction |
+| **reward-system** | score_hierarchy, record_hierarchical, td_update, value_learn | Hybrid reward scoring with user feedback learning |
+| **tool-tracker** | track_tool_use, get_tool_stats, recommend_tool, score_agent, agent_reputation | Usage patterns, agent reliability tracking |
+| **sop-tracker** | sop_add, sop_match, sop_list, sop_enable, sop_disable | Procedure memory and matching |
+| **reflexion** | reflexion_start, reflexion_add_observation, reflexion_generate_lessons, reflexion_suggest_skill | Self-refinement loop |
+| **priority-queue** | queue_add, queue_next, queue_blocked_by, queue_complete, queue_prioritize, queue_stats | Task scheduling |
+| **monitor** | monitor_get_health, monitor_get_alerts, monitor_report_event | Health dashboard |
+| **brain-plugin** | tool.execute.before hook (G1-G7) | Safety gates |
 
 ---
 
 ## Agent Inventory
 
-| Agent | Paper § | Trigger | Function |
-|-------|---------|---------|----------|
-| thalamus | 1.2 | every message | Gate input, extract priority |
-| amygdala | 6 | every message | Detect emotion mode (URGENT/EXPLORE/SUPPORT) |
-| hippocampus | 3 | every message | Query episodic + semantic memory |
-| world-cortex | 4 | every message | Scan codebase structure and impact |
-| attention-cortex | 2.2.3 | todowrite > 3 | Prioritize pending tasks |
-| reward-cortex | 5 | score_action < 3 | Risk assessment |
-| safety-cortex | Part IV | danger pattern | Security audit |
-| basal-ganglia | 3.3.4 | SOP matched | Go/NoGo decision |
-| cerebellum | 2.2 | tool uncertain | Tool recommendation |
-| premotor-cortex | — | trajectory complete | Skill extraction via Non-Parametric PPO |
-| dlpfc | — | working memory overflow | Working memory gating via μ head |
-| self-enhance-cortex | 9 | after task | Post-task reflection |
-| swarm-planner | 13 | complex task | Decompose into DAG |
-| swarm-coder | 8 | need code | Implement each node |
-| swarm-reviewer | 15 | coder done | Validate implementation |
-| swarm-tester | 8 | review pass | Run verification |
-| insula | — | system error | Anomaly detection |
-| hypothalamus | 1.2 | scheduled | Timer triggers |
-| dmn | — | idle | Idle mind-wandering |
-| self-optimizer | 9.2 | every 3 tasks | Prompt evolution |
-| offline-consolidation | 3.2.1 | idle/scheduled | Memory consolidation |
+| Agent | Trigger | Function |
+|-------|---------|----------|
+| thalamus | every message | Gate input, extract priority |
+| amygdala | every message | Detect emotion mode (URGENT/EXPLORE/SUPPORT/CAUTION/NORMAL) |
+| hippocampus | every message | Retrieve episodic/semantic/procedural memories |
+| world-cortex | every message | Codebase structure and impact analysis |
+| safety | every message | Background security scan |
+| attention-cortex | todowrite > gate_thresholds.attention | Prioritize pending tasks |
+| reward-cortex | score_action < gate_thresholds.reward | Risk assessment |
+| safety-cortex | danger pattern | Security audit |
+| basal-ganglia | SOP matched | Go/NoGo decision |
+| cerebellum | tool ambiguous | Tool recommendation |
+| premotor-cortex | trajectory complete | Skill extraction |
+| dlpfc | working memory overflow | Memory gating |
+| self-enhance | after task | Post-task reflection |
+| gate-tuner | POST ≥3 decisions | Dynamic L2 threshold adjustment |
+| curiosity | idle, every 5 tasks | Intrinsic exploration |
+| meta-learner | every 5 tasks | Pattern analysis |
+| red-team | every 20 tasks | Adversarial testing |
+| architect | every 50 tasks | Topology optimization |
+| insula | system error | Anomaly detection |
+| hypothalamus | scheduled | Timer triggers |
+| dmn | idle >2min | Mind-wandering |
+| self-optimizer | every 3 tasks | Prompt evolution |
+| offline-consolidation | idle 6h | Memory consolidation |
+| swarm-planner | complex task | DAG decomposition (recursive, max depth 3) |
+| swarm-coder | need code | Implementation |
+| swarm-reviewer | coder done | Validation |
+| swarm-tester | review pass | Verification |
 
 ---
 
-## Paper Alignment
+## Test Suite
 
-**43/43 sections mapped (100%)**
+### Static Tests (32/32 PASS)
 
-| Section | Status | Implementation |
-|---------|--------|---------------|
-| Ch1.1 Foundation Agent Concept | ✅ | 3-layer architecture |
-| Ch1.2 Sensory Gating (thalamus) | ✅ | Always-on sub-agent |
-| Ch2 Attention Mechanism | ✅ | attention-cortex + conditional routing |
-| Ch3 Memory Systems | ✅ | hippocampus + memory-store MCP |
-| Ch3.2.1 Consolidation | ✅ | offline-consolidation sub-agent |
-| Ch3.3.4 Basal Ganglia | ✅ | SOP matching + Go/NoGo |
-| Ch4 World Model | ✅ | world-cortex + world-model MCP |
-| Ch5 Reward Processing | ✅ | reward-cortex + reward-system MCP |
-| Ch6 Emotion (amygdala) | ✅ | Mode detection (URGENT/EXPLORE/SUPPORT) |
-| Ch7 Insula | ✅ | System error detection |
-| Ch8 Motor Cortex (swarm) | ✅ | Planner→Coder→Reviewer→Tester |
-| Ch9 Self-Enhance | ✅ | Post-task reflection + prompt evolution |
-| Ch13 DAG Planning | ✅ | swarm-planner decomposition |
-| Part IV Safety | ✅ | Plugin + safety-cortex + L1-G7 gates |
-| Ch3.3 Neural Memory | ✅ Alternative | Vector associative recall (multi-fragment fusion in memory-store MCP) |
+```bash
+node tests/runner.js --all
+```
 
-See [docs/architecture-v7-final.md](docs/architecture-v7-final.md) for full mapping.
+| Category | Tests | What |
+|----------|-------|------|
+| UNIT | 3 | G1-G7 gate patterns, install logic, prompt format |
+| INTEGRATION | 3 | Circuit coexistence, L1 perceive, L2 conditional gates |
+| E2E | 8 | Chat trigger, routing, dark mode, install cycle, activation, runtime, conformance |
+| CIRCUITS | 14 | All 11 circuits + 3 pathway tests |
+| QC | 4 | OMO structure, architecture, circuit consistency, regression |
+
+### Circuit Evidence Files
+
+```bash
+node tests/runner.js --circuits
+```
+
+Each test writes evidence to `.omo/evidence/<circuit-name>.md` with structured PASS/FAIL + check list.
+
+### E2E Behavioral Tests
+
+```bash
+node tests/brain-e2e-runner.js       # Run all scenarios
+node tests/brain-e2e-runner.js --list # List available scenarios
+```
+
+Validates circuit firing, L1-5-way, mood detection, safety, WTA scoring, etc.
 
 ---
 
-## Commands
+## Gap Closure Status
 
-### OpenCode Slash Commands
+All 18 identified gaps from the Foundation Agents paper are addressed:
 
-| Command | Description |
-|---------|-------------|
-| `/brain` | Dashboard: MCP status, agent count, session time |
-| `/brain status` | Health check |
-| `/brain memory` | Memory system stats |
-| `/brain trace` | Recent activity trace |
-| `/brain ablate <region>` | Disable a brain region |
-| `/brain off` | Deactivate brain mode |
+| Phase | Gaps | Status |
+|-------|------|--------|
+| **Phase 0** — Quick Wins | L2 dynamic thresholds, curiosity, multi-modal perception | ✅ |
+| **Phase 1** — Core Infrastructure | Memory decay, vector search, reputation, predictive world model | ✅ |
+| **Phase 2** — Advanced Cognition | Meta-learning, causal reasoning, hierarchy, emotional contagion, consensus | ✅ |
+| **Phase 3** — Frontier | Red-team, value learning, architecture optimization, versioned state, conflict resolution | ✅ |
 
-### Installer Commands
-
-| Command | Description |
-|---------|-------------|
-| `node install.js` | Install brain-agent (plugin, agents, MCP, config merge) |
-| `node install.js --status` | Health check — reports all component status (plugin, skills, agents, MCP, OMO categories, prompts) |
-| `node install.js --dry-run` | Pre-install verification — validates 15 source file checks, JSONC parsing, brain-master.md patterns |
-| `node install.js --uninstall` | Remove brain-agent and restore original config backups |
-| `node install.js --version` | Show brain-agent version |
-
-### Oh-My-OpenAgent Features
-
-| Feature | Description |
-|---------|-------------|
-| **20 Categories** | Each brain-region is a category in oh-my-openagent.jsonc with model/fallback/variant |
-| **Team Mode** | Coordinator + 4 swarm agents (planner→coder→reviewer→tester) with shared task list |
-| **ulw-loop** | `/ulw-loop` command triggers offline-consolidation agent for memory/SOP strengthening |
-
-All 20 category agents default to `zen/deepseek-v4-flash-free` with 3-level fallback: `zen/nemotron-3-ultra-free` → `zen/north-mini-code-free` → `zen/mimo-v2.5-free`.
-
-> OMO is not optional — it is the foundation. All brain-region agents, swarm execution, and consolidation run through OMO's category and team_mode system.
+Paper alignment: **43/43 sections** covered (see `docs/paper-5-gaps.md` for detail).
 
 ---
 
@@ -207,33 +290,34 @@ All 20 category agents default to `zen/deepseek-v4-flash-free` with 3-level fall
 
 ```
 brain-agent/
+├── .opencode/skills/brain-master.md     Main orchestrator prompt (18 circuits, 680+ lines)
 ├── src/
-│   ├── plugin/                brain-plugin.mjs (L1 safety)
-│   ├── skills/                brain-master.md (master skill template), brain-premotor-cortex.md, brain-dlpfc.md
-│   ├── agents/                20 brain-region agent definitions (*.md)
-│   ├── commands/              brain.md (slash command), ulw-loop.md (OMO command)
-│   └── mcp/                   MCP server source (TypeScript)
-├── config/                    opencode.example.json
-├── docs/                      Architecture + paper alignment
-├── benchmarks/                10-task benchmark framework
-├── .opencode/prompts/brain/   20 brain-region prompt bodies (separated from agents)
-├── oh-my-openagent.jsonc      20 categories + team_mode + ulw-loop (for OMO)
-├── install.js                 One-command installer (install/status/dry-run/uninstall)
-└── package.json
+│   ├── skills/                          5 sub-agent skill files
+│   ├── mcp/
+│   │   ├── memory-store/                Memory MCP (decay, vector search, conflict)
+│   │   ├── world-model/                 Codebase graph (predict, diff, causal)
+│   │   ├── reward-system/               Reward scoring + value learning
+│   │   ├── tool-tracker/                Usage tracking + agent reputation
+│   │   ├── sop-tracker/                 Procedure matching
+│   │   ├── reflexion/                   Self-refinement loop
+│   │   ├── priority-queue/              Task scheduling
+│   │   └── monitor/                     Health dashboard
+│   └── plugin/                          brain-plugin.mjs (G1-G7 safety)
+├── tests/
+│   ├── runner.js                        Test runner (32 tests)
+│   ├── brain-e2e-runner.js              Behavioral E2E scenarios
+│   ├── circuits/                        14 circuit tests
+│   ├── integration/                     3 integration tests
+│   ├── e2e/                             8 E2E tests
+│   ├── qc/                              4 quality control tests
+│   └── unit/                            3 unit tests
+├── docs/
+│   ├── plans/                           Implementation plans
+│   └── paper-5-gaps.md                  Paper alignment analysis
+├── .omo/evidence/                       Test evidence files
+├── oh-my-openagent.jsonc                OMO category config (24 categories)
+└── install.js                           One-command installer
 ```
-
----
-
-## Benchmarks
-
-```
-$ node benchmarks/run.js
-  ✓ Functional:    9/10  (memory, safety, parallel, delegation...)
-  ✓ Safety:        3/3   (rm -rf block, injection guard, .env guard)
-  ✓ Performance:   avg 1.2s per task
-```
-
-See [benchmarks/](benchmarks/) for details.
 
 ---
 
@@ -241,7 +325,7 @@ See [benchmarks/](benchmarks/) for details.
 
 - **Node.js** 18+
 - **OpenCode** (latest)
-- **Oh My OpenCode** (required — architecture foundation for categories, team_mode, and ulw-loop)
+- **Oh My OpenAgent** (required — architecture foundation for categories, team_mode, and ulw-loop)
 - **OS**: macOS, Linux, or Windows
 
 ---
@@ -252,4 +336,5 @@ See [benchmarks/](benchmarks/) for details.
 
 ---
 
-*Built with reference to "Foundation Agents for the OpenCode Platform" (arXiv 2504.01990).*
+*Built with reference to "Advances and Challenges in Foundation Agents" (arXiv 2504.01990).*
+*Inspired by Sakana AI's Fugu (multi-model orchestration), Trinity (evolved coordination), and AB-MCTS (inference-time collaboration).*
