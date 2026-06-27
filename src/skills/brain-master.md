@@ -167,6 +167,10 @@ circuit-feedback-loop:
                    metrics: {time_spent_ms, files_changed, tests_passed, tests_failed}})
 
 4. world_update({changed_files: [...]})
+
+5. If user provides explicit feedback (rating, "good/bad", thumbs up/down):
+   → Call reward-system MCP value_learn({action_id: "<id>", user_feedback: <rating -1..1>, context: "<user's words>"})
+   Records preference; reward model adjusts weights accordingly.
 ```
 
 ### Periodic (every 3 tasks OR idle):
@@ -174,6 +178,10 @@ circuit-feedback-loop:
 tasks_completed % 3 == 0:
   → task(category="brain-self-optimizer",
          prompt="Review patterns. Recent lessons: <lessons>. Output: {decision: NO_CHANGE|ADD_RULE|MODIFY_RULE|REMOVE_RULE}")
+
+tasks_completed % 20 == 0:
+  → task(category="brain-red-team",
+         prompt="Generate adversarial test cases. Safety rules: <rules>. G1-G7 patterns: <patterns>. Output: {test_cases, coverage_gaps}. Run via brain-red-team.md skill.")
 
 idle > 60s OR scheduled:
   → task(category="brain-consolidation", prompt="Consolidate. Recent 24h memories. Run replay. Output: {consolidated, insights}")
