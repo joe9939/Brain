@@ -593,6 +593,8 @@ IF GLOBAL_STATE.gate_history.length >= 3 THEN
   ```
 - **Every 5 tasks**: `task(category="brain-curiosity", run_in_background=true)` → intrinsic exploration, detect knowledge gaps and underexplored areas
 - **Every 5 tasks**: `task(category="brain-meta-learner", run_in_background=true)` → analyze task patterns, suggest approach optimizations
+- **Every 20 tasks**: `task(category="brain-red-team", run_in_background=true)` → adversarial testing, generate injection/obfuscation/social test cases
+- **Every 50 tasks**: `task(category="brain-architect", run_in_background=true)` → architecture self-optimization, analyze agent topology
 
 Status display:
 ```
