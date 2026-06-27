@@ -4,6 +4,8 @@ import { z } from "zod";
 import { scorer, getHierarchicalScore, recordHierarchical, tdUpdate } from "./scorer.js";
 
 const actionLog: Array<{id:string;type:string;success:boolean;level:string;ts:string}> = [];
+const feedbackLog: Array<{action_id:string;rating:number;context?:string;ts:string}> = [];
+let feedbackCount = 0;
 const server = new McpServer({ name: "reward-system", version: "1.0.0" });
 
 server.tool("score_action", {
@@ -43,6 +45,30 @@ server.tool("score_hierarchy", {
 }, async ({ action_ids }) => {
   const result = getHierarchicalScore(action_ids);
   return { content: [{ type: "text", text: JSON.stringify(result) }] };
+});
+
+server.tool("value_learn", {
+  action_id: z.string(),
+  user_feedback: z.number().min(-1).max(1),
+  context: z.string().optional(),
+}, async ({ action_id, user_feedback, context }) => {
+  feedbackLog.push({ action_id, rating: user_feedback, context, ts: new Date().toISOString() });
+  feedbackCount++;
+
+  let pattern_shift: string;
+  if (user_feedback > 0.5) {
+    pattern_shift = `Strong preference detected (rating=${user_feedback}): reinforcing pattern around action "${action_id}"`;
+  } else if (user_feedback > 0) {
+    pattern_shift = `Mild positive feedback (rating=${user_feedback}): slight weight adjustment for action "${action_id}"`;
+  } else if (user_feedback === 0) {
+    pattern_shift = `Neutral feedback (rating=0): no pattern shift for action "${action_id}"`;
+  } else if (user_feedback > -0.5) {
+    pattern_shift = `Mild negative feedback (rating=${user_feedback}): penalizing pattern around action "${action_id}"`;
+  } else {
+    pattern_shift = `Strong negative feedback (rating=${user_feedback}): heavily penalizing pattern around action "${action_id}"`;
+  }
+
+  return { content: [{ type: "text", text: JSON.stringify({ learned: true, pattern_shift, total_feedback: feedbackCount }) }] };
 });
 
 const transport = new StdioServerTransport();

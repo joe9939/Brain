@@ -7,7 +7,9 @@ CREATE TABLE IF NOT EXISTS episodic_memory (
   success INTEGER DEFAULT 0, tags TEXT,
   access_count INTEGER DEFAULT 0, last_accessed TEXT,
   active INTEGER DEFAULT 1, created_at TEXT DEFAULT (datetime('now')),
-  embedding BLOB
+  embedding BLOB,
+  importance REAL DEFAULT 1.0,
+  archived INTEGER DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS semantic_memory (
@@ -15,7 +17,9 @@ CREATE TABLE IF NOT EXISTS semantic_memory (
   description TEXT, file_path TEXT, language TEXT,
   metadata TEXT, embedding BLOB, tags TEXT,
   access_count INTEGER DEFAULT 0, last_accessed TEXT,
-  created_at TEXT DEFAULT (datetime('now'))
+  created_at TEXT DEFAULT (datetime('now')),
+  importance REAL DEFAULT 1.0,
+  archived INTEGER DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS memory_relations (
@@ -33,7 +37,11 @@ CREATE TABLE IF NOT EXISTS procedural_memory (
   success_count INTEGER DEFAULT 0, fail_count INTEGER DEFAULT 0,
   last_used TEXT, deprecated INTEGER DEFAULT 0,
   alternative_sop_id TEXT, avg_time_ms INTEGER, optimized_prompt TEXT,
-  created_at TEXT DEFAULT (datetime('now'))
+  created_at TEXT DEFAULT (datetime('now')),
+  importance REAL DEFAULT 1.0,
+  archived INTEGER DEFAULT 0,
+  last_accessed TEXT,
+  access_count INTEGER DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS working_memory (
@@ -41,7 +49,11 @@ CREATE TABLE IF NOT EXISTS working_memory (
   subtasks TEXT, context_pointers TEXT,
   priority_score REAL DEFAULT 5.0, status TEXT DEFAULT 'active',
   created_at TEXT DEFAULT (datetime('now')),
-  updated_at TEXT DEFAULT (datetime('now'))
+  updated_at TEXT DEFAULT (datetime('now')),
+  importance REAL DEFAULT 1.0,
+  archived INTEGER DEFAULT 0,
+  last_accessed TEXT,
+  access_count INTEGER DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS memory_history (
@@ -97,3 +109,13 @@ CREATE TABLE IF NOT EXISTS replay_log (
   timestamp TEXT DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS idx_replay_batch ON replay_log(batch_id);
+
+-- Hash-based embeddings for semantic search (memory_embed / memory_search_semantic)
+CREATE TABLE IF NOT EXISTS embeddings (
+  id TEXT PRIMARY KEY,
+  memory_id TEXT,
+  vector BLOB NOT NULL,
+  model TEXT DEFAULT 'internal',
+  created_at TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_embeddings_memory_id ON embeddings(memory_id);

@@ -43,6 +43,17 @@ export class ToolTracker {
       );
       CREATE INDEX IF NOT EXISTS idx_tool_name ON tool_usage(tool_name);
       CREATE INDEX IF NOT EXISTS idx_created ON tool_usage(created_at);
+
+      CREATE TABLE IF NOT EXISTS agent_scores (
+        agent_name TEXT PRIMARY KEY,
+        reliability REAL DEFAULT 0.5,
+        success_count INTEGER DEFAULT 0,
+        failure_count INTEGER DEFAULT 0,
+        avg_response_time_ms INTEGER DEFAULT 0,
+        total_tasks INTEGER DEFAULT 0,
+        last_seen TEXT
+      );
+      CREATE INDEX IF NOT EXISTS idx_agent_reliability ON agent_scores(reliability DESC);
     `);
   }
 
@@ -107,6 +118,57 @@ export class ToolTracker {
     sql += ' ORDER BY created_at DESC LIMIT ?';
     params.push(k);
     return this.prep(sql).all(...params) as ToolRecord[];
+  }
+
+  scoreAgent(agentName: string, outcome: 'success' | 'failure', responseTimeMs?: number): { agent: string; reliability: number; total_tasks: number } {
+    const now = new Date().toISOString();
+    const existing = this.prep('SELECT * FROM agent_scores WHERE agent_name = ?').get(agentName) as any;
+
+    const successCount = existing ? existing.success_count + (outcome === 'success' ? 1 : 0) : (outcome === 'success' ? 1 : 0);
+    const failureCount = existing ? existing.failure_count + (outcome === 'failure' ? 1 : 0) : (outcome === 'failure' ? 1 : 0);
+    const totalTasks = successCount + failureCount;
+    const reliability = totalTasks > 0 ? Math.round((successCount / totalTasks) * 10000) / 10000 : 0.5;
+
+    let avgRespMs: number;
+    if (existing && existing.total_tasks > 0 && responseTimeMs !== undefined) {
+      // Weighted moving average: new = existing * (n/(n+1)) + newVal * (1/(n+1))
+      avgRespMs = Math.round((existing.avg_response_time_ms * existing.total_tasks + responseTimeMs) / (existing.total_tasks + 1));
+    } else if (responseTimeMs !== undefined) {
+      avgRespMs = responseTimeMs;
+    } else {
+      avgRespMs = existing ? existing.avg_response_time_ms : 0;
+    }
+
+    this.prep(
+      `INSERT INTO agent_scores (agent_name, reliability, success_count, failure_count, avg_response_time_ms, total_tasks, last_seen)
+       VALUES (?, ?, ?, ?, ?, ?, ?)
+       ON CONFLICT(agent_name) DO UPDATE SET
+         reliability = excluded.reliability,
+         success_count = excluded.success_count,
+         failure_count = excluded.failure_count,
+         avg_response_time_ms = excluded.avg_response_time_ms,
+         total_tasks = excluded.total_tasks,
+         last_seen = excluded.last_seen`
+    ).run(agentName, reliability, successCount, failureCount, avgRespMs, totalTasks, now);
+
+    return { agent: agentName, reliability, total_tasks: totalTasks };
+  }
+
+  getAgentReputation(agentName?: string): Array<{
+    agent_name: string; reliability: number; success_count: number; failure_count: number; total_tasks: number;
+  }> {
+    if (agentName) {
+      const row = this.prep('SELECT * FROM agent_scores WHERE agent_name = ?').get(agentName) as any;
+      if (!row) return [];
+      return [{
+        agent_name: row.agent_name, reliability: row.reliability,
+        success_count: row.success_count, failure_count: row.failure_count,
+        total_tasks: row.total_tasks,
+      }];
+    }
+    return this.prep(
+      'SELECT agent_name, reliability, success_count, failure_count, total_tasks FROM agent_scores ORDER BY reliability DESC'
+    ).all() as any[];
   }
 
   close(): void { this.db.close(); }

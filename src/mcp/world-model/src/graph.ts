@@ -1,4 +1,4 @@
-﻿import { DependencyNode, PredictionResult, SymbolInfo } from "./types.js";
+﻿import { DependencyNode, PredictionResult, PredictedFile, PredictionResultV2, DiffResult, SymbolInfo } from "./types.js";
 import { readdirSync, readFileSync, statSync } from "fs";
 import { join, extname } from "path";
 
@@ -6,6 +6,7 @@ export class DependencyGraph {
   private nodes: Map<string, DependencyNode> = new Map();
   private changeCounts: Map<string, number> = new Map();
   private riskMap: Map<string, number> = new Map();
+  private diffHistory: number[] = [];
 
   indexProject(rootDir: string, extensions: string[] = [".ts",".js",".py",".rs"]): number {
     try {
@@ -247,5 +248,151 @@ export class DependencyGraph {
     const tests = [...direct, ...indirect].filter(f => f.includes(".test.") || f.includes(".spec.") || f.includes("tests/"));
     const risk = Math.min(10, direct.length * 2 + indirect.length + (this.riskMap.get(target) || 0));
     return { directly_affected: direct, indirectly_affected: indirect, tests_to_run: tests, risk_score: risk, recommendation: risk>6?"HIGH RISK":risk>3?"MEDIUM":"LOW" };
+  }
+
+  predictImpactV2(description: string, targets: string[], _context: string): PredictionResultV2 {
+    // Determine starting files
+    let startFiles: string[] = [];
+    if (targets.length > 0) {
+      startFiles = targets;
+    } else {
+      // Derive candidate files from description keywords
+      const keywords = description.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+      for (const [file] of this.nodes) {
+        if (keywords.some(k => file.toLowerCase().includes(k))) {
+          startFiles.push(file);
+        }
+      }
+    }
+
+    if (startFiles.length === 0) {
+      return {
+        predicted_files: [],
+        risk_level: "low",
+        confidence: 0,
+        estimated_effort: "No files found matching the action description. Index the project first."
+      };
+    }
+
+    const predictedFiles: PredictedFile[] = [];
+    const visited = new Set<string>();
+    let maxCentrality = 0;
+
+    for (const target of startFiles) {
+      const node = this.nodes.get(target);
+      if (!node) continue;
+
+      // The target file itself — high probability of change
+      if (!visited.has(target)) {
+        visited.add(target);
+        const centrality = node.dependents.length;
+        if (centrality > maxCentrality) maxCentrality = centrality;
+        // Base 0.5 + 0.1 per dependent (capped at 1.0)
+        const prob = Math.min(1.0, 0.5 + centrality * 0.1 + (this.riskMap.get(target) || 0) * 0.05);
+        const type: "high" | "medium" | "low" = prob >= 0.7 ? "high" : prob >= 0.4 ? "medium" : "low";
+        predictedFiles.push({ path: target, change_probability: Math.round(prob * 100) / 100, type });
+      }
+
+      // Direct dependents (callers) — medium probability
+      for (const dep of node.dependents) {
+        if (!visited.has(dep)) {
+          visited.add(dep);
+          const depNode = this.nodes.get(dep);
+          const centrality = depNode ? depNode.dependents.length : 0;
+          const prob = Math.min(1.0, 0.3 + centrality * 0.08 + (this.riskMap.get(dep) || 0) * 0.04);
+          const type: "high" | "medium" | "low" = prob >= 0.7 ? "high" : prob >= 0.4 ? "medium" : "low";
+          predictedFiles.push({ path: dep, change_probability: Math.round(prob * 100) / 100, type });
+        }
+      }
+
+      // Indirect dependents (one more hop) — low probability
+      for (const directDep of node.dependents) {
+        const directNode = this.nodes.get(directDep);
+        if (!directNode) continue;
+        for (const indirectDep of directNode.dependents) {
+          if (!visited.has(indirectDep) && indirectDep !== target) {
+            visited.add(indirectDep);
+            const prob = 0.15 + (this.riskMap.get(indirectDep) || 0) * 0.03;
+            predictedFiles.push({
+              path: indirectDep,
+              change_probability: Math.round(Math.min(1.0, prob) * 100) / 100,
+              type: "low"
+            });
+          }
+        }
+      }
+    }
+
+    // Overall risk level from max change probability
+    const maxProb = Math.max(...predictedFiles.map(f => f.change_probability), 0);
+    const riskLevel: "low" | "medium" | "high" = maxProb >= 0.7 ? "high" : maxProb >= 0.4 ? "medium" : "low";
+
+    // Confidence based on how much of the graph was explored
+    const exploredRatio = predictedFiles.length / Math.max(1, this.nodes.size);
+    const confidence = Math.min(0.95, 0.3 + predictedFiles.length * 0.08 - exploredRatio * 0.1);
+
+    // Effort estimate based on count and severity
+    const highCount = predictedFiles.filter(f => f.type === "high").length;
+    const medCount = predictedFiles.filter(f => f.type === "medium").length;
+    const lowCount = predictedFiles.filter(f => f.type === "low").length;
+    const totalEffort = highCount * 3 + medCount * 1.5 + lowCount * 0.5;
+    const effortDesc = totalEffort > 20
+      ? `Large (${highCount} high, ${medCount} medium, ${lowCount} low impact files)`
+      : totalEffort > 8
+        ? `Medium (${highCount} high, ${medCount} medium, ${lowCount} low impact files)`
+        : totalEffort > 0
+          ? `Small (${highCount} high, ${medCount} medium, ${lowCount} low impact files)`
+          : "Minimal — no predicted file changes";
+
+    return {
+      predicted_files: predictedFiles,
+      risk_level: riskLevel,
+      confidence: Math.round(confidence * 100) / 100,
+      estimated_effort: effortDesc
+    };
+  }
+
+  computeDiff(predicted: string[], actual: string[]): DiffResult {
+    const predictedSet = new Set(predicted);
+    const actualSet = new Set(actual);
+
+    const correct = predicted.filter(p => actualSet.has(p));
+    const falsePositives = predicted.filter(p => !actualSet.has(p));
+    const missed = actual.filter(a => !predictedSet.has(a));
+
+    const precision = predicted.length > 0 ? correct.length / predicted.length : 1;
+    const recall = actual.length > 0 ? correct.length / actual.length : 1;
+    // F1-style accuracy: harmonic mean of precision and recall when both > 0
+    let accuracy: number;
+    if (precision + recall > 0) {
+      accuracy = 2 * precision * recall / (precision + recall);
+    } else {
+      accuracy = 1; // both empty => perfect match
+    }
+
+    // Track history for trend detection
+    this.diffHistory.push(accuracy);
+    if (this.diffHistory.length > 10) this.diffHistory.shift();
+
+    // Determine trend from recent history
+    let trend: "improving" | "stable" | "declining" = "stable";
+    if (this.diffHistory.length >= 4) {
+      const recent = this.diffHistory.slice(-2);
+      const older = this.diffHistory.slice(-4, -2);
+      const avgRecent = recent.reduce((a, b) => a + b, 0) / recent.length;
+      const avgOlder = older.reduce((a, b) => a + b, 0) / older.length;
+      if (avgRecent > avgOlder + 0.05) trend = "improving";
+      else if (avgRecent < avgOlder - 0.05) trend = "declining";
+    }
+
+    return {
+      accuracy: Math.round(accuracy * 100) / 100,
+      precision: Math.round(precision * 100) / 100,
+      recall: Math.round(recall * 100) / 100,
+      missed,
+      false_positives: falsePositives,
+      correct,
+      trend
+    };
   }
 }

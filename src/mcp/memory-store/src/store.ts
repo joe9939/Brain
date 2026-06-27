@@ -31,6 +31,31 @@ export class MemoryStore {
   private init(): void {
     const schema = readFileSync(join(__dirname, 'schema.sql'), 'utf-8');
     this.db.exec(schema);
+    this._migrate();
+  }
+
+  /** Apply backward-compatible ALTER TABLE migrations for existing databases. */
+  private _migrate(): void {
+    const migrations: string[] = [
+      // episodic + semantic already have last_accessed & access_count; add importance + archived
+      `ALTER TABLE episodic_memory ADD COLUMN importance REAL DEFAULT 1.0`,
+      `ALTER TABLE episodic_memory ADD COLUMN archived INTEGER DEFAULT 0`,
+      `ALTER TABLE semantic_memory ADD COLUMN importance REAL DEFAULT 1.0`,
+      `ALTER TABLE semantic_memory ADD COLUMN archived INTEGER DEFAULT 0`,
+      // procedural — add everything missing
+      `ALTER TABLE procedural_memory ADD COLUMN importance REAL DEFAULT 1.0`,
+      `ALTER TABLE procedural_memory ADD COLUMN archived INTEGER DEFAULT 0`,
+      `ALTER TABLE procedural_memory ADD COLUMN last_accessed TEXT`,
+      `ALTER TABLE procedural_memory ADD COLUMN access_count INTEGER DEFAULT 0`,
+      // working — add everything missing
+      `ALTER TABLE working_memory ADD COLUMN importance REAL DEFAULT 1.0`,
+      `ALTER TABLE working_memory ADD COLUMN archived INTEGER DEFAULT 0`,
+      `ALTER TABLE working_memory ADD COLUMN last_accessed TEXT`,
+      `ALTER TABLE working_memory ADD COLUMN access_count INTEGER DEFAULT 0`,
+    ];
+    for (const stmt of migrations) {
+      try { this.db.exec(stmt); } catch { /* column already exists — safe to ignore */ }
+    }
   }
 
   private prepare(sql: string): Database.Statement {
@@ -147,7 +172,7 @@ export class MemoryStore {
     for (const table of tables) {
       const memType = table.replace('_memory', '') as MemoryType;
       const rows = this.prepare(
-        `SELECT * FROM ${table} WHERE active = 1 AND (${keywords.map(() => 'LOWER(content) LIKE ?').join(' OR ')})`
+        `SELECT * FROM ${table} WHERE active = 1 AND archived = 0 AND (${keywords.map(() => 'LOWER(content) LIKE ?').join(' OR ')})`
       ).all(...keywords.map(k => `%${k}%`)) as MemoryEntry[];
 
       for (const row of rows) {
@@ -166,7 +191,7 @@ export class MemoryStore {
     for (const table of tables) {
       const memType = table.replace('_memory', '') as MemoryType;
       const rows = this.prepare(
-        `SELECT * FROM ${table} WHERE active = 1 AND embedding IS NOT NULL ORDER BY last_accessed DESC`
+        `SELECT * FROM ${table} WHERE active = 1 AND archived = 0 AND embedding IS NOT NULL ORDER BY last_accessed DESC`
       ).all() as MemoryEntry[];
 
       for (const row of rows) {
@@ -189,7 +214,7 @@ export class MemoryStore {
     for (const table of tables) {
       const memType = table.replace('_memory', '') as MemoryType;
       const rows = this.prepare(
-        `SELECT * FROM ${table} WHERE active = 1 AND embedding IS NOT NULL`
+        `SELECT * FROM ${table} WHERE active = 1 AND archived = 0 AND embedding IS NOT NULL`
       ).all() as MemoryEntry[];
       for (const row of rows) {
         results.push({ ...row, score: 0, type: memType });
@@ -216,7 +241,7 @@ export class MemoryStore {
   replay(topK: number = 5, minImportance: number = 0): { batch_id: string; episodes: RetrievalResult[]; theme: string }[] {
     const episodes = this.prepare(
       `SELECT e.*, (e.access_count * 0.6 + CASE WHEN e.lessons IS NOT NULL AND e.lessons != '' THEN 0.4 ELSE 0 END) as importance
-       FROM episodic_memory e WHERE active = 1
+       FROM episodic_memory e WHERE active = 1 AND archived = 0
        HAVING importance >= ?
        ORDER BY importance DESC, last_accessed DESC LIMIT ?`
     ).all(minImportance, topK * 2) as (MemoryEntry & { importance: number })[];
@@ -442,6 +467,377 @@ export class MemoryStore {
     const totalActive = Object.values(counts).reduce((a,b) => a+b, 0) - counts['relations'];
     const decayed = (this.prepare("SELECT COUNT(*) as c FROM episodic_memory WHERE active = 0 AND DATE(created_at) < DATE('now','-30 days')").get() as any).c;
     return { counts, decay_stats: { decayed_today: decayed, total_active: totalActive } };
+  }
+
+  // ─── Hash-based Embedding Storage & Semantic Search ───
+
+  storeEmbedding(id: string, memoryId: string | null, buf: Buffer): void {
+    this.prepare(
+      'INSERT INTO embeddings (id, memory_id, vector) VALUES (?, ?, ?)'
+    ).run(id, memoryId, buf);
+  }
+
+  semanticSearch(queryVec: number[], topK: number): RetrievalResult[] {
+    const rows = this.prepare(
+      'SELECT id, memory_id, vector FROM embeddings WHERE memory_id IS NOT NULL'
+    ).all() as Array<{ id: string; memory_id: string; vector: Buffer }>;
+
+    const scored: RetrievalResult[] = [];
+    const memTypes: MemoryType[] = ['episodic', 'semantic', 'procedural', 'working'];
+
+    for (const row of rows) {
+      const stored = new Float32Array(row.vector.buffer, row.vector.byteOffset, row.vector.byteLength / 4);
+      const storedNum: number[] = Array.from(stored);
+      const sim = cosineSimilarity(queryVec, storedNum);
+
+      // Resolve memory_id against all memory tables
+      for (const memType of memTypes) {
+        const mem = this.prepare(
+          `SELECT id, content, access_count, last_accessed, created_at FROM ${memType}_memory WHERE id = ?`
+        ).get(row.memory_id) as any;
+
+        if (mem) {
+          scored.push({
+            id: mem.id,
+            content: mem.content || '',
+            type: memType,
+            tags: [],
+            access_count: mem.access_count || 0,
+            last_accessed: mem.last_accessed || mem.created_at,
+            active: 1,
+            created_at: mem.created_at || '',
+            score: sim,
+            _importance: Math.min(1.0, (mem.access_count || 0) / 10), // derived from access count
+          } as RetrievalResult & { _importance: number });
+          break;
+        }
+      }
+    }
+
+    scored.sort((a, b) => b.score - a.score);
+    return scored.slice(0, topK);
+  }
+
+  // ─── Memory Decay & Consolidation ───
+
+  /**
+   * Decay memories not accessed for > daysThreshold days.
+   * - Reduces their importance by 50%
+   * - If importance < 0.1 AND not accessed for > daysThreshold * 2 → archvied
+   */
+  decayMemories(daysThreshold: number = 30): { decayed: number; archived: number } {
+    const tables = ['episodic_memory', 'semantic_memory', 'procedural_memory', 'working_memory'];
+    let totalDecayed = 0;
+    let totalArchived = 0;
+
+    for (const table of tables) {
+      // Step 1: Reduce importance by 50% for stale memories
+      const decayResult = this.prepare(
+        `UPDATE ${table}
+         SET importance = MAX(0.0, COALESCE(importance, 1.0) * 0.5)
+         WHERE archived = 0
+           AND last_accessed IS NOT NULL
+           AND last_accessed < datetime('now', ?)`
+      ).run(`-${daysThreshold} days`);
+      totalDecayed += decayResult.changes;
+
+      // Step 2: Archive severely decayed + very stale memories
+      const archiveResult = this.prepare(
+        `UPDATE ${table}
+         SET archived = 1
+         WHERE archived = 0
+           AND COALESCE(importance, 1.0) < 0.1
+           AND last_accessed IS NOT NULL
+           AND last_accessed < datetime('now', ?)`
+      ).run(`-${daysThreshold * 2} days`);
+      totalArchived += archiveResult.changes;
+    }
+
+    return { decayed: totalDecayed, archived: totalArchived };
+  }
+
+  /**
+   * Consolidate memories:
+   * - Merge >3 related low-importance memories (same topic) into one summary
+   * - Strengthen frequently accessed memories (access_count > 10)
+   */
+  consolidateMemories(): { merged: number; deleted: number; strengthened: number } {
+    let merged = 0;
+    let deleted = 0;
+    let strengthened = 0;
+
+    // Only episodic & semantic have free-form content suitable for keyword clustering
+    const mergeTables = ['episodic_memory', 'semantic_memory'];
+
+    for (const table of mergeTables) {
+      const memType = table.replace('_memory', '') as MemoryType;
+
+      // Fetch low-importance memories (still active, not archived)
+      const lowImpRows = this.prepare(
+        `SELECT id, content, tags, COALESCE(importance, 1.0) as importance
+         FROM ${table}
+         WHERE archived = 0 AND active = 1 AND COALESCE(importance, 1.0) < 0.5
+         ORDER BY last_accessed ASC`
+      ).all() as any[];
+
+      // Group by keyword overlap (Jaccard > 0.3)
+      const groups: { ids: string[]; contents: string[] }[] = [];
+      const used = new Set<string>();
+
+      for (const row of lowImpRows) {
+        if (used.has(row.id)) continue;
+        const group = { ids: [row.id], contents: [row.content] };
+        used.add(row.id);
+
+        for (const other of lowImpRows) {
+          if (used.has(other.id)) continue;
+          const sim = this._computeSimilarity(row.content, other.content);
+          if (sim > 0.3) {
+            group.ids.push(other.id);
+            group.contents.push(other.content);
+            used.add(other.id);
+          }
+        }
+
+        if (group.ids.length > 3) {
+          groups.push(group);
+        }
+      }
+
+      // Merge each group into one summary, delete originals
+      for (const group of groups) {
+        const mergedContent = group.contents.join('\n---\n');
+        const mergedId = `merged_${memType}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+
+        if (table === 'episodic_memory') {
+          this.prepare(
+            `INSERT INTO episodic_memory (id, content, session_id, tags, importance, last_accessed, access_count)
+             VALUES (?, ?, ?, ?, ?, datetime('now'), 0)`
+          ).run(mergedId, mergedContent, 'consolidation', JSON.stringify(['merged', memType]), 0.5);
+        } else {
+          this.prepare(
+            `INSERT INTO semantic_memory (id, name, entity_type, description, tags, importance, last_accessed, access_count)
+             VALUES (?, ?, ?, ?, ?, ?, datetime('now'), 0)`
+          ).run(mergedId, `merged:${memType}`, 'consolidated', mergedContent, JSON.stringify(['merged', memType]), 0.5);
+        }
+
+        // Soft-delete originals via archived flag
+        for (const id of group.ids) {
+          this.prepare(`UPDATE ${table} SET archived = 1 WHERE id = ?`).run(id);
+          deleted++;
+        }
+        merged++;
+      }
+    }
+
+    // Strengthen frequently accessed memories across ALL tables that have access_count
+    const strengthenTables = ['episodic_memory', 'semantic_memory', 'procedural_memory', 'working_memory'];
+    for (const table of strengthenTables) {
+      const result = this.prepare(
+        `UPDATE ${table}
+         SET importance = MIN(1.0, COALESCE(importance, 1.0) * 1.5)
+         WHERE archived = 0 AND COALESCE(access_count, 0) > 10`
+      ).run();
+      strengthened += result.changes;
+    }
+
+    return { merged, deleted, strengthened };
+  }
+
+  // ─── Memory Conflict Detection & Resolution ───
+
+  private _getAllActiveMemories(): Array<{
+    id: string; type: string; content: string; tags: string[];
+    importance: number; last_accessed: string; created_at: string;
+  }> {
+    const tables = ['episodic_memory', 'semantic_memory', 'procedural_memory', 'working_memory'];
+    const results: Array<{
+      id: string; type: string; content: string; tags: string[];
+      importance: number; last_accessed: string; created_at: string;
+    }> = [];
+
+    for (const table of tables) {
+      const memType = table.replace('_memory', '') as MemoryType;
+      const rows = this.prepare(
+        `SELECT id, content, tags, COALESCE(importance, 1.0) as importance,
+                last_accessed, created_at
+         FROM ${table}
+         WHERE active = 1 AND archived = 0
+         ORDER BY last_accessed DESC`
+      ).all() as any[];
+
+      for (const row of rows) {
+        let tags: string[] = [];
+        try { tags = JSON.parse(row.tags || '[]'); } catch { /* ignore parse errors */ }
+        results.push({
+          id: row.id,
+          type: memType,
+          content: row.content || '',
+          tags,
+          importance: Number(row.importance) || 1.0,
+          last_accessed: row.last_accessed || row.created_at || '',
+          created_at: row.created_at || '',
+        });
+      }
+    }
+
+    return results;
+  }
+
+  detectConflicts(topic?: string): {
+    conflicts: Array<{
+      topic: string;
+      conflicting_memories: Array<{ id: string; summary: string; importance: number; timestamp: string }>;
+      resolution: { method: 'importance_weighted' | 'recency' | 'flagged'; winner_id: string; reason: string };
+    }>;
+    resolved: number;
+    flagged: number;
+  } {
+    const allMemories = this._getAllActiveMemories();
+
+    // Filter by topic if specified (match in tags or content)
+    let filtered = allMemories;
+    if (topic) {
+      const topicLower = topic.toLowerCase();
+      filtered = allMemories.filter(m =>
+        m.tags.some(t => t.toLowerCase().includes(topicLower)) ||
+        m.content.toLowerCase().includes(topicLower)
+      );
+    }
+
+    // Tag index: tag -> memory ids
+    const tagIndex = new Map<string, string[]>();
+    for (const mem of filtered) {
+      for (const tag of mem.tags) {
+        const t = tag.toLowerCase().trim();
+        if (!t) continue;
+        if (!tagIndex.has(t)) tagIndex.set(t, []);
+        tagIndex.get(t)!.push(mem.id);
+      }
+    }
+
+    // Memory map for quick lookup
+    const memMap = new Map<string, typeof filtered[0]>();
+    for (const mem of filtered) memMap.set(mem.id, mem);
+
+    // Detect conflicting pairs: share a tag AND have moderately similar content
+    const conflictPairs = new Map<string, { id1: string; id2: string; topic: string }>();
+    const processedPairs = new Set<string>();
+
+    for (const [tag, members] of tagIndex) {
+      if (members.length < 2) continue;
+      const uniqueMembers = [...new Set(members)];
+
+      for (let i = 0; i < uniqueMembers.length; i++) {
+        for (let j = i + 1; j < uniqueMembers.length; j++) {
+          const a = memMap.get(uniqueMembers[i]);
+          const b = memMap.get(uniqueMembers[j]);
+          if (!a || !b) continue;
+
+          const pairKey = [a.id, b.id].sort().join('::');
+          if (processedPairs.has(pairKey)) continue;
+          processedPairs.add(pairKey);
+
+          const sim = this._computeSimilarity(a.content, b.content);
+
+          // Conflict zone: moderately similar but not close enough to merge
+          if (sim >= 0.3 && sim < MemoryStore.SIMILARITY_MERGE_THRESHOLD) {
+            conflictPairs.set(pairKey, { id1: a.id, id2: b.id, topic: tag });
+          }
+        }
+      }
+    }
+
+    // Build results with resolutions
+    const conflicts: Array<{
+      topic: string;
+      conflicting_memories: Array<{ id: string; summary: string; importance: number; timestamp: string }>;
+      resolution: { method: 'importance_weighted' | 'recency' | 'flagged'; winner_id: string; reason: string };
+    }> = [];
+
+    let flagged = 0;
+
+    for (const [, pair] of conflictPairs) {
+      const a = memMap.get(pair.id1)!;
+      const b = memMap.get(pair.id2)!;
+
+      const tsA = a.last_accessed || a.created_at;
+      const tsB = b.last_accessed || b.created_at;
+
+      let method: 'importance_weighted' | 'recency' | 'flagged' = 'importance_weighted';
+      let winner_id = a.id;
+      let reason: string;
+
+      if (a.importance > b.importance) {
+        winner_id = a.id;
+        method = 'importance_weighted';
+        reason = `Higher importance (${a.importance.toFixed(2)} vs ${b.importance.toFixed(2)})`;
+      } else if (b.importance > a.importance) {
+        winner_id = b.id;
+        method = 'importance_weighted';
+        reason = `Higher importance (${b.importance.toFixed(2)} vs ${a.importance.toFixed(2)})`;
+      } else if (tsA > tsB) {
+        winner_id = a.id;
+        method = 'recency';
+        reason = `More recent (${tsA} vs ${tsB})`;
+      } else if (tsB > tsA) {
+        winner_id = b.id;
+        method = 'recency';
+        reason = `More recent (${tsB} vs ${tsA})`;
+      } else {
+        method = 'flagged';
+        reason = 'Tied on importance and recency — needs human review';
+        flagged++;
+      }
+
+      conflicts.push({
+        topic: pair.topic,
+        conflicting_memories: [
+          { id: a.id, summary: a.content.slice(0, 200), importance: a.importance, timestamp: tsA },
+          { id: b.id, summary: b.content.slice(0, 200), importance: b.importance, timestamp: tsB },
+        ],
+        resolution: { method, winner_id, reason },
+      });
+    }
+
+    return { conflicts, resolved: conflicts.length - flagged, flagged };
+  }
+
+  resolveConflict(keepId: string, deleteIds: string[]): { resolved: boolean; kept: string; deleted: number } {
+    const tables = ['episodic_memory', 'semantic_memory', 'procedural_memory', 'working_memory'];
+
+    // Soft-delete the losing memories
+    for (const id of deleteIds) {
+      this.delete(id);
+    }
+
+    // Strengthen the kept memory
+    let kept = false;
+    for (const table of tables) {
+      const row = this.prepare(
+        `SELECT id, COALESCE(importance, 1.0) as importance, content FROM ${table} WHERE id = ?`
+      ).get(keepId) as any;
+
+      if (row) {
+        const oldImp = Number(row.importance) || 1.0;
+        const newImportance = Math.min(1.0, oldImp + 0.2);
+        this.prepare(
+          `UPDATE ${table} SET importance = ?, last_accessed = datetime('now') WHERE id = ?`
+        ).run(newImportance, keepId);
+
+        const memType = table.replace('_memory', '');
+        this._logHistory(
+          keepId, memType,
+          row.content || '',
+          row.content || '',
+          `conflict_resolution: kept over [${deleteIds.join(', ')}] (importance ${oldImp.toFixed(2)} → ${newImportance.toFixed(2)})`
+        );
+        kept = true;
+        break;
+      }
+    }
+
+    return { resolved: kept, kept: keepId, deleted: deleteIds.length };
   }
 
   close(): void { this.db.close(); }

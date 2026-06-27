@@ -58,18 +58,81 @@ server.tool("world_update", {
   return { content: [{ type: "text", text: JSON.stringify({ updated: changed_files.length, warnings, risk_map: graph.getRiskMap() }) }] };
 });
 
-server.tool("world_predict", {
-  change_target: z.string(),
-  description: z.string().optional(),
-}, async ({ change_target, description }) => {
-  const prediction = graph.predictImpact(change_target, description || "");
-  return { content: [{ type: "text", text: JSON.stringify(prediction) }] };
+server.tool("world_causal_analyze", {
+  action: z.string(),
+  target_files: z.array(z.string()),
+}, async ({ action, target_files }) => {
+  // Map to track visited files and their discovery depth
+  const visited = new Set<string>();
+  const direct: string[] = [];
+  const indirect: string[] = [];
+  const cascade: string[] = [];
+
+  // BFS: trace dependents (files that import the target) to measure impact
+  // depth 1 = direct importer, depth 2 = indirect, depth 3+ = cascade
+  const queue: Array<{ file: string; depth: number }> = [];
+
+  // Seed queue with direct dependents of each target file
+  for (const tf of target_files) {
+    visited.add(tf);
+    for (const dep of graph.getCallers(tf)) {
+      if (!visited.has(dep)) {
+        visited.add(dep);
+        queue.push({ file: dep, depth: 1 });
+      }
+    }
+  }
+
+  while (queue.length > 0) {
+    const { file, depth } = queue.shift()!;
+    if (depth === 1) direct.push(file);
+    else if (depth === 2) indirect.push(file);
+    else cascade.push(file);
+
+    if (depth < 5) {
+      for (const next of graph.getCallers(file)) {
+        if (!visited.has(next)) {
+          visited.add(next);
+          queue.push({ file: next, depth: depth + 1 });
+        }
+      }
+    }
+  }
+
+  const total_affected = direct.length + indirect.length + cascade.length;
+
+  // Core module detection: if any target has >15 dependents, it is central
+  const isCore = target_files.some((tf) => graph.getCallers(tf).length > 15);
+
+  const risk: "low" | "medium" | "high" =
+    total_affected > 20 || isCore ? "high" : total_affected > 10 ? "medium" : "low";
+
+  const recommendations: string[] = [];
+  if (risk === "high") {
+    recommendations.push("HIGH RISK: Changes affect >20 files or a core module. Consider phased implementation with feature flags.");
+  }
+  if (direct.length > 5) {
+    recommendations.push(`Directly impacts ${direct.length} files. Run tests on all direct dependents before proceeding.`);
+  }
+  if (cascade.length > 0) {
+    recommendations.push(`Cascade impact detected (${cascade.length} files at depth 3+). Isolate changes to minimize ripple effects.`);
+  }
+  if (isCore) {
+    recommendations.push("Target is a core module (high centrality). Review architecture and consider abstraction layer before change.");
+  }
+  recommendations.push(`Recommended change order: [${target_files.join(", ")}] → direct dependents → indirect → cascade files`);
+
+  return {
+    content: [{ type: "text", text: JSON.stringify({ impact_graph: { direct, indirect, cascade }, risk, total_affected, recommendations }) }],
+  };
 });
 
 server.tool("world_diff", {
-  before: z.string(), after: z.string(),
-}, async ({ before, after }) => {
-  return { content: [{ type: "text", text: JSON.stringify({ impacted_callers: graph.getCallers(before), changed_symbols:[], message:"LSP diff pending" }) }] };
+  predicted: z.array(z.string()),
+  actual: z.array(z.string()),
+}, async ({ predicted, actual }) => {
+  const diff = graph.computeDiff(predicted, actual);
+  return { content: [{ type: "text", text: JSON.stringify(diff) }] };
 });
 
 const transport = new StdioServerTransport();

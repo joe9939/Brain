@@ -47,6 +47,27 @@ server.tool("get_tool_timeline", {
   } catch (e: any) { return err(e.message || "timeline failed"); }
 });
 
+server.tool("score_agent", {
+  agent: z.string(),
+  outcome: z.enum(["success", "failure"]),
+  details: z.string().optional(),
+  response_time_ms: z.number().optional(),
+}, async ({ agent, outcome, response_time_ms }) => {
+  try {
+    const result = tracker.scoreAgent(agent, outcome, response_time_ms);
+    return ok(result);
+  } catch (e: any) { return err(e.message || "score_agent failed"); }
+});
+
+server.tool("agent_reputation", {
+  agent: z.string().optional(),
+}, async ({ agent }) => {
+  try {
+    const agents = tracker.getAgentReputation(agent);
+    return ok({ agents });
+  } catch (e: any) { return err(e.message || "agent_reputation failed"); }
+});
+
 process.on("SIGINT", () => { tracker.close(); process.exit(0); });
 process.on("SIGTERM", () => { tracker.close(); process.exit(0); });
 
