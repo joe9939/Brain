@@ -1,4 +1,4 @@
-// l2-pathway.test.js — L2 conditional gate circuit connections
+﻿// l2-pathway.test.js — L2 conditional gate circuit connections
 const fs = require('fs');
 const config = require('../config');
 
@@ -28,9 +28,9 @@ module.exports = {
     // amygdala.CAUTION inhibits specific receivers
     results.push({ name: 'amygdala.CAUTION inhibits', pass: content.includes('amygdala.CAUTION') });
 
-    // All 5 L2 gates have distinct trigger conditions in L2 table
-    const tableRowCount = (l2Block.match(/\| ✅ \|/g) || []).length;
-    results.push({ name: 'L2 table has 5 gate rows', pass: tableRowCount >= 5 });
+    // L2 gate table has at least 5 data rows (pipe-separated, excl header and separator)
+    const tableDataRows = (l2Block.match(/^\|.*\|.*\|.*\|$/gm) || []).filter(r => !r.includes(' Condition ') && !r.includes('---'));
+    results.push({ name: 'L2 table has 5+ gate rows', pass: tableDataRows.length >= 5 });
 
     // Sender->Receiver notation used
     results.push({ name: 'Sender to Receiver notation', pass: content.includes('| \u2192 |') || content.includes('→') });

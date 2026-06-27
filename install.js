@@ -60,6 +60,8 @@ function stripJsoncComments(text) {
     }
     result += c; i++;
   }
+  // Strip trailing commas before } or ] (JSONC allows them, JSON.parse doesn't)
+  result = result.replace(/,(\s*[}\]])/g, '$1');
   return result;
 }
 

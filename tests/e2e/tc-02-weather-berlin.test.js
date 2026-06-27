@@ -12,7 +12,7 @@ module.exports = {
     const results = [];
 
     // L1 fires for ALL messages (code and non-code)
-    results.push({ name: 'L1 fires for every message', pass: content.includes('Every message') || content.includes('every message') });
+    results.push({ name: 'L1 fires for every message', pass: content.includes('MANDATORY on EVERY') });
 
     // L1 agents should detect intent via their prompts
     // thalamus captures intent: check for "intent" or "gate" or "summary"
@@ -28,8 +28,8 @@ module.exports = {
     // world-cortex scans codebase
     results.push({ name: 'world-cortex scans codebase', pass: content.includes('codebase') || content.includes('world_query') });
 
-    // L2/L3 only fire conditionally — non-code queries skip L3
-    results.push({ name: 'L2 conditional (non-code skip L3)', pass: content.includes('CONDITIONAL') || content.includes('conditional') });
+    // L2 gate table conditions (basal, cerebellum, reward, attention, insula triggers)
+    results.push({ name: 'L2 gate conditions present', pass: content.includes('L2 gate') || content.includes('Winner-Take-Most') || content.includes('gate scoring') });
 
     const passed = results.every(r => r.pass);
     const failed = results.filter(r => !r.pass).map(r => r.name);

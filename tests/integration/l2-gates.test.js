@@ -28,15 +28,15 @@ module.exports = {
       pass: l2Block.includes(g.pattern),
     }));
 
-    // Each gate has trigger condition and action (indicated by | separator in table)
-    const tableRows = l2Block.split('\n').filter(line => line.includes('|') && line.includes('✅'));
-    const gateCount = tableRows.length;
+    // Each gate has trigger condition and action (indicated by | separator in table, excl header/separator)
+    const gateRows = l2Block.split('\n').filter(line => line.trim().startsWith('|') && line.includes('brain-') && !line.includes(' Condition '));
+    const gateCount = gateRows.length;
     results.push({ name: 'L2 has 5 gate rows in table', pass: gateCount >= 5 });
 
-    // Check expected trigger conditions
+    // Check expected trigger conditions (dynamic thresholds from GLOBAL_STATE)
     const triggers = [
-      { name: 'todowrite > 3 trigger', text: 'todowrite > 3' },
-      { name: 'score_action < 3 trigger', text: 'score_action < 3' },
+      { name: 'todowrite trigger', text: 'todowrite > GLOBAL_STATE.gate_thresholds.attention' },
+      { name: 'score_action trigger', text: 'score_action < GLOBAL_STATE.gate_thresholds.reward' },
       { name: 'danger pattern trigger', text: 'danger' },
       { name: 'SOP matched trigger', text: 'SOP' },
       { name: 'tool ambiguous trigger', text: 'ambiguous' },
