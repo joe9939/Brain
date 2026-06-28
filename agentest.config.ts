@@ -12,11 +12,11 @@
 // Both the simulated user and judges use the OpenCode Go API key.
 
 import { defineConfig } from '@agentesting/agentest'
-import { createOpencodeClient } from '@opencode-ai/sdk'
 import { readFileSync, existsSync } from 'fs'
 import { join } from 'path'
+import { execSync } from 'child_process'
 
-// Auto-load .env file (no dotenv dependency needed)
+// Auto-load .env file
 const envPath = join(process.cwd(), '.env')
 if (existsSync(envPath)) {
   const envContent = readFileSync(envPath, 'utf-8')
@@ -31,35 +31,23 @@ if (existsSync(envPath)) {
   }
 }
 
-const client = createOpencodeClient({ baseUrl: 'http://localhost:4096' })
-let brainSession: any = null
-
-async function getBrainSession() {
-  if (brainSession) return brainSession
-  const sessions = await client.session.list()
-  brainSession = sessions.data?.find((s: any) => s.title === 'agentest-brain')
-  if (!brainSession) {
-    const created = await client.session.create({ body: { title: 'agentest-brain', agent: 'brain' } })
-    brainSession = created.data
-  }
-  return brainSession
-}
-
 export default defineConfig({
-  // Brain agent handler — routes through local OpenCode desktop API
+  // Brain agent via `opencode run --agent brain` CLI (works on any port)
   agent: {
     type: 'custom',
     name: 'brain',
     handler: async (messages) => {
-      const session = await getBrainSession()
       const lastMsg = messages[messages.length - 1]
       const text = typeof lastMsg?.content === 'string' ? lastMsg.content : ''
-      const result = await client.session.prompt({
-        path: { id: session.id },
-        body: { agent: 'brain', parts: [{ type: 'text', text }] },
+      const result = execSync(`opencode run --agent brain`, {
+        input: text + '\n',
+        timeout: 120000,
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'pipe'],
+        maxBuffer: 10 * 1024 * 1024,
+        windowsHide: true,
       })
-      const msg = result.data
-      const content = msg?.parts?.[0]?.text || JSON.stringify(msg)
+      const content = result?.trim() || JSON.stringify(result)
       return { role: 'assistant' as const, content }
     },
   },
