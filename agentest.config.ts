@@ -51,9 +51,6 @@ export default defineConfig({
       return { role: 'assistant' as const, content }
     },
   },
-      return { role: 'assistant' as const, content }
-    },
-  },
 
   // LLM for simulated user + evaluation judges
   // Uses your OpenCode Go subscription
