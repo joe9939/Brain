@@ -1,23 +1,23 @@
 // agentest.config.ts — Agentest configuration for Brain Agent E2E testing
 //
-// Run: AGENTEST_ALLOW_PRIVATE_ENDPOINTS=1 npx agentest run
+// Run: npx agentest run
 //
 // Architecture:
-//   Agentest Simulated User (LLM) ──→ generates test messages
+//   Agentest Simulated User (LLM) ──→ generates test messages via OpenCode Go API
 //         ↓
-//   Custom Handler ──→ @opencode-ai/sdk ──→ localhost:4096 ──→ Brain Agent
+//   Custom Handler ──→ OpenCode HTTP API (port from env or 49536) ──→ Brain Agent
 //         ↓
 //   Agentest Eval Judges (LLM) ──→ evaluates response quality
 //
-// Both the simulated user and judges use the OpenCode Go API key.
+// LLM provider: uses your OpenCode Go subscription (set OPENCODE_GO_API_KEY in .env)
+// Brain agent: connects to OpenCode desktop API (set OPENCODE_PORT, OPENCODE_SERVER_PASSWORD in .env)
 
 import { defineConfig } from '@agentesting/agentest'
 import { readFileSync, existsSync } from 'fs'
-import { join } from 'path'
-import { execSync } from 'child_process'
 
 // Auto-load .env file
 const envPath = join(process.cwd(), '.env')
+let opencodePassword = ''
 if (existsSync(envPath)) {
   const envContent = readFileSync(envPath, 'utf-8')
   for (const line of envContent.split('\n')) {
@@ -31,23 +31,48 @@ if (existsSync(envPath)) {
   }
 }
 
+// Construct Basic auth if password is set
+const authUser = process.env.OPENCODE_SERVER_USERNAME || 'opencode'
+const authPass = process.env.OPENCODE_SERVER_PASSWORD || ''
+const authHeader = authPass
+  ? 'Basic ' + Buffer.from(`${authUser}:${authPass}`).toString('base64')
+  : ''
+
 export default defineConfig({
-  // Brain agent via `opencode run --agent brain` CLI (works on any port)
+  // Brain agent via OpenCode HTTP API (port from env or default 49536)
   agent: {
     type: 'custom',
     name: 'brain',
     handler: async (messages) => {
       const lastMsg = messages[messages.length - 1]
       const text = typeof lastMsg?.content === 'string' ? lastMsg.content : ''
-      const result = execSync(`opencode run --agent brain`, {
-        input: text + '\n',
-        timeout: 120000,
-        encoding: 'utf-8',
-        stdio: ['pipe', 'pipe', 'pipe'],
-        maxBuffer: 10 * 1024 * 1024,
-        windowsHide: true,
+      const port = process.env.OPENCODE_PORT || '49536'
+      const baseUrl = `http://127.0.0.1:${port}`
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (authHeader) headers['Authorization'] = authHeader
+
+      // Create a brain session or reuse existing
+      const listRes = await fetch(`${baseUrl}/session`, { headers })
+      const sessions = await listRes.json()
+      let sessionId = sessions?.find((s: any) => s.title === 'agentest-brain')?.id
+      if (!sessionId) {
+        const createRes = await fetch(`${baseUrl}/session`, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ title: 'agentest-brain', agent: 'brain' }),
+        })
+        const created = await createRes.json()
+        sessionId = created.id
+      }
+
+      // Send message and get response
+      const msgRes = await fetch(`${baseUrl}/session/${sessionId}/message`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ agent: 'brain', parts: [{ type: 'text', text }] }),
       })
-      const content = result?.trim() || JSON.stringify(result)
+      const msgData = await msgRes.json()
+      const content = msgData?.parts?.[0]?.text || JSON.stringify(msgData)
       return { role: 'assistant' as const, content }
     },
   },
