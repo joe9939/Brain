@@ -14,9 +14,10 @@
 
 import { defineConfig } from '@agentesting/agentest'
 import { readFileSync, existsSync } from 'fs'
+import { execSync } from 'child_process'
 
 // Auto-load .env file
-const envPath = join(process.cwd(), '.env')
+const envPath = process.cwd() + '/.env'
 let opencodePassword = ''
 if (existsSync(envPath)) {
   const envContent = readFileSync(envPath, 'utf-8')
@@ -31,15 +32,8 @@ if (existsSync(envPath)) {
   }
 }
 
-// Construct Basic auth if password is set
-const authUser = process.env.OPENCODE_SERVER_USERNAME || 'opencode'
-const authPass = process.env.OPENCODE_SERVER_PASSWORD || ''
-const authHeader = authPass
-  ? 'Basic ' + Buffer.from(`${authUser}:${authPass}`).toString('base64')
-  : ''
-
 export default defineConfig({
-  // Brain agent via OpenCode HTTP API (port from env or default 49536)
+  // Brain agent via `opencode run --attach` CLI (connects to running OpenCode)
   agent: {
     type: 'custom',
     name: 'brain',
@@ -47,32 +41,16 @@ export default defineConfig({
       const lastMsg = messages[messages.length - 1]
       const text = typeof lastMsg?.content === 'string' ? lastMsg.content : ''
       const port = process.env.OPENCODE_PORT || '49536'
-      const baseUrl = `http://127.0.0.1:${port}`
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
-      if (authHeader) headers['Authorization'] = authHeader
-
-      // Create a brain session or reuse existing
-      const listRes = await fetch(`${baseUrl}/session`, { headers })
-      const sessions = await listRes.json()
-      let sessionId = sessions?.find((s: any) => s.title === 'agentest-brain')?.id
-      if (!sessionId) {
-        const createRes = await fetch(`${baseUrl}/session`, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ title: 'agentest-brain', agent: 'brain' }),
-        })
-        const created = await createRes.json()
-        sessionId = created.id
-      }
-
-      // Send message and get response
-      const msgRes = await fetch(`${baseUrl}/session/${sessionId}/message`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ agent: 'brain', parts: [{ type: 'text', text }] }),
-      })
-      const msgData = await msgRes.json()
-      const content = msgData?.parts?.[0]?.text || JSON.stringify(msgData)
+      const pass = process.env.OPENCODE_SERVER_PASSWORD || ''
+      const auth = pass ? `--password "${pass}"` : ''
+      const result = execSync(
+        `opencode run --agent brain --attach http://127.0.0.1:${port} ${auth} ${JSON.stringify(text)}`,
+        { timeout: 120000, encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024, windowsHide: true }
+      )
+      const content = result?.trim() || JSON.stringify(result)
+      return { role: 'assistant' as const, content }
+    },
+  },
       return { role: 'assistant' as const, content }
     },
   },
