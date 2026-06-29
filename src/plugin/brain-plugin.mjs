@@ -1,9 +1,11 @@
-﻿// brain-plugin.mjs — G1-G7 Multi-Level Safety Gates
-// G1=BLOCK, G2/G4/G6=WARN, G3=BLOCK, G5=BLOCK+LOG, G7=audit trail
+﻿// brain-plugin.mjs — Foundation Agents Loop (arXiv 2504.01990)
+// Perception(P) → Cognition(C = L + R) → Action(E) → Safety(G1-G7)
+// Integrated with brain-hooks.mjs for P→C→A loop automation
 
 import { appendFileSync, mkdirSync, existsSync } from "fs";
 import { homedir } from "os";
 import { join } from "path";
+import { onMessage, onToolBefore, onToolAfter, onEvent, getStrongestSignal, getSignalContext } from "./brain-hooks.mjs";
 
 const LOG_DIR = join(homedir(), ".config", "opencode");
 const AUDIT_LOG = join(LOG_DIR, "brain-audit.log");
@@ -68,10 +70,16 @@ const COMPLIANCE = [
   { pattern: /rm\s+-rf\s+/, label: "mass_delete" },
 ];
 
+function getSessionId(input) {
+  // OMO passes session context via input or ctx
+  return input?.sessionID || input?.conversationId || input?.session_id || 'default';
+}
+
 export const BrainPlugin = async (ctx) => {
   audit({ event: "brain_plugin_loaded", gates: "G1-G7" });
 
   return {
+    // ── T1 + T3: tool.execute.before — Safety gates + Perception trigger ──
     "tool.execute.before": async (input, output) => {
       const tool = (input.tool || "").toLowerCase();
       const args = output.args || {};
@@ -79,9 +87,29 @@ export const BrainPlugin = async (ctx) => {
       const filePath = String(args.file_path || args.target || "");
       const content = String(args.content || "");
       const verdicts = [];
+      const sid = getSessionId(input);
 
       // G7: Audit ALL tool executions
       audit({ gate: "G7", tool, tool_args: JSON.stringify(args).slice(0, 200), timestamp: Date.now() });
+
+      // T1: Brain-hooks — Safety + Cognitive reminders
+      try { onToolBefore(sid, tool, args); } catch (e) {
+        if (e.message?.startsWith('G1')) throw e;
+        audit({ gate: "T1_error", error: e.message });
+      }
+
+      // T1: Phase injection — check if next brain phase needs an instruction
+      // Gets injected into output.messages so LLM sees it on this tool call
+      try {
+        const phaseMsg = getPhaseInstruction(sid);
+        if (phaseMsg.length > 0) {
+          output.messages = output.messages || [];
+          for (const m of phaseMsg) output.messages.push(m);
+          audit({ gate: "T1_phase", phase: phaseMsg[0].content?.slice(0, 80) });
+        }
+      } catch (e) {
+        audit({ gate: "T1_phase_error", error: e.message });
+      }
 
       // ─── G1: Dangerous bash ───
       if (tool === "bash" && cmd) {
@@ -164,10 +192,38 @@ export const BrainPlugin = async (ctx) => {
       }
     },
 
+    // ── T2: tool.execute.after — M_t = L(M_{t-1}, a_{t-1}, o_t) (Paper §1.3A: Learning) ──
     "tool.execute.after": async (input, output, result) => {
-      // G7 (continued): log result
       const tool = (input.tool || "").toLowerCase();
+      const sid = getSessionId(input);
+
+      // G7 (continued): log result
       audit({ gate: "G7_after", tool, success: !result?.isError, duration_ms: result?.timing?.duration_ms });
+
+      // T2: Brain-hooks — Update mental state M_t based on tool outcome
+      try { onToolAfter(sid, tool, output.args || {}, output.messages?.slice(-1)[0]?.content || ''); } catch (e) {
+        audit({ gate: "T2_error", error: e.message });
+      }
+    },
+
+    // ── T3: chat.message — P(s_t, M_{t-1}) → o_t ──
+    // No global state injection. Sub-agents read MCP for state.
+    // Signal instructions are injected via T1 (tool.execute.before) only when winner changes.
+    "chat.message": async (input) => {
+      const sid = getSessionId(input);
+      const text = typeof input === 'string' ? input : input?.text || input?.content || '';
+      try { onMessage(sid, text); } catch (e) {
+        audit({ gate: "T3_error", error: e.message });
+      }
+    },
+
+    // ── T4: event — Session lifecycle (DMN, consolidation, health check) ──
+    "session.event": async (input) => {
+      const sid = getSessionId(input);
+      const type = input?.type || input?.event || '';
+      try { onEvent(type, { sessionID: sid }); } catch (e) {
+        audit({ gate: "T4_error", error: e.message });
+      }
     },
   };
 };
