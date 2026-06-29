@@ -1,7 +1,7 @@
 # Circuit: Winner-Take-Most Gate Competition
 **Status**: PASS
-**Timestamp**: 2026-06-27T15:43:30.396Z
-**Duration**: 2ms
+**Timestamp**: 2026-06-29T18:48:49.499Z
+**Duration**: 1ms
 
 ## Checks
 - [x] WTA/gate competition section in L2
@@ -9,4 +9,4 @@
 - [x] Gates sorted descending by score
 - [x] Top-N gates fire (N>=2)
 - [x] Status display includes gate scores
-- [x] Formula weights sum to ~1.0
+- [x] Gate competition orders by signal strength

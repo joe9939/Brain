@@ -1,0 +1,106 @@
+{
+  "timestamp": "2026-06-29T18:50:07.485Z",
+  "summary": "20/20",
+  "results": [
+    {
+      "scenario": "L1",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "L2_SAFETY",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "GLOBAL_STATE",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "OODA_LOOP",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "MOOD",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "PERSONALITY",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "WTA",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "HOMEOSTASIS",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "ATTENTION_BUDGET",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "LEARNING_LOOP",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "CONSENSUS",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "CONTAGION",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "CAUSAL",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "VERSIONED",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "GATE_TUNER",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "CURIOSITY",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "META_LEARNER",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "RED_TEAM",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "ARCHITECT",
+      "passed": true,
+      "failures": []
+    },
+    {
+      "scenario": "CONFLICT_RES",
+      "passed": true,
+      "failures": []
+    }
+  ]
+}

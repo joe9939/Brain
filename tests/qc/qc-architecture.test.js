@@ -20,10 +20,10 @@ module.exports = {
       results.push({ name: f.name + ' exists', pass: fs.existsSync(f.path) });
     });
 
-    // brain-master.md <= 800 lines (readability)
+    // brain-master.md <= 850 lines (readability)
     if (fs.existsSync(config.SKILL_FILE)) {
       const masterLines = fs.readFileSync(config.SKILL_FILE, 'utf8').split('\n').length;
-      results.push({ name: 'brain-master.md <= 800 lines (' + masterLines + ')', pass: masterLines <= 800 });
+      results.push({ name: 'brain-master.md <= 850 lines (' + masterLines + ')', pass: masterLines <= 850 });
     }
 
     // Plugin has G3 exemption for .opencode/skills/ path

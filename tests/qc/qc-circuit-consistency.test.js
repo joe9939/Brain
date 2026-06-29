@@ -14,7 +14,7 @@ const PROMPTS_DIR = config.PROMPTS_DIR;
  */
 function parseCircuit(content) {
   // Find ## CIRCUIT section
-  const circuitMatch = content.match(/## CIRCUIT\n([\s\S]*?)(?=\n## )/);
+  const circuitMatch = content.match(/## CIRCUIT[^\n]*\n([\s\S]*?)(?=\n## )/);
   if (!circuitMatch) return null;
 
   const circuitText = circuitMatch[1];

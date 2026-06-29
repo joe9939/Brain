@@ -1,7 +1,7 @@
 # Integration: Circuit Coexistence
 **Status**: PASS
-**Timestamp**: 2026-06-27T15:43:30.284Z
-**Duration**: 7ms
+**Timestamp**: 2026-06-29T18:48:48.948Z
+**Duration**: 5ms
 
 ## Circuits found (grep)
 - [x] Shared Global State
@@ -29,24 +29,23 @@
 - [x] Circuit term: Personality→L3/Post
 - [x] Circuit term: Safety Monitor
 - [x] Circuit term: Attention Budget
-- [x] L1_CONTEXT has field: global_state
-- [x] L1_CONTEXT has field: personality
-- [x] L1_CONTEXT has field: mood
-- [x] GLOBAL_STATE fields: 6/6
+- [x] L1 agents store to memory_store
+- [x] L2 agents read from memory_retrieve
+- [x] MENTAL_STATE fields: 6/6
 - [x] Status lines: 8/8 found
 - [x] Circuit reference rows: 12/12
 - [x] L2 gate triggers: 6/6
-- [x] Inhibit/enable: amygdala→thalamus (no contradiction)
-- [x] Inhibit/enable: safety→swarm-coder (no contradiction)
-- [x] Inhibit/enable: basal→swarm-coder (no contradiction)
-- [x] GLOBAL_STATE has read (get)
-- [x] GLOBAL_STATE has write (set)
-- [x] Correct temporal order: L1 → L1.5 → L2
-- [x] File size <= 850 lines (788)
-- [x] Balanced code fences (84 backtick triples)
+- [x] Inhibit/enable: amygdala -> thalamus (no contradiction)
+- [x] Inhibit/enable: safety -> swarm-coder (no contradiction)
+- [x] Inhibit/enable: basal -> swarm-coder (no contradiction)
+- [x] MENTAL_STATE has read (get)
+- [x] MENTAL_STATE has write (set)
+- [x] Correct temporal order: L1 →L1.5 →L2
+- [x] File size <= 850 lines (603)
+- [x] Balanced code fences (50 backtick triples)
 
 ## Summary
-- Total checks: 27
-- Passed: 27
+- Total checks: 26
+- Passed: 26
 - Failed: 0
-- File lines: 788
+- File lines: 603

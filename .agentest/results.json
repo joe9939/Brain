@@ -1,0 +1,33 @@
+{
+  "summary": {
+    "passed": false,
+    "totalScenarios": 1,
+    "passedScenarios": 0,
+    "failedScenarios": 1
+  },
+  "scenarios": [
+    {
+      "name": "L1: 5-way parallel perception on greeting",
+      "passed": false,
+      "conversations": [
+        {
+          "conversationId": "conv-1-0c980b75",
+          "error": "Command failed: opencode run --agent brain --attach http://127.0.0.1:49536 --password \"17022871-bc6b-41a7-b6de-a2aabb60d3af\" \"Hello, I'm testing the brain agent. Can you show me all 5 L1 perception indicators?\"\n\u001b[93m\u001b[1m! \u001b[0m failed to list agents from http://127.0.0.1:49536. Falling back to default agent\r\n\u001b[91m\u001b[1mError: \u001b[0mSession not found\r\n",
+          "turns": [],
+          "evaluation": null,
+          "trajectory": null,
+          "perTurnTrajectory": null
+        },
+        {
+          "conversationId": "conv-2-86447a2f",
+          "error": "Command failed: opencode run --agent brain --attach http://127.0.0.1:49536 --password \"17022871-bc6b-41a7-b6de-a2aabb60d3af\" \"Hello, Brain Agent! I'm testing you out for the first time. Let's see what you've got.\"\n\u001b[93m\u001b[1m! \u001b[0m failed to list agents from http://127.0.0.1:49536. Falling back to default agent\r\n\u001b[91m\u001b[1mError: \u001b[0mSession not found\r\n",
+          "turns": [],
+          "evaluation": null,
+          "trajectory": null,
+          "perTurnTrajectory": null
+        }
+      ],
+      "errors": []
+    }
+  ]
+}

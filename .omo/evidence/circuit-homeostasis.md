@@ -1,7 +1,7 @@
 # Circuit: Homeostasis
 **Status**: PASS
-**Timestamp**: 2026-06-27T15:43:30.360Z
-**Duration**: 2ms
+**Timestamp**: 2026-06-29T18:48:49.479Z
+**Duration**: 1ms
 
 ## Checks
 - [x] L2 gate table has insula trigger
