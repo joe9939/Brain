@@ -16,7 +16,7 @@ if (!fs.existsSync(EVIDENCE_DIR)) fs.mkdirSync(EVIDENCE_DIR, { recursive: true }
 const SCENARIOS = {
   L1:              { pattern: 'brain-thalamus brain-amygdala brain-hippocampus brain-world-cortex brain-safety' },
   L2_SAFETY:       { pattern: 'brain-safety' },
-  GLOBAL_STATE:    { pattern: 'GLOBAL_STATE' },
+  GLOBAL_STATE:    { pattern: 'MENTAL_STATE' },
   OODA_LOOP:       { pattern: 'OODA Loop' },
   MOOD:            { pattern: 'mood_decay' },
   PERSONALITY:     { pattern: 'PERSONALITY:' },

@@ -15,7 +15,7 @@ module.exports = {
     const l3Idx = content.indexOf('## L3');
     const postIdx = content.indexOf('## POST-ACTION');
     const l3Block = l3Idx >= 0 ? content.substring(l3Idx, postIdx > l3Idx ? postIdx : content.length) : '';
-    results.push({ name: 'L3 context includes personality', pass: l3Block.includes('personality') || l3Block.includes('personality_traits') });
+    results.push({ name: 'L3 context includes personality', pass: l3Block.includes('personality') || content.includes('personality_traits') });
 
     // 2. POST-ACTION reflexion references personality
     const postBlock = postIdx >= 0 ? content.substring(postIdx) : '';

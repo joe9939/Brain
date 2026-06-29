@@ -8,9 +8,12 @@ const ROOT = __dirname;
 
 const CATEGORIES = [
   { flag: '--unit', dir: 'unit', label: 'UNIT' },
+  { flag: '--mcp', dir: 'mcp', label: 'MCP' },
   { flag: '--integration', dir: 'integration', label: 'INTEGRATION' },
   { flag: '--e2e', dir: 'e2e', label: 'E2E' },
   { flag: '--circuits', dir: 'circuits', label: 'CIRCUITS' },
+  { flag: '--bc', dir: 'behavioral', label: 'BEHAVIORAL' },
+  { flag: '--plugin', dir: 'plugin', label: 'PLUGIN' },
   { flag: '--qc', dir: 'qc', label: 'QC' },
 ];
 
@@ -57,7 +60,7 @@ async function runTests(category, tests) {
 async function main() {
   const args = process.argv.slice(2);
   if (args.length === 0 || args.includes('--help')) {
-    console.log('Usage: node tests/runner.js [--unit] [--integration] [--e2e] [--circuits] [--qc] [--all] [--dangerous]');
+    console.log('Usage: node tests/runner.js [--unit] [--integration] [--e2e] [--circuits] [--plugin] [--qc] [--all] [--dangerous]');
     console.log('  --all         Run all test categories');
     console.log('  --dangerous   Include dangerous tests (real install/uninstall)');
     process.exit(0);

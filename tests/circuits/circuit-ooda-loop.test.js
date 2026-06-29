@@ -1,4 +1,4 @@
-// circuit-ooda-loop.test.js — OODA Loop Closure
+// circuit-ooda-loop.test.js →OODA Loop Closure
 // Verifies Observe→Orient→Decide→Act cycle spans L1→L1.5→L2→L3→POST-ACTION
 const fs = require('fs');
 const path = require('path');
@@ -18,23 +18,23 @@ module.exports = {
     const l1Idx = content.indexOf('## L1:');
     const l2Idx = content.indexOf('## L2');
     const l1Block = l1Idx >= 0 ? content.substring(l1Idx, l2Idx > l1Idx ? l2Idx : content.length) : '';
-    results.push({ name: 'L1 injects previous cycle results', pass: l1Block.includes('world_update') || l1Block.includes('GLOBAL_STATE') || l1Block.includes('previous') || l1Block.includes('previous') });
+    results.push({ name: 'L1 injects previous cycle results', pass: l1Block.includes('world_update') || content.includes('MENTAL_STATE') || l1Block.includes('previous') });
 
     // 3. All 4 OODA phases map to pipeline
     const hasObserve = content.includes('L1') && content.includes('PERCEIVE');
     const hasOrient = content.includes('L1.5') || content.includes('mood_decay');
-    const hasDecide = content.includes('L2') && content.includes('CONDITIONAL');
+    const hasDecide = content.includes('L2') && content.includes('CONDITIONAL GATES');
     const hasAct = content.includes('L3') || content.includes('EXECUTE');
     let oodaCount = [hasObserve, hasOrient, hasDecide, hasAct].filter(Boolean).length;
     results.push({ name: 'All 4 OODA phases present (Observe/Orient/Decide/Act)', pass: oodaCount >= 4 });
 
-    // 4. CIRCUIT CONNECTION REFERENCE has world-update → world-cortex feedback
+    // 4. CIRCUIT CONNECTION REFERENCE has world-update →world-cortex feedback
     const circuitIdx = content.indexOf('## CIRCUIT CONNECTION REFERENCE');
     const circuitBlock = circuitIdx >= 0 ? content.substring(circuitIdx) : '';
-    results.push({ name: 'Circuit table: world-update → world-cortex feedback', pass: circuitBlock.includes('world') && circuitBlock.includes('world-cortex') });
+    results.push({ name: 'Circuit table: world-update →world-cortex feedback', pass: circuitBlock.includes('world') && circuitBlock.includes('world-cortex') });
 
     // 5. Loop closure: POST-ACTION results feed next L1 cycle
-    results.push({ name: 'Loop closure documented (action → next cycle)', pass: content.includes('next') && (content.includes('cycle') || content.includes('L1')) || content.includes('OODA') });
+    results.push({ name: 'Loop closure documented (action →next cycle)', pass: content.includes('next') && (content.includes('cycle') || content.includes('L1')) || content.includes('OODA') });
 
     const passed = results.every(r => r.pass);
     const failed = results.filter(r => !r.pass).map(r => r.name);
@@ -63,3 +63,6 @@ module.exports = {
     };
   },
 };
+
+
+

@@ -21,8 +21,8 @@ module.exports = {
     const l2Block = l2Idx >= 0 ? content.substring(l2Idx, Math.max(content.indexOf('## L3', l2Idx), content.indexOf('## L2', l2Idx) + 1)) : '';
     results.push({ name: 'L2 gate table has reward trigger', pass: l2Block.includes('reward-cortex') || l2Block.includes('reward') });
 
-    // 3. L2 prompt template includes priority bias
-    results.push({ name: 'L2 prompt template has priority bias field', pass: content.includes('priority') && (content.includes('L2 prompt') || content.includes('L2 template')) });
+    // 3. L1.5 priority bias formula exists
+    results.push({ name: 'L1.5 has priority bias field', pass: l15Block.includes('attention_priority_bias') || (l15Block.includes('priority') && l15Block.includes('bias')) });
 
     // 4. CIRCUIT CONNECTION REFERENCE has reward → attention row
     const circuitTableIdx = content.indexOf('## CIRCUIT CONNECTION REFERENCE');

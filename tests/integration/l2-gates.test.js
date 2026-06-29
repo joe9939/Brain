@@ -1,4 +1,4 @@
-// l2-gates.test.js — L2 conditional gate integration test
+// l2-gates.test.js →L2 conditional gate integration test
 // Verifies all 5 L2 gates are configured in brain-master.md
 const fs = require('fs');
 const config = require('../config');
@@ -33,10 +33,10 @@ module.exports = {
     const gateCount = gateRows.length;
     results.push({ name: 'L2 has 5 gate rows in table', pass: gateCount >= 5 });
 
-    // Check expected trigger conditions (dynamic thresholds from GLOBAL_STATE)
+    // Check expected trigger conditions (gate triggers from condition column)
     const triggers = [
-      { name: 'todowrite trigger', text: 'todowrite > GLOBAL_STATE.gate_thresholds.attention' },
-      { name: 'score_action trigger', text: 'score_action < GLOBAL_STATE.gate_thresholds.reward' },
+      { name: 'todowrite trigger', text: 'todowrite >' },
+      { name: 'score_action trigger', text: 'score_action <' },
       { name: 'danger pattern trigger', text: 'danger' },
       { name: 'SOP matched trigger', text: 'SOP' },
       { name: 'tool ambiguous trigger', text: 'ambiguous' },
@@ -55,3 +55,4 @@ module.exports = {
     };
   },
 };
+

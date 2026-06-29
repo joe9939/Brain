@@ -18,11 +18,12 @@ const SCENARIOS = [
 ]
 
 function runOpencode(msg) {
-  const buf = execSync(`opencode run --agent brain`, {
-    input: msg + '\n',
+  const port = process.env.OPENCODE_PORT || '49536'
+  const pass = process.env.OPENCODE_SERVER_PASSWORD || ''
+  const attach = pass ? `--attach http://127.0.0.1:${port} --password ${pass}` : `--attach http://127.0.0.1:${port}`
+  const buf = execSync(`opencode run ${attach} ${JSON.stringify(msg)}`, {
     timeout: 60000,
     encoding: 'utf-8',
-    stdio: ['pipe', 'pipe', 'pipe'],
     maxBuffer: 10 * 1024 * 1024,
   })
   return buf

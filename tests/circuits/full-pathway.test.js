@@ -1,4 +1,4 @@
-// full-pathway.test.js — L1->L2->L3 end-to-end neural pathway
+// full-pathway.test.js →L1->L2->L3 end-to-end neural pathway
 const fs = require('fs');
 const config = require('../config');
 
@@ -13,7 +13,7 @@ module.exports = {
     results.push({ name: 'L1: PERCEIVE always fires', pass: content.includes('L1') });
 
     // L2 checks conditional gates
-    results.push({ name: 'L2: CONDITIONAL GATES', pass: content.includes('L2') && content.includes('CONDITIONAL') });
+    results.push({ name: 'L2: CONDITIONAL GATES', pass: content.includes('L2') && content.includes('CONDITIONAL GATES') });
 
     // L3 executes
     results.push({ name: 'L3: EXECUTE', pass: content.includes('L3') && content.includes('EXECUTE') });
@@ -46,3 +46,4 @@ module.exports = {
     };
   },
 };
+

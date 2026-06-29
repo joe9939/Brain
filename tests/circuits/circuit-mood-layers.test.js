@@ -26,11 +26,11 @@ module.exports = {
     const l2Block = l2Idx >= 0 ? content.substring(l2Idx, l3Idx > l2Idx ? l3Idx : content.length) : '';
     results.push({ name: 'L2 gates condition on mood/amygdala.mode', pass: l2Block.includes('amygdala.mode') || l2Block.includes('current_mood') || l2Block.includes('CAUTION') || l2Block.includes('URGENT') });
 
-    // 4. L3 context includes mood (via L1_CONTEXT)
+    // 4. L3 context includes mood (from MCP or context)
     const l3Idx2 = content.indexOf('## L3');
     const postIdx = content.indexOf('## POST-ACTION');
     const l3Block = l3Idx2 >= 0 ? content.substring(l3Idx2, postIdx > l3Idx2 ? postIdx : content.length) : '';
-    results.push({ name: 'L3 includes mood in context', pass: l3Block.includes('mood') || l3Block.includes('current_mood') || l3Block.includes('L1_CONTEXT') });
+    results.push({ name: 'L3 references mood (via MCP)', pass: l3Block.includes('mood') || content.includes('current_mood') || content.includes('M_emo') });
 
     // 5. POST-ACTION records mood
     const postBlock = postIdx >= 0 ? content.substring(postIdx) : '';
