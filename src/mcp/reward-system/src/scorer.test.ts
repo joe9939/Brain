@@ -42,12 +42,12 @@ describe("scoreAction", () => {
 
   test("intrinsic score for edit action", () => {
     const result = scoreAction({ action_type: "edit", target: "file.ts" });
-    expect(result.intrinsic.breakdown).toContain("competence(+1.5)");
+    expect(result.intrinsic.breakdown).toContain("competence(");
   });
 
   test("intrinsic score for read without context (curiosity)", () => {
     const result = scoreAction({ action_type: "read", target: "file.ts" });
-    expect(result.intrinsic.breakdown).toContain("curiosity(+1)");
+    expect(result.intrinsic.breakdown).toContain("curiosity(");
   });
 
   test("risk_level is low for scores >= 6", () => {

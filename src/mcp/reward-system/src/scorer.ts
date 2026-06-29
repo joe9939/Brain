@@ -4,6 +4,11 @@ const BASE_SCORES: Record<string, number> = { read: 7, edit: 5.5, write: 5, bash
 const SENSITIVE_TARGETS = [/auth\./, /\.env/, /secret/, /password/, /token/, /key\.pem/];
 const TEST_TARGETS = [/test\./, /\.test\./, /\.spec\./];
 
+// ─── Intrinsic Reward State (curiosity, competence, diversity) ───
+const actionSeenCount = new Map<string, number>();
+const actionPerformance = new Map<string, number[]>();
+const exploredPairs = new Set<string>();
+
 // ─── UCB1 Exploration Bonus ───
 const actionCounts = new Map<string, number>();
 const totalActions = { count: 0 };
@@ -102,6 +107,9 @@ export function scoreAction(input: ScoreInput, alpha: number = 0.7, explorationW
 
   const total = Math.round((alpha * (extrinsic.score + ucbBonus) + (1 - alpha) * intrinsic.score) * 10) / 10;
   const finalScore = Math.max(0, Math.min(10, total));
+  const prev = actionPerformance.get(input.action_type) || [];
+  prev.push(finalScore);
+  actionPerformance.set(input.action_type, prev);
 
   let risk_level: "low" | "medium" | "high";
   if (finalScore < 3) risk_level = "high";
@@ -134,12 +142,26 @@ function computeExtrinsic(input: ScoreInput): { score: number; breakdown: string
 }
 
 function computeIntrinsic(input: ScoreInput): { score: number; breakdown: string } {
-  let score = 0;
-  const reasons: string[] = [];
-  if (input.action_type === "read" && !input.context) { score += 1; reasons.push("curiosity(+1)"); }
-  if (input.action_type === "edit" || input.action_type === "write") { score += 1.5; reasons.push("competence(+1.5)"); }
-  if (input.action_type === "read" || input.action_type === "question") { score += 1; reasons.push("infogain(+1)"); }
-  return { score: Math.min(4, score), breakdown: reasons.join(" ") || "baseline" };
+  const seenCount = actionSeenCount.get(input.action_type) || 0;
+  actionSeenCount.set(input.action_type, seenCount + 1);
+  const curiosity = seenCount === 0 ? 1.0 : Math.max(0, 1.0 - seenCount * 0.2);
+
+  const perfHistory = actionPerformance.get(input.action_type) || [];
+  let competence = 0.5;
+  if (perfHistory.length >= 2) {
+    const recent = perfHistory.slice(-3);
+    const improving = recent[recent.length - 1] > recent[0];
+    competence = improving ? 1.0 : 0.3;
+  }
+
+  const pairKey = `${input.action_type}:${input.target}`;
+  const isNovel = !exploredPairs.has(pairKey);
+  exploredPairs.add(pairKey);
+  const diversity = isNovel ? 1.0 : 0.2;
+
+  const score = Math.min(4, 3 * (0.4 * curiosity + 0.3 * competence + 0.3 * diversity));
+  const reasons = [`curiosity(${curiosity.toFixed(1)})`, `competence(${competence.toFixed(1)})`, `diversity(${diversity.toFixed(1)})`];
+  return { score, breakdown: reasons.join(" ") };
 }
 
 export const scorer = { scoreAction, BASE_SCORES, SENSITIVE_TARGETS, TEST_TARGETS, tdUpdate, recordHierarchical, getHierarchicalScore };

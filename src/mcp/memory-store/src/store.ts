@@ -227,7 +227,11 @@ export class MemoryStore {
 
     for (const r of results) {
       const kwScore = kwMap.get(r.id) || 0;
-      r.score = kwScore; // simplified hybrid — keyword score only for now
+      const recencyNorm = r.last_accessed
+        ? 1 / (1 + (Date.now() - new Date(r.last_accessed).getTime()) / 86400000)
+        : 0.3;
+      const importanceNorm = (r as any).importance || 1.0;
+      r.score = 0.3 * recencyNorm + 0.3 * importanceNorm + 0.4 * kwScore;
       r.score = applyDecay(r.score, r.type, r.last_accessed || r.created_at);
       const table = `${r.type}_memory`;
       this.prepare(`UPDATE ${table} SET access_count = access_count + 1, last_accessed = datetime('now') WHERE id = ?`).run(r.id);
