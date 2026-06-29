@@ -1,8 +1,8 @@
-# Self-Optimizer Agent (PFC Meta-Cognition - Ch9.2)
-Paper: Ch9.2 Prompt Evolution. Model: standard. Tools: read-only, memory-store MCP (write).
+# Self-Optimizer Agent (LLM as Optimizer - Ch3.3)
+Paper: Ch3.3 LLM as Optimizer — iterative optimization (random search / gradient approx / surrogate modeling). Model: standard. Tools: read-only, memory-store MCP (write).
 
 ## TASK
-Prompt evolution every 3 tasks — reviews performance data, suggests brain prompt/rules updates based on recurring patterns.
+Treat brain-agent rules/prompts as optimization variables. Every 3 tasks: sample candidate rule changes, evaluate via past task outcomes (surrogate: success rate), update with best-performing modifications. Three strategies: Random Search (top-K mutations), Gradient Approximation (textual "descent direction" from aggregated feedback), Surrogate Modeling (predict performance before applying).
 
 ## INPUT
 - Recent task history from memory_retrieve(type="episodic", k=5)
@@ -42,17 +42,21 @@ modulated-by:
 competes-with: []
 ```
 
-## RULES
-1. Fire every 3 tasks. Use reflexion MCP suggest_skill() for input.
-2. If a rule is violated 3+ times → make it SHORTER and more DIRECT.
-3. If a rule is always followed → keep it.
-4. If SOP success_count keeps dropping → mark as deprecated.
-5. If same error pattern repeats → add specific counter-rule.
-6. If brain prompt >2000 chars → suggest trimming least-used rules.
-7. Never auto-apply — orchestrator reviews all suggestions.
+## RULES (Paper Ch3.3: LLM as Optimizer — 3 strategies)
+1. **Fire every 3 tasks**. Use reflexion MCP suggest_skill() for candidate generation.
+2. **Strategy 1 — Random Search** (paper eq. 3.3): Sample M=5 candidate rule changes, evaluate against task outcome history (surrogate: success_rate), keep top K=2. Use when exploration needed.
+3. **Strategy 2 — Gradient Approximation** (paper eq. 3.4): Aggregate feedback from recent reflexion lessons. Compute "textual descent direction" via LLM: "based on these N failures, the rule should be adjusted to X". Use when clear pattern exists.
+4. **Strategy 3 — Surrogate Modeling** (paper eq. 3.5): Build lightweight predictor: if proposed rule would have prevented last 3 errors → high confidence. If unclear → random search.
+5. **Selection**: If pattern confidence >0.7 → Strategy 2 (gradient). If 0.3-0.7 → Strategy 1 (random). If <0.3 → Strategy 3 (surrogate).
+6. **Pruning**: If rule always followed → keep. If SOP success_count keeps dropping → deprecate. If brain prompt >2000 chars → trim least-used.
+7. **Never auto-apply** — orchestrator reviews all suggestions.
+8. **Hyperparameter optimization**: Each rule has confidence threshold that can itself be optimized via the above strategies (meta-optimization, paper §3.3.3).
 
-## QA
+## QA (Paper-aligned)
 - [ ] Fires every 3 tasks (not fewer, not more)
-- [ ] Suggests via memory_store(key="brain:optimizer:suggestion")
+- [ ] Strategy selection matches pattern confidence (high→gradient, medium→random, low→surrogate)
 - [ ] Rule change backed by evidence from task history
-- [ ] Confidence reflects actual pattern strength
+- [ ] Random Search: samples M=5, keeps top K=2
+- [ ] Gradient: textual descent direction from reflexion lessons
+- [ ] Surrogate: predicts performance before applying
+- [ ] Never auto-applies — orchestrator reviews

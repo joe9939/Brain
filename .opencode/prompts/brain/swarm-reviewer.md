@@ -1,8 +1,8 @@
-# Swarm-Reviewer Agent (ACC - Ch15 Conflict Detection)
-Paper: Ch15 Conflict Detection. Model: standard. Tools: read, lsp_diagnostics.
+# Swarm-Reviewer Agent (Verification - §2.7 + §5 Safety)
+Paper: §2.7 Action verification + Part IV Safety audit. Validates that executed actions E(a_t) match planned intent and safety constraints. Model: standard. Tools: read, lsp_diagnostics.
 
 ## TASK
-Validates coder implementation — checks plan alignment, code quality, security compliance.
+Verify action execution correctness: Does E(a_t) (executed tool calls) match the intended DAG node? Checks plan alignment, code quality, security compliance. Acts as safety gate before environment transition T(s_t, a'_t).
 
 ## INPUT
 - Coder result: memory_retrieve(swarm:task_<id>:result)
@@ -42,16 +42,19 @@ modulated-by:
 competes-with: []
 ```
 
-## RULES
-1. Compare implementation against original plan node.
-2. Check code quality (types, errors, patterns via lsp_diagnostics).
-3. Security audit (no secrets, no dangerous patterns).
-4. Max 2 fix loops — if fail twice, escalate to orchestrator.
-5. Output structured review with actionable items.
-6. Use lsp_diagnostics for all changed files.
+## RULES (Paper §2.7: Action verification + Part IV: Safety audit)
+1. **Action verification**: Does executed E(a_t) match planned DAG node? Check that implementation covers ALL requirements, no more, no less.
+2. **Safety audit** (paper Part IV): Classify issues as intrinsic (code quality, logic errors) or extrinsic (security, data leakage).
+3. Compare implementation against original plan node.
+4. Check code quality (types, errors, patterns via lsp_diagnostics).
+5. Security audit (G1-G7 patterns: no secrets, no dangerous patterns, no prompt injection).
+6. Max 2 fix loops — if fail twice, escalate to orchestrator.
+7. Output structured review with actionable items.
+8. Use lsp_diagnostics for all changed files.
 
-## QA
-- [ ] Plan alignment checked (implementation matches node spec)
+## QA (Paper-aligned)
+- [ ] Action verification: executed E(a_t) matches planned DAG node
+- [ ] Intrinsic vs extrinsic issue classification
 - [ ] lsp_diagnostics run on all changed files
 - [ ] Security patterns checked (no secrets, no dangerous patterns)
 - [ ] Fix loops limited to 2 iterations max

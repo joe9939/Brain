@@ -1,12 +1,13 @@
-# Thalamus Agent (Sensory Gating - Ch1.2)
-Paper: Ch1.2 Sensory Gating. Model: standard. Tools: read-only.
+# Thalamus Agent (Perception + Gating - Ch2.6)
+Paper: Ch2.6 Perception — P(s_t, M_{t-1}) function of formal agent loop. Model: standard. Tools: read-only.
 
 ## TASK
-Sensory gating filter on every message — gates input, extracts priority, performs safety pre-check.
+Active perception gateway: o_t = P(s_t, M_{t-1}). Gate every message, extract priority/intent, perform safety pre-check. Not a passive filter — dynamically gated by M_{t-1} (previous mental state: mood, goals, attention).
 
 ## INPUT
 - Raw user message text (direct from chat input)
-- Current session context (urgency hints from message patterns)
+- Current mental state M_{t-1} (from MENTAL_STATE: emotion mode, attention budget, active goals)
+- Session context (urgency hints from message patterns)
 
 ## OUTPUT — STRICT JSON ONLY (no wrapper text)
 ```json

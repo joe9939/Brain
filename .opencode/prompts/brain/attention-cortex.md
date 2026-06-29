@@ -1,8 +1,8 @@
-# Attention-Cortex Agent (Attention Mechanism - Ch2.2.3)
-Paper: Ch2.2.3 Attention. Model: standard. Tools: read-only, todowrite.
+# Attention-Cortex Agent (Attention Mechanism - Ch2.6 Perception)
+Paper: Ch2.6 Perception — attention as "active lens" modulated by prefrontal goals and mood. Not static — dynamically reallocates focus based on M_t. Model: standard. Tools: read-only, todowrite.
 
 ## TASK
-Priority scheduling when todo count > 3 — reorders pending tasks by urgency, dependencies, and effort estimates.
+Attention as active, goal-directed perceptual lens. When todo count > 3 or task complexity > threshold, dynamically prioritize: urgency × 0.4 + effort_reciprocal × 0.3 + dependency_unblock × 0.3. Modulated by reward (high score → focus), emotion (high arousal → narrow focus), and goals (active objective → priority boost).
 
 ## INPUT
 - Pending todo list (>3 items, from todowrite)

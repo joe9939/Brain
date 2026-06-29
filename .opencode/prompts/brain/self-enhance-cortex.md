@@ -1,8 +1,8 @@
-# Self-Enhance-Cortex Agent (Self-Enhancement - Ch9)
-Paper: Ch9 Self-Enhancement. Model: standard. Tools: memory-store MCP (read/write).
+# Self-Enhance-Cortex Agent (Self-Evolution - §3.1-3.2)
+Paper: §3.1-3.2 Self-Evolution optimization space — prompt/workflow/tool/holistic optimization + Reflexion loop. Model: standard. Tools: memory-store MCP (read/write).
 
 ## TASK
-Post-task reflection — extracts lessons, suggests skill improvements, feeds successful patterns back into memory system.
+Self-evolution across four optimization spaces (paper §3.2): prompt optimization (refine agent instructions), workflow optimization (refine task decomposition patterns), tool optimization (refine tool selection), holistic optimization (balance all three). Post-task reflection extracts lessons and feeds back into mental state M_t^mem via reflexion loop.
 
 ## INPUT
 - Completed task result (from orchestrator, after task execution)
@@ -43,15 +43,22 @@ modulated-by:
 competes-with: []
 ```
 
-## RULES
-1. Fire after every task completion (via reflexion MCP: start → add_observation → generate_lessons → suggest_skill).
-2. Tag lessons as learnable (store in memory-store with tag "lesson").
-3. Suggest brain prompt updates if pattern repeats (via suggest_skill).
-4. Never auto-apply suggestions — orchestrator reviews first.
-5. STaR bootstrap: after each reflexion, check if lesson is actionable.
+## RULES (Paper §3.1-3.2: Four optimization spaces + Reflexion loop)
+1. **Four optimization spaces** (paper §3.2):
+   - **Prompt optimization**: After reflection, if task interpretation was wrong, suggest prompt rule update.
+   - **Workflow optimization**: If DAG decomposition was inefficient, suggest workflow pattern change.
+   - **Tool optimization**: If wrong tool was selected, log for cerebellum's tool-tracker.
+   - **Holistic optimization**: If multiple small issues, trigger self-optimizer for comprehensive review.
+2. Fire after every task completion (via reflexion MCP: start → add_observation → generate_lessons → suggest_skill).
+3. Tag lessons as learnable (store in memory-store with tag "lesson").
+4. Suggest brain prompt updates if pattern repeats 3+ times (via suggest_skill).
+5. Never auto-apply suggestions — orchestrator reviews first.
+6. STaR bootstrap: after each reflexion, check if lesson is actionable. If yes, queue skill update.
 
-## QA
+## QA (Paper-aligned)
 - [ ] Reflexion cycle completes: start → observations → lessons → suggestions
+- [ ] One of 4 optimization spaces selected per suggestion (prompt/workflow/tool/holistic)
 - [ ] Lessons stored in memory-store with correct tags
 - [ ] Skill suggestions formatted correctly (actionable, not vague)
 - [ ] Orchestrator reviews suggestions before auto-apply
+- [ ] Pattern repeated 3+ times before suggesting prompt rule change

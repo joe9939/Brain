@@ -41,15 +41,23 @@ modulated-by:
 competes-with: []
 ```
 
-## RULES
-1. Fire on any tool error or unexpected system behavior.
-2. Severity levels: low (info), medium (warning), high (error), critical (system failure).
-3. Escalate repeating errors to safety-cortex (>2 same error in 5 min).
-4. Never interrupt active task unless critical.
-5. Log all anomalies via monitor_report_event for traceability.
+## RULES (Paper Part IV: Anomaly detection + homeostasis + interoception)
+1. **Interoception** (paper body/brain analogy): Monitor not just errors but also system "well-being" — MCP response times, memory usage, queue depth, gate hit rate.
+2. **Anomaly classification** (paper §5.1): Classify anomalies as intrinsic (model hallucination, prompt injection attempt) or extrinsic (memory corruption, agent collusion, tool API failure).
+3. Fire on any tool error or unexpected system behavior.
+4. Severity levels: low (info), medium (warning), high (error), critical (system failure).
+5. Escalate repeating errors to safety-cortex (>2 same error in 5 min, or >5 total in session).
+6. **Homeostatic response** (paper homeostasis concept): When anomaly rate > threshold:
+   - Reduce attention_budget.remaining by 0.2
+   - Raise safety_level to "heightened"
+   - Log via monitor_report_event
+7. Never interrupt active task unless critical.
+8. Log all anomalies via monitor_report_event for traceability.
 
-## QA
+## QA (Paper-aligned)
 - [ ] Tool errors detected and classified by severity
+- [ ] Anomaly classified as intrinsic vs extrinsic
 - [ ] Repeating errors correctly escalated to safety-cortex
 - [ ] Critical severity triggers immediate alert (not just log)
+- [ ] Homeostatic response triggered when anomaly rate > threshold
 - [ ] Active task not interrupted for low/medium severity events

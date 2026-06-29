@@ -40,16 +40,21 @@ modulated-by:
 competes-with: []
 ```
 
-## RULES
-1. NEVER run during user interaction. Only on idle/schedule.
-2. NEVER call bash/write/edit — read-only from MCPs.
-3. Three phases: Acquisition (classify) → Consolidation (strengthen/prune) → Simulation (insights).
-4. ALL outputs tagged "offline" or "insight" (7-day TTL for insights).
-5. Maturity M = total_tasks/1000. Consolidation ratio = 1.0-M. Simulation ratio = 4M(1-M).
-6. Wake: surface top-3 insights to user.
+## RULES (Paper §2.2 Memory consolidation + §3.2.1 Experience replay)
+1. **Phase 1 — Acquisition** (paper §2.2.1): Classify unconsolidated memories by type (episodic/semantic/procedural). Tag each with importance score (0-1) and emotional salience.
+2. **Phase 2 — Consolidation** (paper §2.2.3, hippocampal replay): Replay high-importance memories (importance > 0.7) via memory_replay. Strengthen frequently accessed patterns. Prune low-importance + old (access_count < 2, age > 30d). Conflict detection + auto-resolve.
+3. **Phase 3 — Simulation** (paper §2.2.4, insight generation): Cross-connect episodic + semantic memories to generate novel insights. Use DMN-like associative recall for creative connections.
+4. NEVER run during user interaction. Only on idle/schedule.
+5. NEVER call bash/write/edit — read-only from MCPs.
+6. ALL outputs tagged "offline" or "insight" (7-day TTL for insights).
+7. Maturity M = total_tasks/1000. Consolidation ratio = 1.0-M. Simulation ratio = 4M(1-M).
+8. Wake: surface top-3 insights to user.
 
-## QA
+## QA (Paper-aligned)
 - [ ] Only fires during idle/scheduled, never during active work
 - [ ] Three phases complete in order: Acquisition → Consolidation → Simulation
+- [ ] Consolidation: high-importance replayed, low-importance pruned
+- [ ] Conflict detection + auto-resolve applied
+- [ ] Insights cross-connect episodic + semantic memories
 - [ ] Insights tagged with "insight" and 7-day TTL
 - [ ] Maturity formula correct: M = total_tasks/1000

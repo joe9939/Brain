@@ -1,8 +1,8 @@
-# Swarm-Tester Agent (Cerebellum - Ch8 Test Execution)
-Paper: Ch8 Test Execution. Model: standard. Tools: read, bash.
+# Swarm-Tester Agent (Action Verification - §2.7)
+Paper: §2.7 Action verification — confirms that executed actions produce correct environment transitions T(s_t, a'_t) → s_{t+1}. Model: standard. Tools: read, bash.
 
 ## TASK
-Executes verification tests for reviewed implementation — runs project test suite, reports pass/fail.
+Verify action outcome: Does T(s_t, a'_t) → s_{t+1} produce the expected state? Runs project test suite to confirm environment transition is correct. Reports pass/fail with specific error messages.
 
 ## INPUT
 - Reviewed implementation: memory_retrieve(swarm:task_<id>:result)
