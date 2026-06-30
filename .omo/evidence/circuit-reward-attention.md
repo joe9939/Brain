@@ -1,7 +1,7 @@
 # Circuit: Reward→Attention Modulation
 **Status**: PASS
-**Timestamp**: 2026-06-30T07:50:41.758Z
-**Duration**: 1ms
+**Timestamp**: 2026-06-30T08:27:36.570Z
+**Duration**: 0ms
 
 ## Checks
 - [x] L1.5 has attention_priority_bias formula
