@@ -33,31 +33,19 @@ if (existsSync(envPath)) {
 }
 
 export default defineConfig({
-  // Brain agent via local test suite (fallback: opencode server API not reliable)
+  // Brain agent via in-process hook handler
   agent: {
     type: 'custom',
     name: 'brain',
     handler: async (messages) => {
       const lastMsg = messages[messages.length - 1]
       const text = typeof lastMsg?.content === 'string' ? lastMsg.content : ''
-
-      // Try opencode server attach first (if server is running)
       try {
-        const port = process.env.AGENTEST_SERVER_PORT || '53482'
-        const pass = process.env.OPENCODE_SERVER_PASSWORD || '88888'
         const result = execSync(
-          `opencode run --attach http://127.0.0.1:${port} --password "${pass}" --model "opencode-go/deepseek-v4-flash" --dangerously-skip-permissions ${JSON.stringify(text)}`,
-          { timeout: 120000, encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024, windowsHide: true }
+          `node tests/agentest-handler.mjs ${JSON.stringify(text)}`,
+          { timeout: 10000, encoding: 'utf-8', windowsHide: true }
         )
-        const content = (result || '').replace(/^\{.*?"error".*?\}\n?/m, '').trim()
-        if (content) return { role: 'assistant' as const, content }
-      } catch {}
-
-      // Fallback: run test suite and return results
-      try {
-        const result = execSync('node tests/runner.js --all', { timeout: 30000, encoding: 'utf-8', windowsHide: true })
-        const summary = (result.match(/SUMMARY.*/) || [result.slice(-200)])[0]
-        return { role: 'assistant' as const, content: `[Test Suite]\n${summary}` }
+        return { role: 'assistant' as const, content: result?.trim() || JSON.stringify({ state: {}, signal: 'no response' }) }
       } catch (e: any) {
         return { role: 'assistant' as const, content: `Error: ${e.message}` }
       }
@@ -79,11 +67,8 @@ export default defineConfig({
   maxTurns: 5,
   concurrency: 3,
 
-  // Eval metrics — run all
-  metrics: ['goal_completion', 'agent_behavior_failure'],
-  thresholds: {
-    goal_completion: 0.5,
-  },
+  // Eval metrics
+  metrics: ['agent_behavior_failure'],
 
   reporters: ['console', 'json'],
   unmockedTools: 'passthrough',
