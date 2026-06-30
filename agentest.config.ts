@@ -33,19 +33,32 @@ if (existsSync(envPath)) {
 }
 
 export default defineConfig({
-  // Brain agent via `opencode run --attach` CLI (connects to running OpenCode)
+  // Brain agent via OpenCode Server HTTP API (opencode serve must be running)
   agent: {
     type: 'custom',
     name: 'brain',
     handler: async (messages) => {
       const lastMsg = messages[messages.length - 1]
       const text = typeof lastMsg?.content === 'string' ? lastMsg.content : ''
-      const port = process.env.AGENTEST_SERVER_PORT || '14096'
-      const result = execSync(
-        `opencode run --agent build --attach http://127.0.0.1:${port} ${JSON.stringify(text)}`,
-        { timeout: 120000, encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024, windowsHide: true }
-      )
-      const content = result?.trim() || JSON.stringify(result)
+      const port = process.env.AGENTEST_SERVER_PORT || '14100'
+      const base = `http://127.0.0.1:${port}`
+      // 1. Create a new session
+      const createRes = await fetch(`${base}/session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ agent: 'build', title: 'agentest-test' }),
+      })
+      const session = await createRes.json() as any
+      const sessionID = session?.id
+      if (!sessionID) throw new Error('Failed to create session: ' + JSON.stringify(session))
+      // 2. Send message and wait for response
+      const msgRes = await fetch(`${base}/session/${sessionID}/message`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ parts: [{ type: 'text', text }] }),
+      })
+      const msg = await msgRes.json() as any
+      const content = msg?.parts?.map(p => p.text).filter(Boolean).join('\n') || JSON.stringify(msg)
       return { role: 'assistant' as const, content }
     },
   },

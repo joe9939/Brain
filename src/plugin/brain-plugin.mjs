@@ -206,13 +206,24 @@ export const BrainPlugin = async (ctx) => {
       }
     },
 
-    // ── T3: chat.message — P(s_t, M_{t-1}) → o_t ──
-    // No global state injection. Sub-agents read MCP for state.
-    // Signal instructions are injected via T1 (tool.execute.before) only when winner changes.
+    // ── T3: chat.message — P(s_t, M_{t-1}) → o_t + inject signal instruction ──
+    // CRITICAL: injection happens BEFORE LLM decides what to do.
+    // If we wait for tool.execute.before, LLM already committed to a tool.
+    // Prepending [Brain: ...] to the message ensures LLM sees it as context.
     "chat.message": async (input) => {
       const sid = getSessionId(input);
       const text = typeof input === 'string' ? input : input?.text || input?.content || '';
-      try { onMessage(sid, text); } catch (e) {
+      try {
+        onMessage(sid, text);
+        // Inject strongest signal instruction into message BEFORE LLM processes it
+        const sig = getStrongestSignal(sid);
+        if (sig.length > 0 && typeof input === 'object' && input) {
+          const prefix = sig.map(s => s.content).join('\n');
+          if (input.text) input.text = prefix + '\n---\n' + input.text;
+          else if (input.content) input.content = prefix + '\n---\n' + input.content;
+        }
+        audit({ gate: "T3_signal", signal: sig[0]?.content?.slice(0, 60) || 'none' });
+      } catch (e) {
         audit({ gate: "T3_error", error: e.message });
       }
     },

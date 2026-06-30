@@ -1,7 +1,7 @@
 # Circuit: Shared Attention Budget
 **Status**: PASS
-**Timestamp**: 2026-06-29T21:05:26.872Z
-**Duration**: 1ms
+**Timestamp**: 2026-06-30T07:32:48.887Z
+**Duration**: 0ms
 
 ## Checks
 - [x] attention_budget in GLOBAL_STATE
