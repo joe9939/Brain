@@ -207,22 +207,23 @@ export const BrainPlugin = async (ctx) => {
     },
 
     // ── T3: chat.message — P(s_t, M_{t-1}) → o_t + inject signal instruction ──
-    // CRITICAL: injection happens BEFORE LLM decides what to do.
-    // If we wait for tool.execute.before, LLM already committed to a tool.
-    // Prepending [Brain: ...] to the message ensures LLM sees it as context.
     "chat.message": async (input) => {
       const sid = getSessionId(input);
       const text = typeof input === 'string' ? input : input?.text || input?.content || '';
       try {
         onMessage(sid, text);
-        // Inject strongest signal instruction into message BEFORE LLM processes it
         const sig = getStrongestSignal(sid);
-        if (sig.length > 0 && typeof input === 'object' && input) {
+        if (sig.length > 0) {
           const prefix = sig.map(s => s.content).join('\n');
-          if (input.text) input.text = prefix + '\n---\n' + input.text;
-          else if (input.content) input.content = prefix + '\n---\n' + input.content;
+          // input can be string OR object — handle both
+          if (typeof input === 'string') {
+            return prefix + '\n---\n' + input;
+          } else if (input && typeof input === 'object') {
+            if (input.text) input.text = prefix + '\n---\n' + input.text;
+            else if (input.content) input.content = prefix + '\n---\n' + input.content;
+            return input;
+          }
         }
-        audit({ gate: "T3_signal", signal: sig[0]?.content?.slice(0, 60) || 'none' });
       } catch (e) {
         audit({ gate: "T3_error", error: e.message });
       }

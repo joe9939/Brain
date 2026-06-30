@@ -1,7 +1,7 @@
 # Integration: Circuit Coexistence
 **Status**: PASS
-**Timestamp**: 2026-06-30T07:32:48.575Z
-**Duration**: 3ms
+**Timestamp**: 2026-06-30T07:50:41.369Z
+**Duration**: 5ms
 
 ## Circuits found (grep)
 - [x] Shared Global State

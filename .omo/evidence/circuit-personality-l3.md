@@ -1,7 +1,7 @@
 # Circuit: Personality→L3/Post
 **Status**: PASS
-**Timestamp**: 2026-06-30T07:32:48.899Z
-**Duration**: 0ms
+**Timestamp**: 2026-06-30T07:50:41.757Z
+**Duration**: 1ms
 
 ## Checks
 - [x] L3 context includes personality
