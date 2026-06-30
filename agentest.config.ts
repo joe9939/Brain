@@ -40,11 +40,9 @@ export default defineConfig({
     handler: async (messages) => {
       const lastMsg = messages[messages.length - 1]
       const text = typeof lastMsg?.content === 'string' ? lastMsg.content : ''
-      const port = process.env.OPENCODE_PORT || '49536'
-      const pass = process.env.OPENCODE_SERVER_PASSWORD || ''
-      const auth = pass ? `--password "${pass}"` : ''
+      const port = process.env.AGENTEST_SERVER_PORT || '14096'
       const result = execSync(
-        `opencode run --agent brain --attach http://127.0.0.1:${port} ${auth} ${JSON.stringify(text)}`,
+        `opencode run --agent build --attach http://127.0.0.1:${port} ${JSON.stringify(text)}`,
         { timeout: 120000, encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024, windowsHide: true }
       )
       const content = result?.trim() || JSON.stringify(result)

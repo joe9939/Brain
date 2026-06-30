@@ -1,7 +1,7 @@
 # Circuit: Mood→All Layers
 **Status**: PASS
-**Timestamp**: 2026-06-29T18:48:49.485Z
-**Duration**: 1ms
+**Timestamp**: 2026-06-29T21:05:26.885Z
+**Duration**: 2ms
 
 ## Checks
 - [x] L1 references mood/amygdala

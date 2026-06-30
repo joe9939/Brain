@@ -71,7 +71,7 @@ if (process.argv.includes('--status')) {
   const checks = [];
 
   // Plugin
-  checks.push({ name: 'Plugin', ok: fs.existsSync(path.join(CONFIG_DIR,'plugins','brain-plugin.mjs')) });
+  checks.push({ name: 'Plugin', ok: fs.existsSync(path.join(CONFIG_DIR,'plugins','brain-plugin.mjs')) && fs.existsSync(path.join(CONFIG_DIR,'plugins','brain-hooks.mjs')) });
   // Skills
   checks.push({ name: 'Skills', ok: fs.existsSync(path.join(PROJECT,'.opencode','skills','brain-master.md')) });
   // Agents
@@ -129,7 +129,7 @@ if (process.argv.includes('--dry-run') || process.argv.includes('--verify')) {
   console.log('\n' + CYAN + 'Brain Agent — Dry Run / Verification' + RESET + '\n');
   let allOk = true;
   const checks = [
-    { name: 'Plugin source', ok: fs.existsSync(path.join(HERE, 'src', 'plugin', 'brain-plugin.mjs')) },
+    { name: 'Plugin source', ok: fs.existsSync(path.join(HERE, 'src', 'plugin', 'brain-plugin.mjs')) && fs.existsSync(path.join(HERE, 'src', 'plugin', 'brain-hooks.mjs')) },
     { name: 'Skill source', ok: fs.existsSync(path.join(HERE, 'src', 'skills', 'brain-master.md')) },
     { name: 'Agent sources (20)', ok: fs.readdirSync(path.join(HERE, 'src', 'agents')).filter(f => f.endsWith('.md')).length === 20 },
     { name: 'Command source', ok: fs.existsSync(path.join(HERE, 'src', 'commands', 'brain.md')) },
@@ -251,6 +251,7 @@ if (process.argv.includes('--uninstall') || process.argv.includes('--cleanup')) 
 
   // 3. Remove plugin
   if (rm(path.join(CONFIG_DIR, 'plugins', 'brain-plugin.mjs'))) removed.push('Plugin removed');
+  if (rm(path.join(CONFIG_DIR, 'plugins', 'brain-hooks.mjs'))) removed.push('Hooks removed');
 
   // 4. Remove skills
   if (rm(path.join(PROJECT, '.opencode', 'skills', 'brain-master.md'))) removed.push('Skill removed');
@@ -310,9 +311,13 @@ ok('Oh My OpenCode found');
 
 // 1. Plugin
 fs.mkdirSync(path.join(CONFIG_DIR, 'plugins'), {recursive:true});
-const pluginSrc = path.join(HERE, 'src', 'plugin', 'brain-plugin.mjs');
-const pluginDst = path.join(CONFIG_DIR, 'plugins', 'brain-plugin.mjs');
-fs.copyFileSync(pluginSrc, pluginDst);
+  const pluginSrc = path.join(HERE, 'src', 'plugin', 'brain-plugin.mjs');
+  const pluginDst = path.join(CONFIG_DIR, 'plugins', 'brain-plugin.mjs');
+  fs.copyFileSync(pluginSrc, pluginDst);
+  // Also copy brain-hooks.mjs (imported by plugin)
+  const hooksSrc = path.join(HERE, 'src', 'plugin', 'brain-hooks.mjs');
+  const hooksDst = path.join(CONFIG_DIR, 'plugins', 'brain-hooks.mjs');
+  if (fs.existsSync(hooksSrc)) fs.copyFileSync(hooksSrc, hooksDst);
 steps.push('Plugin');
 
 // 2. Skills
