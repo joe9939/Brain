@@ -30,7 +30,9 @@ export async function initDatabase() {
 
 // Wraps sql.js Database to match better-sqlite3's Statement API
 class Statement {
-  constructor(db, sql) {
+  db: any;
+  sql: string;
+  constructor(db: any, sql: string) {
     this.db = db;
     this.sql = sql;
   }
@@ -77,7 +79,10 @@ class Statement {
 
 // Wraps sql.js Database to match better-sqlite3's Database API
 export class Database {
-  constructor(pathOrBuffer) {
+  db: any;
+  path: string;
+  inTransaction: boolean = false;
+  constructor(pathOrBuffer: any) {
     if (pathOrBuffer === ':memory:') {
       this.db = new SQL.Database();
     } else {
