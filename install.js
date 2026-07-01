@@ -454,8 +454,22 @@ const mcpSrcBase = path.join(HERE, 'src', 'mcp');
 const mcpDstBase = path.join(PROJECT, '.opencode', 'mcp');
 let mcpCount = 0;
 for (const name of MCP_NAMES) {
-  const srcFile = path.join(mcpSrcBase, name, 'dist', 'server.js');
+  const mcpDir = path.join(mcpSrcBase, name);
+  const srcFile = path.join(mcpDir, 'dist', 'server.js');
   const dstFile = path.join(mcpDstBase, name, 'dist', 'server.js');
+
+  // Try to build MCP if dist doesn't exist
+  if (!fs.existsSync(srcFile)) {
+    try {
+      ok('Building ' + name + ' MCP (dist not found)...');
+      const npmInstall = execSync('npm install', { cwd: mcpDir, timeout: 120000, encoding: 'utf8', stdio: 'pipe' });
+      const npmBuild = execSync('npx tsc', { cwd: mcpDir, timeout: 60000, encoding: 'utf8', stdio: 'pipe' });
+    } catch (e) {
+      warn('Could not build ' + name + ' MCP: ' + e.message.slice(0, 100) + ' — skipping');
+      continue;
+    }
+  }
+
   if (fs.existsSync(srcFile)) {
     fs.mkdirSync(path.dirname(dstFile), { recursive: true });
     fs.copyFileSync(srcFile, dstFile);
