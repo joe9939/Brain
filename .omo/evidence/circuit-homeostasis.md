@@ -1,11 +1,16 @@
 # Circuit: Homeostasis
-**Status**: PASS
-**Timestamp**: 2026-06-30T13:31:35.169Z
+**Status**: FAIL
+**Timestamp**: 2026-06-30T18:28:12.145Z
 **Duration**: 1ms
 
 ## Checks
-- [x] L2 gate table has insula trigger
-- [x] Homeostasis section exists
+- [ ] L2 gate table has insula trigger
+- [ ] Homeostasis section exists
 - [x] Corrective actions are non-destructive
 - [x] No auto-shutdown or destructive corrective actions
-- [x] STATUS DISPLAY has [HOMEOSTASIS:] line
+- [ ] STATUS DISPLAY has [HOMEOSTASIS:] line
+
+## Failures
+- L2 gate table has insula trigger
+- Homeostasis section exists
+- STATUS DISPLAY has [HOMEOSTASIS:] line

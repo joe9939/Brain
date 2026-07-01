@@ -1,11 +1,16 @@
 # Circuit: Reward→Attention Modulation
-**Status**: PASS
-**Timestamp**: 2026-06-30T13:31:35.188Z
+**Status**: FAIL
+**Timestamp**: 2026-06-30T18:28:12.153Z
 **Duration**: 1ms
 
 ## Checks
-- [x] L1.5 has attention_priority_bias formula
+- [ ] L1.5 has attention_priority_bias formula
 - [x] L2 gate table has reward trigger
-- [x] L1.5 has priority bias field
+- [ ] L1.5 has priority bias field
 - [x] Circuit table: reward → attention
-- [x] Modulation formula has bounds (clamp)
+- [ ] Modulation formula has bounds (clamp)
+
+## Failures
+- L1.5 has attention_priority_bias formula
+- L1.5 has priority bias field
+- Modulation formula has bounds (clamp)

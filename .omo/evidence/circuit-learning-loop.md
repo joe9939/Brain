@@ -1,11 +1,16 @@
 # Circuit: Learning Feedback Loop
-**Status**: PASS
-**Timestamp**: 2026-06-30T13:31:35.173Z
-**Duration**: 1ms
+**Status**: FAIL
+**Timestamp**: 2026-06-30T18:28:12.146Z
+**Duration**: 0ms
 
 ## Checks
 - [x] POST-ACTION stores reflexion lessons
 - [x] Lesson stored as reflexion type
-- [x] L1_CONTEXT has recent_lessons field
-- [x] L1 hippocampus receives lesson context
-- [x] STATUS DISPLAY has [LEARN:] line
+- [ ] L1_CONTEXT has recent_lessons field
+- [ ] L1 hippocampus receives lesson context
+- [ ] STATUS DISPLAY has [LEARN:] line
+
+## Failures
+- L1_CONTEXT has recent_lessons field
+- L1 hippocampus receives lesson context
+- STATUS DISPLAY has [LEARN:] line

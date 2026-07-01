@@ -1,6 +1,6 @@
 # Circuit: World Model Predict→Verify
-**Status**: PASS
-**Timestamp**: 2026-06-30T13:31:35.197Z
+**Status**: FAIL
+**Timestamp**: 2026-06-30T18:28:12.159Z
 **Duration**: 1ms
 
 ## Checks
@@ -8,4 +8,7 @@
 - [x] POST-ACTION has world_diff verification
 - [x] Predict output feeds coder context
 - [x] world_update exists in POST-ACTION
-- [x] Predict→verify cycle section exists
+- [ ] Predict→verify cycle section exists
+
+## Failures
+- Predict→verify cycle section exists
