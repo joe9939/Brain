@@ -154,15 +154,20 @@ export function onMessage(sessionId, text) {
     s.swarm = true
     log(`[T3] complex → action signal boosted`)
   }
+  BrainTracer.append(sessionId, 'T3:message', { text_len: text.length, swarm: s.swarm })
 }
 
 // ─── T1: onToolBefore — safety fast path (G1) ───
 export function onToolBefore(sessionId, tool, args) {
   const cmd = (args.command || '').toString()
+  let blocked = false
   if (tool === 'bash' && /rm\s+-rf\s+\//i.test(cmd)) {
+    blocked = true
     log(`[T1] G1 BLOCK`)
+    BrainTracer.append(sessionId, 'T1:before', { tool, blocked: true, gate: 'G1', cmd: cmd.slice(0, 50) })
     throw new Error('G1 BLOCK')
   }
+  BrainTracer.append(sessionId, 'T1:before', { tool, blocked: false })
 }
 
 // ─── getStrongestSignal() — called from plugin, returns winning signal's instruction ───
@@ -185,8 +190,9 @@ export function getStrongestSignal(id) {
   const winner = results[0]
 
   // Log top signals
+  let top3 = []
   if (winner.raw > 0) {
-    const top3 = results.filter(r => r.raw > 0).slice(0, 3)
+    top3 = results.filter(r => r.raw > 0).slice(0, 3)
     log(`[Signals] ${top3.map(r => `${r.key}=${r.raw.toFixed(2)}(×${SIGNALS[r.key].priority})`).join(', ')}`)
   }
 
@@ -196,6 +202,10 @@ export function getStrongestSignal(id) {
 
   const sig = SIGNALS[winner.key]
   log(`[Signal] WINNER: ${winner.key} (strength=${winner.raw.toFixed(2)})`)
+  
+  // BrainTracer: record signal winner
+  if (s) BrainTracer.append(id, 'SIGNAL', { winner: winner.key, strength: winner.raw, top3: top3.map(r => r.key).join(',') })
+  
   return [{ role: 'system', content: sig.instruction(s) }]
 }
 
@@ -220,6 +230,7 @@ export function onToolAfter(sessionId, tool, args, output) {
       if (p.score !== undefined) { s.M_rew.score = p.score; s.M_rew.total++ }
     } catch {}
     log(`[T2] L1: ${cat} (${s.l1.size}/5)`)
+    BrainTracer.append(sessionId, 'T2:after', { tool, category: cat, l1_size: s.l1.size })
     return
   }
 
@@ -248,6 +259,9 @@ export function onToolAfter(sessionId, tool, args, output) {
     s.swarm = false
     log(`[T2] swarm done`)
   }
+  // BrainTracer: record T2 event
+  const cat2 = cat || (args.category || '')
+  BrainTracer.append(sessionId, 'T2:after', { tool, category: cat2, l1_size: s?.l1?.size })
 }
 
 // ─── T4: event — lifecycle ───
@@ -262,6 +276,7 @@ export function onEvent(type, props) {
     if (idle > 21600000) log(`[T4] 6h → consolidation`)
   }
   if (type === 'session.error') log(`[T4] error → homeostasis`)
+  BrainTracer.append(id, 'T4:' + type, {})
 }
 
 // ─── Signal context builder — returns ONLY the winning signal's context ───
@@ -280,6 +295,43 @@ export function getSignalContext(id) {
   // Return only the context relevant to the winning signal
   const sig = SIGNALS[winner.key]
   return sig.instruction(s)
+}
+
+// ─── BrainTracer — Observability module (C22) ───
+// Records every hook event, signal winner, gate block, M_t change per session.
+// In-memory buffer, flushed to memory_store MCP on demand.
+const TRACER_MAX = 1000
+const T = new Map()
+function getT(id) {
+  if (!T.has(id)) T.set(id, [])
+  return T.get(id)
+}
+
+export const BrainTracer = {
+  append(sid, event, data = {}) {
+    const buf = getT(sid)
+    buf.push({ ts: Date.now(), event, data, sid })
+    if (buf.length > TRACER_MAX) buf.splice(0, buf.length - TRACER_MAX)
+  },
+
+  flush(sid, mid) {
+    const buf = getT(sid)
+    if (buf.length === 0) return
+    // Would call memory_store here — for now return the data
+    const payload = { trace: buf, session: sid, message: mid }
+    T.set(sid, []) // clear buffer
+    return payload
+  },
+
+  export(sid) {
+    return [...(T.get(sid) || [])].sort((a, b) => a.ts - b.ts)
+  },
+
+  query(sid, filter = {}) {
+    let events = this.export(sid)
+    if (filter.event) events = events.filter(e => e.event === filter.event)
+    return events
+  }
 }
 
 // ─── State access — for MCP reads, not context injection ───

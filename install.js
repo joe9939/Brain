@@ -3,6 +3,7 @@
 // Usage: node install.js [command]
 // Commands:
 //   (no args)   Install brain-agent
+//   --help, -h  Show this help message
 //   --status    Health check
 //   --dry-run   Verify all files without modifying config
 //   --uninstall Remove brain-agent and restore originals
@@ -13,20 +14,41 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const HOME = os.homedir();
+const HOME = process.env.HOME || process.env.USERPROFILE || os.homedir();
 const CONFIG_DIR = path.join(HOME, '.config', 'opencode');
 const CONFIG_FILE = path.join(CONFIG_DIR, 'opencode.json');
 const PROJECT = process.cwd();
 const HERE = __dirname;
 const BRAIN_VERSION = '1.0.0';
+const CYAN = '\x1b[36m'; const GREEN = '\x1b[32m'; const YELLOW = '\x1b[33m'; const RED = '\x1b[31m'; const RESET = '\x1b[0m';
 
-// --- version command (early exit) ---
-if (process.argv.includes('--version')) {
-  console.log('brain-agent v' + BRAIN_VERSION);
+// --- unknown flags check (must be before any command handler) ---
+const VALID_FLAGS = new Set(['--help', '-h', '--version', '-v', '--status', '--dry-run', '--verify', '--uninstall', '--cleanup']);
+const unknownFlags = process.argv.slice(2).filter(f => f.startsWith('-') && !VALID_FLAGS.has(f));
+if (unknownFlags.length > 0) {
+  console.error('Unknown flag: ' + unknownFlags.join(', '));
+  process.exit(1);
+}
+
+// --- help command (early exit) ---
+if (process.argv.includes('--help') || process.argv.includes('-h')) {
+  console.log('\n' + CYAN + 'Brain Agent v' + BRAIN_VERSION + RESET);
+  console.log('Usage: node install.js [command]\n');
+  console.log('Commands:');
+  console.log('  (no args)   Install brain-agent');
+  console.log('  --help, -h  Show this help message');
+  console.log('  --status    Health check');
+  console.log('  --dry-run   Verify all files without modifying config');
+  console.log('  --uninstall Remove brain-agent and restore originals');
+  console.log('  --version   Show version\n');
   process.exit(0);
 }
 
-const CYAN = '\x1b[36m'; const GREEN = '\x1b[32m'; const YELLOW = '\x1b[33m'; const RED = '\x1b[31m'; const RESET = '\x1b[0m';
+// --- version command (early exit) ---
+if (process.argv.includes('--version') || process.argv.includes('-v')) {
+  console.log('brain-agent v' + BRAIN_VERSION);
+  process.exit(0);
+}
 function ok(msg) { console.log('  ' + GREEN + '\u2713' + RESET + ' ' + msg); }
 function warn(msg) { console.log('  ' + YELLOW + '\u26A0' + RESET + ' ' + msg); }
 
@@ -102,13 +124,13 @@ if (process.argv.includes('--status')) {
   checks.push({ name: 'Oh-My-OpenAgent brain categories', ok: hasBrainCategory });
   // Prompt files
   const promptDir = path.join(CONFIG_DIR, 'prompts', 'brain');
-  const promptCount = fs.existsSync(promptDir) ? fs.readdirSync(promptDir).length : 0;
+  const promptCount = fs.existsSync(promptDir) ? fs.readdirSync(promptDir).filter(f => f.endsWith('.md') && f !== 'TEMPLATE.md').length : 0;
   checks.push({ name: 'Prompts (' + promptCount + ')', ok: promptCount >= 20 });
   // team_mode
   const hasTeamMode = fs.existsSync(ohmFile)
-    ? JSON.parse(fs.readFileSync(ohmFile,'utf8')).team_mode?.enabled === true
+    ? JSON.parse(fs.readFileSync(ohmFile,'utf8')).team_mode?.enabled === true || JSON.parse(fs.readFileSync(ohmFile,'utf8')).brain_mode?.enabled === true
     : false;
-  checks.push({ name: 'Team mode (swarm)', ok: hasTeamMode });
+  checks.push({ name: 'Team mode / Brain mode (swarm)', ok: hasTeamMode });
   // ulw-loop command
   const cmdDir = path.join(CONFIG_DIR, 'command');
   const hasUlw = fs.existsSync(cmdDir)
@@ -136,7 +158,7 @@ if (process.argv.includes('--dry-run') || process.argv.includes('--verify')) {
     { name: 'ulw-loop command source', ok: fs.existsSync(path.join(HERE, 'src', 'commands', 'ulw-loop.md')) },
     { name: 'Config template', ok: fs.existsSync(path.join(HERE, 'config', 'opencode.example.json')) },
     { name: 'oh-my-openagent.jsonc', ok: fs.existsSync(path.join(HERE, 'oh-my-openagent.jsonc')) },
-    { name: 'Prompt files (20)', ok: fs.readdirSync(path.join(HERE, '.opencode', 'prompts', 'brain')).filter(f => f.endsWith('.md')).length === 20 },
+    { name: 'Prompt files (21)', ok: fs.readdirSync(path.join(HERE, '.opencode', 'prompts', 'brain')).filter(f => f.endsWith('.md') && f !== 'TEMPLATE.md').length === 20 },
   ];
   // Validate JSONC parsing (uses state-machine comment stripper)
   const ohmSrc = path.join(HERE, 'oh-my-openagent.jsonc');
@@ -146,8 +168,8 @@ if (process.argv.includes('--dry-run') || process.argv.includes('--verify')) {
       const clean = stripJsoncComments(raw);
       const parsed = JSON.parse(clean);
       const catCount = Object.keys(parsed.categories || {}).length;
-      checks.push({ name: 'Categories parsed (' + catCount + ')', ok: catCount === 20 });
-      checks.push({ name: 'team_mode enabled', ok: parsed.team_mode?.enabled === true });
+      checks.push({ name: 'Categories parsed (' + catCount + ')', ok: catCount >= 24 });
+      checks.push({ name: 'team_mode/brain_mode enabled', ok: parsed.team_mode?.enabled === true || parsed.brain_mode?.enabled === true });
       checks.push({ name: 'ulw-loop agent', ok: parsed.commands?.['ulw-loop']?.agent === 'brain-consolidation' });
     } catch (e) {
       checks.push({ name: 'JSONC parse', ok: false });
@@ -397,6 +419,7 @@ if (fs.existsSync(BRAIN_OMO_SRC)) {
 
   // Merge categories (brain-region categories only, preserve existing omo categories)
   omoConfig.categories = { ...(omoConfig.categories || {}), ...(brainOmo.categories || {}) };
+  omoConfig.brain_mode = { ...(omoConfig.brain_mode || {}), ...(brainOmo.brain_mode || {}) };
   omoConfig.team_mode = { ...(omoConfig.team_mode || {}), ...(brainOmo.team_mode || {}) };
 
   // Add commands section
@@ -415,7 +438,7 @@ if (fs.existsSync(promptSrc)) {
   fs.mkdirSync(promptDst, { recursive: true });
   let count = 0;
   for (const p of fs.readdirSync(promptSrc)) {
-    if (p.endsWith('.md')) {
+    if (p.endsWith('.md') && p !== 'TEMPLATE.md') {
       fs.copyFileSync(path.join(promptSrc, p), path.join(promptDst, p));
       count++;
     }
