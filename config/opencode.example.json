@@ -3,7 +3,7 @@
   "instructions": ["{CONFIG_DIR}/claude_md.txt"],
   "default_agent": "build",
   "agent": {
-    "brain": {"mode":"primary","model":"zen/deepseek-v4-flash-free","description":"Brain Orchestrator","color":"#7C3AED","prompt":"{file:{PROJECT_DIR}/.opencode/skills/brain-master.md}","permission":{"task":"allow","skill":"allow","todowrite":"allow"}},
+    "brain": {"mode":"primary","model":"zen/deepseek-v4-flash-free","description":"Brain Orchestrator","color":"#7C3AED","prompt":"{file:{HERE_DIR}/.opencode/skills/brain-master.md}","permission":{"task":"allow","skill":"allow","todowrite":"allow"}},
     "amygdala": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch6 detect emotion mode from keywords","permission":{"read":"allow"}},
     "hippocampus": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch3 retrieve relevant memories","permission":{"read":"allow"}},
     "world-cortex": {"mode":"subagent","model":"zen/deepseek-v4-flash-free","description":"Ch4 query codebase structure","permission":{"read":"allow"}},

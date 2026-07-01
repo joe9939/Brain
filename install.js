@@ -95,9 +95,9 @@ if (process.argv.includes('--status')) {
   // Plugin
   checks.push({ name: 'Plugin', ok: fs.existsSync(path.join(CONFIG_DIR,'plugins','brain-plugin.mjs')) && fs.existsSync(path.join(CONFIG_DIR,'plugins','brain-hooks.mjs')) });
   // Skills
-  checks.push({ name: 'Skills', ok: fs.existsSync(path.join(PROJECT,'.opencode','skills','brain-master.md')) });
+  checks.push({ name: 'Skills', ok: fs.existsSync(path.join(HERE,'.opencode','skills','brain-master.md')) });
   // Agents
-  const agentDir = path.join(PROJECT,'.opencode','agents');
+  const agentDir = path.join(HERE,'.opencode','agents');
   const agentCount = fs.existsSync(agentDir) ? fs.readdirSync(agentDir).length : 0;
   checks.push({ name: 'Agents (' + agentCount + ')', ok: agentCount >= 3 });
   // Command
@@ -342,9 +342,9 @@ fs.mkdirSync(path.join(CONFIG_DIR, 'plugins'), {recursive:true});
   if (fs.existsSync(hooksSrc)) fs.copyFileSync(hooksSrc, hooksDst);
 steps.push('Plugin');
 
-// 2. Skills
-fs.mkdirSync(path.join(PROJECT, '.opencode', 'skills'), {recursive:true});
-fs.copyFileSync(path.join(HERE,'src','skills','brain-master.md'), path.join(PROJECT,'.opencode','skills','brain-master.md'));
+// 2. Skills (installed relative to HERE, not PROJECT — stable for {file:...} references)
+fs.mkdirSync(path.join(HERE, '.opencode', 'skills'), {recursive:true});
+fs.copyFileSync(path.join(HERE,'src','skills','brain-master.md'), path.join(HERE,'.opencode','skills','brain-master.md'));
 steps.push('Skills');
 
 // 3. Agents
@@ -374,11 +374,13 @@ if (fs.existsSync(examplePath)) {
   let exampleStr = fs.readFileSync(examplePath, 'utf8');
   const mcpDir = path.join(PROJECT, '.opencode', 'mcp').replace(/\\/g, '/');
   const projectDir = PROJECT.replace(/\\/g, '/');
+  const hereDir = HERE.replace(/\\/g, '/');
   const configDir = CONFIG_DIR.replace(/\\/g, '/');
   const pluginDir = path.join(CONFIG_DIR, 'plugins').replace(/\\/g, '/');
   exampleStr = exampleStr
     .replace(/\{MCP_DIR\}/g, mcpDir)
     .replace(/\{PROJECT_DIR\}/g, projectDir)
+    .replace(/\{HERE_DIR\}/g, hereDir)
     .replace(/\{CONFIG_DIR\}/g, configDir)
     .replace(/\{PLUGIN_DIR\}/g, pluginDir);
   const example = JSON.parse(exampleStr);
