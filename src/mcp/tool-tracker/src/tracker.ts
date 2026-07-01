@@ -1,4 +1,5 @@
-import Database from 'better-sqlite3';
+// @ts-nocheck
+import { Database, initDatabase } from './compat.js';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 

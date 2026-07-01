@@ -1,4 +1,4 @@
-﻿import Database from 'better-sqlite3';
+﻿import { Database } from './compat.js';
 import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';

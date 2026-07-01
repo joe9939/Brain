@@ -5,7 +5,10 @@ import { MemoryStore } from "./store.js";
 import { validateContent, validateKey, validateTags } from "./validate.js";
 import { extractSummary } from "./summary.js";
 import { MuGate, DEFAULT_MU_CONFIG } from "./mu-gate.js";
+import { initDatabase } from "./compat.js";
 
+// Initialize sql.js WASM before creating the database
+await initDatabase();
 const store = new MemoryStore();
 const server = new McpServer({ name: "memory-store", version: "1.0.0" });
 
