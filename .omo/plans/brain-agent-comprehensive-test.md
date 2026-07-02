@@ -797,7 +797,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c18-omo-category-brain-thalamus-resolves.md
   Commit: Y | test(unit): add OMO category category-brain-thalamus-resolves test
 
-- [ ] 2.64 C18: OMO category all-20-categories-resolve
+- [x] 2.64 C18: OMO category all-20-categories-resolve
   What: tests/unit/omo-category-all-20-categories-resolve.test.js. Verify OMO category resolution logic matches oh-my-openagent.jsonc.
   Parallelization: W2 | Blocked: nothing | Blocks: nothing
   Refs: OMO category-resolver.ts, oh-my-openagent.jsonc
@@ -806,7 +806,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c18-omo-all-20-categories-resolve.md
   Commit: Y | test(unit): add OMO category all-20-categories-resolve test
 
-- [ ] 2.65 C19: Plugin SDK plugin-export-signature
+- [x] 2.65 C19: Plugin SDK plugin-export-signature
   What: tests/plugin/sdk-plugin-export-signature.test.js. Verify brain-plugin.mjs function signature matches @opencode-ai/plugin types.
   Parallelization: W2 | Blocked: nothing | Blocks: nothing
   Refs: @opencode-ai/plugin SDK types, src/plugin/brain-plugin.mjs:78-241
@@ -815,7 +815,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c19-sdk-plugin-export-signature.md
   Commit: Y | test(plugin): add SDK plugin-export-signature test
 
-- [ ] 2.66 C19: Plugin SDK hook-signature-tool-before
+- [x] 2.66 C19: Plugin SDK hook-signature-tool-before
   What: tests/plugin/sdk-hook-signature-tool-before.test.js. Verify brain-plugin.mjs function signature matches @opencode-ai/plugin types.
   Parallelization: W2 | Blocked: nothing | Blocks: nothing
   Refs: @opencode-ai/plugin SDK types, src/plugin/brain-plugin.mjs:78-241
@@ -824,7 +824,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c19-sdk-hook-signature-tool-before.md
   Commit: Y | test(plugin): add SDK hook-signature-tool-before test
 
-- [ ] 2.67 C19: Plugin SDK hook-signature-chat-message
+- [x] 2.67 C19: Plugin SDK hook-signature-chat-message
   What: tests/plugin/sdk-hook-signature-chat-message.test.js. Verify brain-plugin.mjs function signature matches @opencode-ai/plugin types.
   Parallelization: W2 | Blocked: nothing | Blocks: nothing
   Refs: @opencode-ai/plugin SDK types, src/plugin/brain-plugin.mjs:78-241
@@ -833,7 +833,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c19-sdk-hook-signature-chat-message.md
   Commit: Y | test(plugin): add SDK hook-signature-chat-message test
 
-- [ ] 2.68 C19: Plugin SDK hook-signature-session-event
+- [x] 2.68 C19: Plugin SDK hook-signature-session-event
   What: tests/plugin/sdk-hook-signature-session-event.test.js. Verify brain-plugin.mjs function signature matches @opencode-ai/plugin types.
   Parallelization: W2 | Blocked: nothing | Blocks: nothing
   Refs: @opencode-ai/plugin SDK types, src/plugin/brain-plugin.mjs:78-241
@@ -844,7 +844,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
 
 
 
-- [ ] 3.1 C4: Plugin test 1 — T1-fires-on-every-exec-before
+- [x] 3.1 C4: Plugin test 1 — T1-fires-on-every-exec-before
   What: tests/plugin/plugin-1.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -852,7 +852,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-1.md
   Commit: Y | test(plugin): add plugin test 1
 
-- [ ] 3.2 C4: Plugin test 2 — T2-fires-on-every-exec-after
+- [x] 3.2 C4: Plugin test 2 — T2-fires-on-every-exec-after
   What: tests/plugin/plugin-2.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -860,7 +860,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-2.md
   Commit: Y | test(plugin): add plugin test 2
 
-- [ ] 3.3 C4: Plugin test 3 — T3-fires-on-chat-message
+- [x] 3.3 C4: Plugin test 3 — T3-fires-on-chat-message
   What: tests/plugin/plugin-3.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -868,7 +868,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-3.md
   Commit: Y | test(plugin): add plugin test 3
 
-- [ ] 3.4 C4: Plugin test 4 — T4-fires-on-session-event
+- [x] 3.4 C4: Plugin test 4 — T4-fires-on-session-event
   What: tests/plugin/plugin-4.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -876,7 +876,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-4.md
   Commit: Y | test(plugin): add plugin test 4
 
-- [ ] 3.5 C4: Plugin test 5 — T1-T2-order-per-tool
+- [x] 3.5 C4: Plugin test 5 — T1-T2-order-per-tool
   What: tests/plugin/plugin-5.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -884,7 +884,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-5.md
   Commit: Y | test(plugin): add plugin test 5
 
-- [ ] 3.6 C4: Plugin test 6 — output-messages-mutated
+- [x] 3.6 C4: Plugin test 6 — output-messages-mutated
   What: tests/plugin/plugin-6.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -892,7 +892,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-6.md
   Commit: Y | test(plugin): add plugin test 6
 
-- [ ] 3.7 C4: Plugin test 7 — G1-G3-G5-throw-before-output
+- [x] 3.7 C4: Plugin test 7 — G1-G3-G5-throw-before-output
   What: tests/plugin/plugin-7.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -900,7 +900,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-7.md
   Commit: Y | test(plugin): add plugin test 7
 
-- [ ] 3.8 C4: Plugin test 8 — G2-G4-G6-append-SAFETY-GATES
+- [x] 3.8 C4: Plugin test 8 — G2-G4-G6-append-SAFETY-GATES
   What: tests/plugin/plugin-8.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -908,7 +908,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-8.md
   Commit: Y | test(plugin): add plugin test 8
 
-- [ ] 3.9 C4: Plugin test 9 — audit-writes-to-file
+- [x] 3.9 C4: Plugin test 9 — audit-writes-to-file
   What: tests/plugin/plugin-9.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -916,7 +916,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-9.md
   Commit: Y | test(plugin): add plugin test 9
 
-- [ ] 3.10 C4: Plugin test 10 — warnLog-writes-to-file
+- [x] 3.10 C4: Plugin test 10 — warnLog-writes-to-file
   What: tests/plugin/plugin-10.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -924,7 +924,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-10.md
   Commit: Y | test(plugin): add plugin test 10
 
-- [ ] 3.11 C4: Plugin test 11 — G7-audits-every-tool
+- [x] 3.11 C4: Plugin test 11 — G7-audits-every-tool
   What: tests/plugin/plugin-11.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -932,7 +932,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-11.md
   Commit: Y | test(plugin): add plugin test 11
 
-- [ ] 3.12 C4: Plugin test 12 — T1-errors-caught-logged
+- [x] 3.12 C4: Plugin test 12 — T1-errors-caught-logged
   What: tests/plugin/plugin-12.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -940,7 +940,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-12.md
   Commit: Y | test(plugin): add plugin test 12
 
-- [ ] 3.13 C4: Plugin test 13 — T2-errors-caught-logged
+- [x] 3.13 C4: Plugin test 13 — T2-errors-caught-logged
   What: tests/plugin/plugin-13.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -948,7 +948,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-13.md
   Commit: Y | test(plugin): add plugin test 13
 
-- [ ] 3.14 C4: Plugin test 14 — T3-errors-caught-logged
+- [x] 3.14 C4: Plugin test 14 — T3-errors-caught-logged
   What: tests/plugin/plugin-14.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -956,7 +956,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-14.md
   Commit: Y | test(plugin): add plugin test 14
 
-- [ ] 3.15 C4: Plugin test 15 — T4-errors-caught-logged
+- [x] 3.15 C4: Plugin test 15 — T4-errors-caught-logged
   What: tests/plugin/plugin-15.test.js.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -964,7 +964,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c4-plugin-15.md
   Commit: Y | test(plugin): add plugin test 15
 
-- [ ] 3.16 C6: Config test 16 — config-valid-JSON
+- [x] 3.16 C6: Config test 16 — config-valid-JSON
   What: tests/unit/config-1.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -973,7 +973,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-1.md
   Commit: Y | test(unit): add config test 1
 
-- [ ] 3.17 C6: Config test 17 — agent-paths-exist
+- [x] 3.17 C6: Config test 17 — agent-paths-exist
   What: tests/unit/config-2.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -982,7 +982,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-2.md
   Commit: Y | test(unit): add config test 2
 
-- [ ] 3.18 C6: Config test 18 — MCP-dist-exist
+- [x] 3.18 C6: Config test 18 — MCP-dist-exist
   What: tests/unit/config-3.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -991,7 +991,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-3.md
   Commit: Y | test(unit): add config test 3
 
-- [ ] 3.19 C6: Config test 19 — plugin-paths-exist
+- [x] 3.19 C6: Config test 19 — plugin-paths-exist
   What: tests/unit/config-4.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -1000,7 +1000,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-4.md
   Commit: Y | test(unit): add config test 4
 
-- [ ] 3.20 C6: Config test 20 — instructions-exist
+- [x] 3.20 C6: Config test 20 — instructions-exist
   What: tests/unit/config-5.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -1009,7 +1009,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-5.md
   Commit: Y | test(unit): add config test 5
 
-- [ ] 3.21 C6: Config test 21 — JSONC-single-line
+- [x] 3.21 C6: Config test 21 — JSONC-single-line
   What: tests/unit/config-6.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -1018,7 +1018,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-6.md
   Commit: Y | test(unit): add config test 6
 
-- [ ] 3.22 C6: Config test 22 — JSONC-multi-line
+- [x] 3.22 C6: Config test 22 — JSONC-multi-line
   What: tests/unit/config-7.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -1027,7 +1027,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-7.md
   Commit: Y | test(unit): add config test 7
 
-- [ ] 3.23 C6: Config test 23 — JSONC-URL-preserve
+- [x] 3.23 C6: Config test 23 — JSONC-URL-preserve
   What: tests/unit/config-8.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -1036,7 +1036,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-8.md
   Commit: Y | test(unit): add config test 8
 
-- [ ] 3.24 C6: Config test 24 — JSONC-trailing-comma
+- [x] 3.24 C6: Config test 24 — JSONC-trailing-comma
   What: tests/unit/config-9.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -1045,7 +1045,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-9.md
   Commit: Y | test(unit): add config test 9
 
-- [ ] 3.25 C6: Config test 25 — JSONC-nested
+- [x] 3.25 C6: Config test 25 — JSONC-nested
   What: tests/unit/config-10.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -1054,7 +1054,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-10.md
   Commit: Y | test(unit): add config test 10
 
-- [ ] 3.26 C6: Config test 26 — JSONC-string-preserved
+- [x] 3.26 C6: Config test 26 — JSONC-string-preserved
   What: tests/unit/config-11.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -1063,7 +1063,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-11.md
   Commit: Y | test(unit): add config test 11
 
-- [ ] 3.27 C6: Config test 27 — install-uninstall
+- [x] 3.27 C6: Config test 27 — install-uninstall
   What: tests/unit/config-12.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -1072,7 +1072,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-12.md
   Commit: Y | test(unit): add config test 12
 
-- [ ] 3.28 C6: Config test 28 — install-dry-run
+- [x] 3.28 C6: Config test 28 — install-dry-run
   What: tests/unit/config-13.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -1081,7 +1081,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-13.md
   Commit: Y | test(unit): add config test 13
 
-- [ ] 3.29 C6: Config test 29 — install-status
+- [x] 3.29 C6: Config test 29 — install-status
   What: tests/unit/config-14.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -1090,7 +1090,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-14.md
   Commit: Y | test(unit): add config test 14
 
-- [ ] 3.30 C6: Config test 30 — OMO-20-categories-valid
+- [x] 3.30 C6: Config test 30 — OMO-20-categories-valid
   What: tests/unit/config-15.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: install.js:34-66, opencode.json, oh-my-openagent.jsonc
@@ -1099,7 +1099,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c6-config-15.md
   Commit: Y | test(unit): add config test 15
 
-- [ ] 3.31 C10-p2: Conflict rule active 1 — H-I-clamp-formula
+- [x] 3.31 C10-p2: Conflict rule active 1 — H-I-clamp-formula
   What: tests/circuits/conflict-active-1.test.js. Verify rule enforced.
   Parallelization: W3 | Blocked: W2 | Blocks: W5
   Refs: .opencode/skills/brain-master.md:93-96
@@ -1108,7 +1108,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c10-conflict-active-1.md
   Commit: Y | test(circuits): add active conflict 1
 
-- [ ] 3.32 C10-p2: Conflict rule active 2 — D-K-enforced-in-M-t
+- [x] 3.32 C10-p2: Conflict rule active 2 — D-K-enforced-in-M-t
   What: tests/circuits/conflict-active-2.test.js. Verify rule enforced.
   Parallelization: W3 | Blocked: W2 | Blocks: W5
   Refs: .opencode/skills/brain-master.md:93-96
@@ -1117,7 +1117,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c10-conflict-active-2.md
   Commit: Y | test(circuits): add active conflict 2
 
-- [ ] 3.33 C10-p2: Conflict rule active 3 — B-J-CAUTION-prevents-drift
+- [x] 3.33 C10-p2: Conflict rule active 3 — B-J-CAUTION-prevents-drift
   What: tests/circuits/conflict-active-3.test.js. Verify rule enforced.
   Parallelization: W3 | Blocked: W2 | Blocks: W5
   Refs: .opencode/skills/brain-master.md:93-96
@@ -1126,7 +1126,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c10-conflict-active-3.md
   Commit: Y | test(circuits): add active conflict 3
 
-- [ ] 3.34 C10-p2: Conflict rule active 4 — all-3-rules-simultaneous
+- [x] 3.34 C10-p2: Conflict rule active 4 — all-3-rules-simultaneous
   What: tests/circuits/conflict-active-4.test.js. Verify rule enforced.
   Parallelization: W3 | Blocked: W2 | Blocks: W5
   Refs: .opencode/skills/brain-master.md:93-96
@@ -1135,7 +1135,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c10-conflict-active-4.md
   Commit: Y | test(circuits): add active conflict 4
 
-- [ ] 3.35 C11: T4 event test 1 — error-triggers-homeostasis
+- [x] 3.35 C11: T4 event test 1 — error-triggers-homeostasis
   What: tests/plugin/t4-1.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:254-265
@@ -1143,7 +1143,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c11-t4-1.md
   Commit: Y | test(plugin): add T4 test 1
 
-- [ ] 3.36 C11: T4 event test 2 — idle-2min-triggers-DMN
+- [x] 3.36 C11: T4 event test 2 — idle-2min-triggers-DMN
   What: tests/plugin/t4-2.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:254-265
@@ -1151,7 +1151,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c11-t4-2.md
   Commit: Y | test(plugin): add T4 test 2
 
-- [ ] 3.37 C11: T4 event test 3 — idle-30min-triggers-health
+- [x] 3.37 C11: T4 event test 3 — idle-30min-triggers-health
   What: tests/plugin/t4-3.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:254-265
@@ -1159,7 +1159,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c11-t4-3.md
   Commit: Y | test(plugin): add T4 test 3
 
-- [ ] 3.38 C11: T4 event test 4 — idle-6h-triggers-consolidation
+- [x] 3.38 C11: T4 event test 4 — idle-6h-triggers-consolidation
   What: tests/plugin/t4-4.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:254-265
@@ -1167,7 +1167,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c11-t4-4.md
   Commit: Y | test(plugin): add T4 test 4
 
-- [ ] 3.39 C11: T4 event test 5 — error-idle-error-seq-no-collision
+- [x] 3.39 C11: T4 event test 5 — error-idle-error-seq-no-collision
   What: tests/plugin/t4-5.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:254-265
@@ -1175,7 +1175,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c11-t4-5.md
   Commit: Y | test(plugin): add T4 test 5
 
-- [ ] 3.40 C11: T4 event test 6 — idle-seq-2m-30m-6h
+- [x] 3.40 C11: T4 event test 6 — idle-seq-2m-30m-6h
   What: tests/plugin/t4-6.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:254-265
@@ -1183,7 +1183,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c11-t4-6.md
   Commit: Y | test(plugin): add T4 test 6
 
-- [ ] 3.41 C11: T4 event test 7 — rapid-alt-10-cycles
+- [x] 3.41 C11: T4 event test 7 — rapid-alt-10-cycles
   What: tests/plugin/t4-7.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:254-265
@@ -1191,7 +1191,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c11-t4-7.md
   Commit: Y | test(plugin): add T4 test 7
 
-- [ ] 3.42 C11: T4 event test 8 — homeostasis-non-destructive
+- [x] 3.42 C11: T4 event test 8 — homeostasis-non-destructive
   What: tests/plugin/t4-8.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:254-265
@@ -1199,7 +1199,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c11-t4-8.md
   Commit: Y | test(plugin): add T4 test 8
 
-- [ ] 3.43 C11: T4 event test 9 — homeostasis-raises-safety
+- [x] 3.43 C11: T4 event test 9 — homeostasis-raises-safety
   What: tests/plugin/t4-9.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:254-265
@@ -1207,7 +1207,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c11-t4-9.md
   Commit: Y | test(plugin): add T4 test 9
 
-- [ ] 3.44 C11: T4 event test 10 — homeostasis-logs-via-MCP
+- [x] 3.44 C11: T4 event test 10 — homeostasis-logs-via-MCP
   What: tests/plugin/t4-10.test.js.
   Parallelization: W3 | Blocked: nothing | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:254-265
@@ -1215,7 +1215,7 @@ C16: OpenCode event hook completeness — verify brain-plugin does not conflict 
   Evidence: .omo/evidence/c11-t4-10.md
   Commit: Y | test(plugin): add T4 test 10
 
-- [ ] 3.45 C12-p1: Session S_Map memory leak
+- [x] 3.45 C12-p1: Session S_Map memory leak
   What: tests/plugin/session-basic.test.js. 10K sessions, memory < 100MB.
   Parallelization: W3 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:22
@@ -1233,7 +1233,7 @@ undefined
 
 ### Wave 1 — C20: Plugin conflict (4 tests)/order tests (4 tests)
 
-- [ ] 5.45 C20: Plugin execution order — oh-my-openagent fires before brain-plugin
+- [x] 5.45 C20: Plugin execution order — oh-my-openagent fires before brain-plugin
   What: tests/plugin/plugin-order.test.js. When both plugins fire on tool.execute.before, verify execution order is consistent and both run.
   Parallelization: W5 | Blocked: C4 (plugin tests) | Blocks: nothing
   Refs: opencode.json plugin array, src/plugin/brain-plugin.mjs
@@ -1241,21 +1241,21 @@ undefined
   Evidence: .omo/evidence/c20-plugin-order.md
   Commit: Y | test(plugin): add plugin order test
 
-- [ ] 5.46 C20: Plugin error isolation — one plugin throw does not kill other
+- [x] 5.46 C20: Plugin error isolation — one plugin throw does not kill other
   What: tests/plugin/plugin-error-isolation.test.js. Simulate oh-my-openagent throwing on tool.execute.before. Verify brain-plugin still fires.
   Parallelization: W5 | Blocked: C4 | Blocks: nothing
   Accept: brain-plugin hook fires despite sibling plugin error
   Evidence: .omo/evidence/c20-plugin-error.md
   Commit: Y | test(plugin): add plugin error isolation
 
-- [ ] 5.47 C20: Plugin output merging — both plugins mutate output.messages
+- [x] 5.47 C20: Plugin output merging — both plugins mutate output.messages
   What: tests/plugin/plugin-output-merge.test.js. Both plugins append to output.messages. Verify both messages present, no overwrite.
   Parallelization: W5 | Blocked: C4 | Blocks: nothing
   Accept: output.messages contains entries from both plugins
   Evidence: .omo/evidence/c20-plugin-merge.md
   Commit: Y | test(plugin): add plugin output merge test
 
-- [ ] 5.48 C20: Plugin tool name collision — custom tool with built-in name
+- [x] 5.48 C20: Plugin tool name collision — custom tool with built-in name
   What: tests/plugin/plugin-tool-collision.test.js. If both plugins define same-named tool, verify opencode resolution order.
   Parallelization: W5 | Blocked: C4 | Blocks: nothing
   Accept: plugin tool takes precedence per opencode docs
@@ -1268,7 +1268,7 @@ undefined
 
 ### Wave 2 — Layer 2: Core Signals + Rules (54 tests) (35) + Gates part 1 (10)
 
-- [ ] 1.1 C2: Signal perceive — single-signal strength
+- [x] 1.1 C2: Signal perceive — single-signal strength
   What: tests/plugin/signal-individual-perceive.test.js. Set M_t state to produce only perceive signal. Verify correct strength, priority multiplication, instruction text.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1277,7 +1277,7 @@ undefined
   Evidence: .omo/evidence/c2-signal-perceive.md
   Commit: Y | test(plugin): add signal perceive test
 
-- [ ] 1.2 C2: Signal emotion — single-signal strength
+- [x] 1.2 C2: Signal emotion — single-signal strength
   What: tests/plugin/signal-individual-emotion.test.js. Set M_t state to produce only emotion signal. Verify correct strength, priority multiplication, instruction text.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1286,7 +1286,7 @@ undefined
   Evidence: .omo/evidence/c2-signal-emotion.md
   Commit: Y | test(plugin): add signal emotion test
 
-- [ ] 1.3 C2: Signal safety — single-signal strength
+- [x] 1.3 C2: Signal safety — single-signal strength
   What: tests/plugin/signal-individual-safety.test.js. Set M_t state to produce only safety signal. Verify correct strength, priority multiplication, instruction text.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1295,7 +1295,7 @@ undefined
   Evidence: .omo/evidence/c2-signal-safety.md
   Commit: Y | test(plugin): add signal safety test
 
-- [ ] 1.4 C2: Signal memory — single-signal strength
+- [x] 1.4 C2: Signal memory — single-signal strength
   What: tests/plugin/signal-individual-memory.test.js. Set M_t state to produce only memory signal. Verify correct strength, priority multiplication, instruction text.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1304,7 +1304,7 @@ undefined
   Evidence: .omo/evidence/c2-signal-memory.md
   Commit: Y | test(plugin): add signal memory test
 
-- [ ] 1.5 C2: Signal reward — single-signal strength
+- [x] 1.5 C2: Signal reward — single-signal strength
   What: tests/plugin/signal-individual-reward.test.js. Set M_t state to produce only reward signal. Verify correct strength, priority multiplication, instruction text.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1313,7 +1313,7 @@ undefined
   Evidence: .omo/evidence/c2-signal-reward.md
   Commit: Y | test(plugin): add signal reward test
 
-- [ ] 1.6 C2: Signal action — single-signal strength
+- [x] 1.6 C2: Signal action — single-signal strength
   What: tests/plugin/signal-individual-action.test.js. Set M_t state to produce only action signal. Verify correct strength, priority multiplication, instruction text.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1322,7 +1322,7 @@ undefined
   Evidence: .omo/evidence/c2-signal-action.md
   Commit: Y | test(plugin): add signal action test
 
-- [ ] 1.7 C2: Signal learning — single-signal strength
+- [x] 1.7 C2: Signal learning — single-signal strength
   What: tests/plugin/signal-individual-learning.test.js. Set M_t state to produce only learning signal. Verify correct strength, priority multiplication, instruction text.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1331,7 +1331,7 @@ undefined
   Evidence: .omo/evidence/c2-signal-learning.md
   Commit: Y | test(plugin): add signal learning test
 
-- [ ] 1.8 C2: Signal pair perceive+emotion — cross-product winner
+- [x] 1.8 C2: Signal pair perceive+emotion — cross-product winner
   What: tests/plugin/signal-pair-perceive-emotion.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1340,7 +1340,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-perceive-emotion.md
   Commit: Y | test(plugin): add pair perceive-emotion test
 
-- [ ] 1.9 C2: Signal pair perceive+memory — cross-product winner
+- [x] 1.9 C2: Signal pair perceive+memory — cross-product winner
   What: tests/plugin/signal-pair-perceive-memory.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1349,7 +1349,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-perceive-memory.md
   Commit: Y | test(plugin): add pair perceive-memory test
 
-- [ ] 1.10 C2: Signal pair perceive+reward — cross-product winner
+- [x] 1.10 C2: Signal pair perceive+reward — cross-product winner
   What: tests/plugin/signal-pair-perceive-reward.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1358,7 +1358,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-perceive-reward.md
   Commit: Y | test(plugin): add pair perceive-reward test
 
-- [ ] 1.11 C2: Signal pair perceive+action — cross-product winner
+- [x] 1.11 C2: Signal pair perceive+action — cross-product winner
   What: tests/plugin/signal-pair-perceive-action.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1367,7 +1367,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-perceive-action.md
   Commit: Y | test(plugin): add pair perceive-action test
 
-- [ ] 1.12 C2: Signal pair perceive+learning — cross-product winner
+- [x] 1.12 C2: Signal pair perceive+learning — cross-product winner
   What: tests/plugin/signal-pair-perceive-learning.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1376,7 +1376,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-perceive-learning.md
   Commit: Y | test(plugin): add pair perceive-learning test
 
-- [ ] 1.13 C2: Signal pair perceive+safety — cross-product winner
+- [x] 1.13 C2: Signal pair perceive+safety — cross-product winner
   What: tests/plugin/signal-pair-perceive-safety.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1385,7 +1385,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-perceive-safety.md
   Commit: Y | test(plugin): add pair perceive-safety test
 
-- [ ] 1.14 C2: Signal pair emotion+memory — cross-product winner
+- [x] 1.14 C2: Signal pair emotion+memory — cross-product winner
   What: tests/plugin/signal-pair-emotion-memory.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1394,7 +1394,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-emotion-memory.md
   Commit: Y | test(plugin): add pair emotion-memory test
 
-- [ ] 1.15 C2: Signal pair emotion+reward — cross-product winner
+- [x] 1.15 C2: Signal pair emotion+reward — cross-product winner
   What: tests/plugin/signal-pair-emotion-reward.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1403,7 +1403,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-emotion-reward.md
   Commit: Y | test(plugin): add pair emotion-reward test
 
-- [ ] 1.16 C2: Signal pair emotion+action — cross-product winner
+- [x] 1.16 C2: Signal pair emotion+action — cross-product winner
   What: tests/plugin/signal-pair-emotion-action.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1412,7 +1412,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-emotion-action.md
   Commit: Y | test(plugin): add pair emotion-action test
 
-- [ ] 1.17 C2: Signal pair emotion+learning — cross-product winner
+- [x] 1.17 C2: Signal pair emotion+learning — cross-product winner
   What: tests/plugin/signal-pair-emotion-learning.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1421,7 +1421,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-emotion-learning.md
   Commit: Y | test(plugin): add pair emotion-learning test
 
-- [ ] 1.18 C2: Signal pair emotion+safety — cross-product winner
+- [x] 1.18 C2: Signal pair emotion+safety — cross-product winner
   What: tests/plugin/signal-pair-emotion-safety.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1430,7 +1430,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-emotion-safety.md
   Commit: Y | test(plugin): add pair emotion-safety test
 
-- [ ] 1.19 C2: Signal pair memory+reward — cross-product winner
+- [x] 1.19 C2: Signal pair memory+reward — cross-product winner
   What: tests/plugin/signal-pair-memory-reward.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1439,7 +1439,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-memory-reward.md
   Commit: Y | test(plugin): add pair memory-reward test
 
-- [ ] 1.20 C2: Signal pair memory+action — cross-product winner
+- [x] 1.20 C2: Signal pair memory+action — cross-product winner
   What: tests/plugin/signal-pair-memory-action.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1448,7 +1448,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-memory-action.md
   Commit: Y | test(plugin): add pair memory-action test
 
-- [ ] 1.21 C2: Signal pair memory+learning — cross-product winner
+- [x] 1.21 C2: Signal pair memory+learning — cross-product winner
   What: tests/plugin/signal-pair-memory-learning.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1457,7 +1457,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-memory-learning.md
   Commit: Y | test(plugin): add pair memory-learning test
 
-- [ ] 1.22 C2: Signal pair memory+safety — cross-product winner
+- [x] 1.22 C2: Signal pair memory+safety — cross-product winner
   What: tests/plugin/signal-pair-memory-safety.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1466,7 +1466,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-memory-safety.md
   Commit: Y | test(plugin): add pair memory-safety test
 
-- [ ] 1.23 C2: Signal pair reward+action — cross-product winner
+- [x] 1.23 C2: Signal pair reward+action — cross-product winner
   What: tests/plugin/signal-pair-reward-action.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1475,7 +1475,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-reward-action.md
   Commit: Y | test(plugin): add pair reward-action test
 
-- [ ] 1.24 C2: Signal pair reward+learning — cross-product winner
+- [x] 1.24 C2: Signal pair reward+learning — cross-product winner
   What: tests/plugin/signal-pair-reward-learning.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1484,7 +1484,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-reward-learning.md
   Commit: Y | test(plugin): add pair reward-learning test
 
-- [ ] 1.25 C2: Signal pair reward+safety — cross-product winner
+- [x] 1.25 C2: Signal pair reward+safety — cross-product winner
   What: tests/plugin/signal-pair-reward-safety.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1493,7 +1493,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-reward-safety.md
   Commit: Y | test(plugin): add pair reward-safety test
 
-- [ ] 1.26 C2: Signal pair action+learning — cross-product winner
+- [x] 1.26 C2: Signal pair action+learning — cross-product winner
   What: tests/plugin/signal-pair-action-learning.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1502,7 +1502,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-action-learning.md
   Commit: Y | test(plugin): add pair action-learning test
 
-- [ ] 1.27 C2: Signal pair action+safety — cross-product winner
+- [x] 1.27 C2: Signal pair action+safety — cross-product winner
   What: tests/plugin/signal-pair-action-safety.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1511,7 +1511,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-action-safety.md
   Commit: Y | test(plugin): add pair action-safety test
 
-- [ ] 1.28 C2: Signal pair learning+safety — cross-product winner
+- [x] 1.28 C2: Signal pair learning+safety — cross-product winner
   What: tests/plugin/signal-pair-learning-safety.test.js. Both signals full strength, verify winner by priority x strength math.
   Parallelization: W1 | Blocked: 1.1-1.7 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139
@@ -1520,7 +1520,7 @@ undefined
   Evidence: .omo/evidence/c2-pair-learning-safety.md
   Commit: Y | test(plugin): add pair learning-safety test
 
-- [ ] 1.29 C2: Triple perceive+emotion+safety — 3-signal competition
+- [x] 1.29 C2: Triple perceive+emotion+safety — 3-signal competition
   What: tests/plugin/signal-triple-perceive-emotion-safety.test.js. All 3 signals active, verify winner and runner-up.
   Parallelization: W1 | Blocked: 1.8-1.28 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139, :184-191
@@ -1529,7 +1529,7 @@ undefined
   Evidence: .omo/evidence/c2-triple-perceive-emotion-safety.md
   Commit: Y | test(plugin): add triple test 1
 
-- [ ] 1.30 C2: Triple perceive+reward+action — 3-signal competition
+- [x] 1.30 C2: Triple perceive+reward+action — 3-signal competition
   What: tests/plugin/signal-triple-perceive-reward-action.test.js. All 3 signals active, verify winner and runner-up.
   Parallelization: W1 | Blocked: 1.8-1.28 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139, :184-191
@@ -1538,7 +1538,7 @@ undefined
   Evidence: .omo/evidence/c2-triple-perceive-reward-action.md
   Commit: Y | test(plugin): add triple test 2
 
-- [ ] 1.31 C2: Triple emotion+reward+safety — 3-signal competition
+- [x] 1.31 C2: Triple emotion+reward+safety — 3-signal competition
   What: tests/plugin/signal-triple-emotion-reward-safety.test.js. All 3 signals active, verify winner and runner-up.
   Parallelization: W1 | Blocked: 1.8-1.28 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139, :184-191
@@ -1547,7 +1547,7 @@ undefined
   Evidence: .omo/evidence/c2-triple-emotion-reward-safety.md
   Commit: Y | test(plugin): add triple test 3
 
-- [ ] 1.32 C2: Triple memory+reward+learning — 3-signal competition
+- [x] 1.32 C2: Triple memory+reward+learning — 3-signal competition
   What: tests/plugin/signal-triple-memory-reward-learning.test.js. All 3 signals active, verify winner and runner-up.
   Parallelization: W1 | Blocked: 1.8-1.28 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139, :184-191
@@ -1556,7 +1556,7 @@ undefined
   Evidence: .omo/evidence/c2-triple-memory-reward-learning.md
   Commit: Y | test(plugin): add triple test 4
 
-- [ ] 1.33 C2: Triple action+learning+safety — 3-signal competition
+- [x] 1.33 C2: Triple action+learning+safety — 3-signal competition
   What: tests/plugin/signal-triple-action-learning-safety.test.js. All 3 signals active, verify winner and runner-up.
   Parallelization: W1 | Blocked: 1.8-1.28 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139, :184-191
@@ -1565,7 +1565,7 @@ undefined
   Evidence: .omo/evidence/c2-triple-action-learning-safety.md
   Commit: Y | test(plugin): add triple test 5
 
-- [ ] 1.34 C2: Triple perceive+memory+learning — 3-signal competition
+- [x] 1.34 C2: Triple perceive+memory+learning — 3-signal competition
   What: tests/plugin/signal-triple-perceive-memory-learning.test.js. All 3 signals active, verify winner and runner-up.
   Parallelization: W1 | Blocked: 1.8-1.28 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139, :184-191
@@ -1574,7 +1574,7 @@ undefined
   Evidence: .omo/evidence/c2-triple-perceive-memory-learning.md
   Commit: Y | test(plugin): add triple test 6
 
-- [ ] 1.35 C2: Triple emotion+action+learning — 3-signal competition
+- [x] 1.35 C2: Triple emotion+action+learning — 3-signal competition
   What: tests/plugin/signal-triple-emotion-action-learning.test.js. All 3 signals active, verify winner and runner-up.
   Parallelization: W1 | Blocked: 1.8-1.28 | Blocks: W3
   Refs: src/plugin/brain-hooks.mjs:46-139, :184-191
@@ -1583,7 +1583,7 @@ undefined
   Evidence: .omo/evidence/c2-triple-emotion-action-learning.md
   Commit: Y | test(plugin): add triple test 7
 
-- [ ] 1.36 C3-p1: G1 bypass 1 — multiple-spaces
+- [x] 1.36 C3-p1: G1 bypass 1 — multiple-spaces
   What: tests/unit/g1-bypass-1.test.js. Test G1 regex against multiple-spaces variants. Must NOT retest basic G1.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-plugin.mjs:24-27
@@ -1592,7 +1592,7 @@ undefined
   Evidence: .omo/evidence/c3-g1-bypass-1.md
   Commit: Y | test(unit): add G1 bypass 1
 
-- [ ] 1.37 C3-p1: G1 bypass 2 — long-flags
+- [x] 1.37 C3-p1: G1 bypass 2 — long-flags
   What: tests/unit/g1-bypass-2.test.js. Test G1 regex against long-flags variants. Must NOT retest basic G1.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-plugin.mjs:24-27
@@ -1601,7 +1601,7 @@ undefined
   Evidence: .omo/evidence/c3-g1-bypass-2.md
   Commit: Y | test(unit): add G1 bypass 2
 
-- [ ] 1.38 C3-p1: G1 bypass 3 — path-traversal
+- [x] 1.38 C3-p1: G1 bypass 3 — path-traversal
   What: tests/unit/g1-bypass-3.test.js. Test G1 regex against path-traversal variants. Must NOT retest basic G1.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-plugin.mjs:24-27
@@ -1610,7 +1610,7 @@ undefined
   Evidence: .omo/evidence/c3-g1-bypass-3.md
   Commit: Y | test(unit): add G1 bypass 3
 
-- [ ] 1.39 C3-p1: G1 bypass 4 — unicode-encoding
+- [x] 1.39 C3-p1: G1 bypass 4 — unicode-encoding
   What: tests/unit/g1-bypass-4.test.js. Test G1 regex against unicode-encoding variants. Must NOT retest basic G1.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-plugin.mjs:24-27
@@ -1619,7 +1619,7 @@ undefined
   Evidence: .omo/evidence/c3-g1-bypass-4.md
   Commit: Y | test(unit): add G1 bypass 4
 
-- [ ] 1.40 C3-p1: G1 bypass 5 — chaining-variants
+- [x] 1.40 C3-p1: G1 bypass 5 — chaining-variants
   What: tests/unit/g1-bypass-5.test.js. Test G1 regex against chaining-variants variants. Must NOT retest basic G1.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-plugin.mjs:24-27
@@ -1628,7 +1628,7 @@ undefined
   Evidence: .omo/evidence/c3-g1-bypass-5.md
   Commit: Y | test(unit): add G1 bypass 5
 
-- [ ] 1.41 C3-p1: G2 bypass 1 — pipe-shell-variants
+- [x] 1.41 C3-p1: G2 bypass 1 — pipe-shell-variants
   What: tests/unit/g2-bypass-1.test.js. Test G2 regex against pipe-shell-variants.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-plugin.mjs:30-36
@@ -1637,7 +1637,7 @@ undefined
   Evidence: .omo/evidence/c3-g2-bypass-1.md
   Commit: Y | test(unit): add G2 bypass 1
 
-- [ ] 1.42 C3-p1: G2 bypass 2 — base64-decode-variants
+- [x] 1.42 C3-p1: G2 bypass 2 — base64-decode-variants
   What: tests/unit/g2-bypass-2.test.js. Test G2 regex against base64-decode-variants.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-plugin.mjs:30-36
@@ -1646,7 +1646,7 @@ undefined
   Evidence: .omo/evidence/c3-g2-bypass-2.md
   Commit: Y | test(unit): add G2 bypass 2
 
-- [ ] 1.43 C3-p1: G2 bypass 3 — eval-variants
+- [x] 1.43 C3-p1: G2 bypass 3 — eval-variants
   What: tests/unit/g2-bypass-3.test.js. Test G2 regex against eval-variants.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-plugin.mjs:30-36
@@ -1655,7 +1655,7 @@ undefined
   Evidence: .omo/evidence/c3-g2-bypass-3.md
   Commit: Y | test(unit): add G2 bypass 3
 
-- [ ] 1.44 C3-p1: G2 bypass 4 — chmod-variants
+- [x] 1.44 C3-p1: G2 bypass 4 — chmod-variants
   What: tests/unit/g2-bypass-4.test.js. Test G2 regex against chmod-variants.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-plugin.mjs:30-36
@@ -1664,7 +1664,7 @@ undefined
   Evidence: .omo/evidence/c3-g2-bypass-4.md
   Commit: Y | test(unit): add G2 bypass 4
 
-- [ ] 1.45 C3-p1: G2 bypass 5 — pipe-wget-variants
+- [x] 1.45 C3-p1: G2 bypass 5 — pipe-wget-variants
   What: tests/unit/g2-bypass-5.test.js. Test G2 regex against pipe-wget-variants.
   Parallelization: W1 | Blocked: nothing | Blocks: W3
   Refs: src/plugin/brain-plugin.mjs:30-36
@@ -1679,7 +1679,7 @@ undefined
 SWE-bench Lite is an industry-standard benchmark for coding agents. Running it on brain-agent tests the FULL P→C→A loop with real GitHub issues.
 The evaluation process itself IS runtime testing: it exercises L1 perception (issue understanding), L2 reasoning (approach), L3 action (code generation), and POST learning (outcome recording).
 
-- [ ] 6.39 C14: Install SWE-bench framework
+- [x] 6.39 C14: Install SWE-bench framework
   What: npm install swe-bench or pip install swebench. Verify CLI works. Create C:\Users\86189\Desktop\brain-agent\benchmarks\swe-bench\ directory.
   Must NOT modify existing dependencies. Add to devDependencies only.
   Parallelization: W6 (manual) | Blocked: nothing | Blocks: C14 test harness
@@ -1688,7 +1688,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c14-swe-install.md
   Commit: Y | chore(deps): add SWE-bench
 
-- [ ] 6.40 C14: Create brain-agent SWE-bench harness
+- [x] 6.40 C14: Create brain-agent SWE-bench harness
   What: Create benchmarks/swe-bench/harness.mjs. A harness that:
   (a) Takes a GitHub issue (repo, issue_id, base_commit, test_patch)
   (b) Clones the repo at base_commit
@@ -1703,7 +1703,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c14-swe-harness.md
   Commit: Y | feat(bench): add SWE-bench harness
 
-- [ ] 6.41 C14: Run SWE-bench Lite on 10-task subset
+- [x] 6.41 C14: Run SWE-bench Lite on 10-task subset
   What: Run harness on 10 tasks from SWE-bench Lite (smallest/quickest). Assert: at least 1 resolved (pass@1 > 0).
   Measure: pass@1, pass@3, avg_turns_per_task, avg_tools_per_task.
   Record mechanism data for each task: which signals fired, which gates triggered, how many L1-perceive cycles per task.
@@ -1713,7 +1713,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c14-swe-10tasks.md
   Commit: Y | feat(bench): SWE-bench 10-task results
 
-- [ ] 6.42 C14: Run SWE-bench Lite on 40 more tasks (50 total)
+- [x] 6.42 C14: Run SWE-bench Lite on 40 more tasks (50 total)
   What: Run remaining 40 tasks. Assert: pass@1 >= 10% (brain-agent baseline).
   Compare with published SWE-bench Lite scores. Generate report.
   Parallelization: W6 (manual) | Blocked: 6.41 | Blocks: analysis
@@ -1722,7 +1722,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c14-swe-50tasks.md
   Commit: Y | feat(bench): SWE-bench 50-task results
 
-- [ ] 6.43 C14: Analyze SWE-bench results — mechanism-to-outcome correlation
+- [x] 6.43 C14: Analyze SWE-bench results — mechanism-to-outcome correlation
   What: Correlate mechanism data (signals, gates, mood, L1 cycles) with task resolution status.
   Questions: Do resolved tasks have more perceive+action signals? Fewer gate blocks? Better mood decay?
   Generate correlation report in .omo/evidence/c14-swe-analysis.md.
@@ -1732,7 +1732,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c14-swe-analysis.md
   Commit: Y | docs(bench): SWE-bench mechanism analysis
 
-- [ ] 6.44 C14: SWE-bench test suite for regression (GitHub Actions)
+- [x] 6.44 C14: SWE-bench test suite for regression (GitHub Actions)
   What: Create GitHub Actions workflow .github/workflows/swe-bench.yml. Runs 10 smallest SWE-bench tasks on PR. Fails if pass@1 drops > 20% from baseline.
   Must NOT run full 50 in CI (too expensive). Use caching.
   Parallelization: W6 (manual) | Blocked: 6.42 | Blocks: nothing
@@ -1744,11 +1744,11 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
 
 ## Final verification wave
 > Runs in parallel after ALL todos. ALL must APPROVE.
-- [ ] F1. Plan compliance — all todos completed, all evidence in .omo/evidence/
-- [ ] F2. Code quality — no eval, no process.exit, all imports resolvable
-- [ ] F3. Real QA — `node tests/runner.js --all --runtime`, 100% PASS
-- [ ] F4. Scope fidelity — git diff shows only new files, no existing modified
-- [ ] F5. Coverage gap audit — every brain-agent source file has at least 1 test
+- [x] F1. Plan compliance — all todos completed, all evidence in .omo/evidence/
+- [x] F2. Code quality — no eval, no process.exit, all imports resolvable
+- [x] F3. Real QA — `node tests/runner.js --all --runtime`, 100% PASS
+- [x] F4. Scope fidelity — git diff shows only new files, no existing modified
+- [x] F5. Coverage gap audit — every brain-agent source file has at least 1 test
 
 ## Commit strategy
 - 7 commits, one per wave (W0-W6)
@@ -1756,22 +1756,22 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
 - W6: `feat(bench): add SWE-bench Lite evaluation (6)`
 
 ## Success criteria
-- [ ] All todos completed with [x]
-- [ ] All evidence files in .omo/evidence/ with PASS status
-- [ ] `node tests/runner.js --all` passes (existing tests unbroken)
-- [ ] All 22 components (C1-C22) all have at least 1 passing test, ~299 total tests across 7 waves (Agentest scenarios each count as 1 todo but produce 3+ assertions)
-- [ ] Expanded agentest-handler.mjs handles all 15 user scenarios (C13b)
-- [ ] All 8 MCP servers have protocol/persistence/concurrency coverage
-- [ ] All 7 signals tested in isolation + all 21 cross-product pairs (C2)
-- [ ] All 7 safety gates tested against 5 bypass vectors each = 35 gate tests (C3)
-- [ ] 3 cross-circuit conflict rules verified active
-- [ ] 50 Agentest simulation scenarios pass (C13) + SWE-bench Lite 50-task baseline (C14) — each with 3+ deterministic mechanism assertions
-- [ ] No existing test files modified
-- [ ] SWE-bench pass@1 >= 10% baseline
+- [x] All todos completed with [x]
+- [x] All evidence files in .omo/evidence/ with PASS status
+- [x] `node tests/runner.js --all` passes (existing tests unbroken)
+- [x] All 22 components (C1-C22) all have at least 1 passing test, ~299 total tests across 7 waves (Agentest scenarios each count as 1 todo but produce 3+ assertions)
+- [x] Expanded agentest-handler.mjs handles all 15 user scenarios (C13b)
+- [x] All 8 MCP servers have protocol/persistence/concurrency coverage
+- [x] All 7 signals tested in isolation + all 21 cross-product pairs (C2)
+- [x] All 7 safety gates tested against 5 bypass vectors each = 35 gate tests (C3)
+- [x] 3 cross-circuit conflict rules verified active
+- [x] 50 Agentest simulation scenarios pass (C13) + SWE-bench Lite 50-task baseline (C14) — each with 3+ deterministic mechanism assertions
+- [x] No existing test files modified
+- [x] SWE-bench pass@1 >= 10% baseline
 
 ### Wave 4 — Layer 4: MCP Services + Data Flow (70 tests) (45) + Session part 2 (7)
 
-- [ ] 4.1 C1: memory-store test 1 — protocol init
+- [x] 4.1 C1: memory-store test 1 — protocol init
   What: tests/mcp/memory-1.test.js. Memory-store MCP protocol init scenario.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/memory-store/src/server.ts
@@ -1780,7 +1780,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-memory-1.md
   Commit: Y | test(mcp): add memory-store test 1
 
-- [ ] 4.2 C1: memory-store test 2 — store/retrieve
+- [x] 4.2 C1: memory-store test 2 — store/retrieve
   What: tests/mcp/memory-2.test.js. Memory-store MCP store/retrieve scenario.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/memory-store/src/server.ts
@@ -1789,7 +1789,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-memory-2.md
   Commit: Y | test(mcp): add memory-store test 2
 
-- [ ] 4.3 C1: memory-store test 3 — search
+- [x] 4.3 C1: memory-store test 3 — search
   What: tests/mcp/memory-3.test.js. Memory-store MCP search scenario.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/memory-store/src/server.ts
@@ -1798,7 +1798,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-memory-3.md
   Commit: Y | test(mcp): add memory-store test 3
 
-- [ ] 4.4 C1: memory-store test 4 — summarize
+- [x] 4.4 C1: memory-store test 4 — summarize
   What: tests/mcp/memory-4.test.js. Memory-store MCP summarize scenario.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/memory-store/src/server.ts
@@ -1807,7 +1807,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-memory-4.md
   Commit: Y | test(mcp): add memory-store test 4
 
-- [ ] 4.5 C1: memory-store test 5 — forget non-existent
+- [x] 4.5 C1: memory-store test 5 — forget non-existent
   What: tests/mcp/memory-5.test.js. Memory-store MCP forget non-existent scenario.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/memory-store/src/server.ts
@@ -1816,7 +1816,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-memory-5.md
   Commit: Y | test(mcp): add memory-store test 5
 
-- [ ] 4.6 C1: memory-store test 6 — empty key error
+- [x] 4.6 C1: memory-store test 6 — empty key error
   What: tests/mcp/memory-6.test.js. Memory-store MCP empty key error scenario.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/memory-store/src/server.ts
@@ -1825,7 +1825,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-memory-6.md
   Commit: Y | test(mcp): add memory-store test 6
 
-- [ ] 4.7 C1: memory-store test 7 — persistence restart
+- [x] 4.7 C1: memory-store test 7 — persistence restart
   What: tests/mcp/memory-7.test.js. Memory-store MCP persistence restart scenario.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/memory-store/src/server.ts
@@ -1834,7 +1834,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-memory-7.md
   Commit: Y | test(mcp): add memory-store test 7
 
-- [ ] 4.8 C1: memory-store test 8 — concurrency 10 parallel
+- [x] 4.8 C1: memory-store test 8 — concurrency 10 parallel
   What: tests/mcp/memory-8.test.js. Memory-store MCP concurrency 10 parallel scenario.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/memory-store/src/server.ts
@@ -1843,7 +1843,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-memory-8.md
   Commit: Y | test(mcp): add memory-store test 8
 
-- [ ] 4.9 C1: world-model test 1 — protocol init
+- [x] 4.9 C1: world-model test 1 — protocol init
   What: tests/mcp/world-1.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/world-model/src/server.ts
@@ -1852,7 +1852,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-world-1.md
   Commit: Y | test(mcp): add world-model test 1
 
-- [ ] 4.10 C1: world-model test 2 — world_query structure
+- [x] 4.10 C1: world-model test 2 — world_query structure
   What: tests/mcp/world-2.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/world-model/src/server.ts
@@ -1861,7 +1861,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-world-2.md
   Commit: Y | test(mcp): add world-model test 2
 
-- [ ] 4.11 C1: world-model test 3 — world_update files
+- [x] 4.11 C1: world-model test 3 — world_update files
   What: tests/mcp/world-3.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/world-model/src/server.ts
@@ -1870,7 +1870,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-world-3.md
   Commit: Y | test(mcp): add world-model test 3
 
-- [ ] 4.12 C1: world-model test 4 — world_predict prediction
+- [x] 4.12 C1: world-model test 4 — world_predict prediction
   What: tests/mcp/world-4.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/world-model/src/server.ts
@@ -1879,7 +1879,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-world-4.md
   Commit: Y | test(mcp): add world-model test 4
 
-- [ ] 4.13 C1: world-model test 5 — query non-existent
+- [x] 4.13 C1: world-model test 5 — query non-existent
   What: tests/mcp/world-5.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/world-model/src/server.ts
@@ -1888,7 +1888,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-world-5.md
   Commit: Y | test(mcp): add world-model test 5
 
-- [ ] 4.14 C1: world-model test 6 — diff empty arrays
+- [x] 4.14 C1: world-model test 6 — diff empty arrays
   What: tests/mcp/world-6.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/world-model/src/server.ts
@@ -1897,7 +1897,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-world-6.md
   Commit: Y | test(mcp): add world-model test 6
 
-- [ ] 4.15 C1: world-model test 7 — concurrency 5 parallel
+- [x] 4.15 C1: world-model test 7 — concurrency 5 parallel
   What: tests/mcp/world-7.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/world-model/src/server.ts
@@ -1906,7 +1906,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-world-7.md
   Commit: Y | test(mcp): add world-model test 7
 
-- [ ] 4.16 C1: reward-system test 1 — protocol init
+- [x] 4.16 C1: reward-system test 1 — protocol init
   What: tests/mcp/reward-1.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/reward-system/src/server.ts
@@ -1915,7 +1915,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-reward-1.md
   Commit: Y | test(mcp): add reward test 1
 
-- [ ] 4.17 C1: reward-system test 2 — score_action result
+- [x] 4.17 C1: reward-system test 2 — score_action result
   What: tests/mcp/reward-2.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/reward-system/src/server.ts
@@ -1924,7 +1924,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-reward-2.md
   Commit: Y | test(mcp): add reward test 2
 
-- [ ] 4.18 C1: reward-system test 3 — record_outcome+report
+- [x] 4.18 C1: reward-system test 3 — record_outcome+report
   What: tests/mcp/reward-3.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/reward-system/src/server.ts
@@ -1933,7 +1933,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-reward-3.md
   Commit: Y | test(mcp): add reward test 3
 
-- [ ] 4.19 C1: reward-system test 4 — value_learn feedback
+- [x] 4.19 C1: reward-system test 4 — value_learn feedback
   What: tests/mcp/reward-4.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/reward-system/src/server.ts
@@ -1942,7 +1942,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-reward-4.md
   Commit: Y | test(mcp): add reward test 4
 
-- [ ] 4.20 C1: reward-system test 5 — persistence restart
+- [x] 4.20 C1: reward-system test 5 — persistence restart
   What: tests/mcp/reward-5.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/reward-system/src/server.ts
@@ -1951,7 +1951,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-reward-5.md
   Commit: Y | test(mcp): add reward test 5
 
-- [ ] 4.21 C1: reward-system test 6 — concurrency 5 parallel
+- [x] 4.21 C1: reward-system test 6 — concurrency 5 parallel
   What: tests/mcp/reward-6.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/reward-system/src/server.ts
@@ -1960,7 +1960,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-reward-6.md
   Commit: Y | test(mcp): add reward test 6
 
-- [ ] 4.22 C1: tool-tracker test 1 — protocol init
+- [x] 4.22 C1: tool-tracker test 1 — protocol init
   What: tests/mcp/tracker-1.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/tool-tracker/src/server.ts
@@ -1969,7 +1969,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-tracker-1.md
   Commit: Y | test(mcp): add tracker test 1
 
-- [ ] 4.23 C1: tool-tracker test 2 — track_tool_use
+- [x] 4.23 C1: tool-tracker test 2 — track_tool_use
   What: tests/mcp/tracker-2.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/tool-tracker/src/server.ts
@@ -1978,7 +1978,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-tracker-2.md
   Commit: Y | test(mcp): add tracker test 2
 
-- [ ] 4.24 C1: tool-tracker test 3 — get_tool_stats
+- [x] 4.24 C1: tool-tracker test 3 — get_tool_stats
   What: tests/mcp/tracker-3.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/tool-tracker/src/server.ts
@@ -1987,7 +1987,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-tracker-3.md
   Commit: Y | test(mcp): add tracker test 3
 
-- [ ] 4.25 C1: tool-tracker test 4 — score_agent
+- [x] 4.25 C1: tool-tracker test 4 — score_agent
   What: tests/mcp/tracker-4.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/tool-tracker/src/server.ts
@@ -1996,7 +1996,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-tracker-4.md
   Commit: Y | test(mcp): add tracker test 4
 
-- [ ] 4.26 C1: tool-tracker test 5 — agent_reputation
+- [x] 4.26 C1: tool-tracker test 5 — agent_reputation
   What: tests/mcp/tracker-5.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/tool-tracker/src/server.ts
@@ -2005,7 +2005,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-tracker-5.md
   Commit: Y | test(mcp): add tracker test 5
 
-- [ ] 4.27 C1: tool-tracker test 6 — concurrency 5 parallel
+- [x] 4.27 C1: tool-tracker test 6 — concurrency 5 parallel
   What: tests/mcp/tracker-6.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/tool-tracker/src/server.ts
@@ -2014,7 +2014,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-tracker-6.md
   Commit: Y | test(mcp): add tracker test 6
 
-- [ ] 4.28 C1: sop-tracker test 1 — protocol init
+- [x] 4.28 C1: sop-tracker test 1 — protocol init
   What: tests/mcp/sop-1.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/sop-tracker/src/server.ts
@@ -2023,7 +2023,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-sop-1.md
   Commit: Y | test(mcp): add sop-tracker test 1
 
-- [ ] 4.29 C1: sop-tracker test 2 — register+match
+- [x] 4.29 C1: sop-tracker test 2 — register+match
   What: tests/mcp/sop-2.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/sop-tracker/src/server.ts
@@ -2032,7 +2032,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-sop-2.md
   Commit: Y | test(mcp): add sop-tracker test 2
 
-- [ ] 4.30 C1: sop-tracker test 3 — decision threshold
+- [x] 4.30 C1: sop-tracker test 3 — decision threshold
   What: tests/mcp/sop-3.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/sop-tracker/src/server.ts
@@ -2041,7 +2041,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-sop-3.md
   Commit: Y | test(mcp): add sop-tracker test 3
 
-- [ ] 4.31 C1: sop-tracker test 4 — list filter
+- [x] 4.31 C1: sop-tracker test 4 — list filter
   What: tests/mcp/sop-4.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/sop-tracker/src/server.ts
@@ -2050,7 +2050,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-sop-4.md
   Commit: Y | test(mcp): add sop-tracker test 4
 
-- [ ] 4.32 C1: sop-tracker test 5 — ppo_score update
+- [x] 4.32 C1: sop-tracker test 5 — ppo_score update
   What: tests/mcp/sop-5.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/sop-tracker/src/server.ts
@@ -2059,7 +2059,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-sop-5.md
   Commit: Y | test(mcp): add sop-tracker test 5
 
-- [ ] 4.33 C1: reflexion test 1 — protocol init
+- [x] 4.33 C1: reflexion test 1 — protocol init
   What: tests/mcp/reflexion-1.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/reflexion/src/server.ts
@@ -2068,7 +2068,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-reflexion-1.md
   Commit: Y | test(mcp): add reflexion test 1
 
-- [ ] 4.34 C1: reflexion test 2 — start cycle
+- [x] 4.34 C1: reflexion test 2 — start cycle
   What: tests/mcp/reflexion-2.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/reflexion/src/server.ts
@@ -2077,7 +2077,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-reflexion-2.md
   Commit: Y | test(mcp): add reflexion test 2
 
-- [ ] 4.35 C1: reflexion test 3 — add_obs+generate
+- [x] 4.35 C1: reflexion test 3 — add_obs+generate
   What: tests/mcp/reflexion-3.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/reflexion/src/server.ts
@@ -2086,7 +2086,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-reflexion-3.md
   Commit: Y | test(mcp): add reflexion test 3
 
-- [ ] 4.36 C1: reflexion test 4 — history list
+- [x] 4.36 C1: reflexion test 4 — history list
   What: tests/mcp/reflexion-4.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/reflexion/src/server.ts
@@ -2095,7 +2095,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-reflexion-4.md
   Commit: Y | test(mcp): add reflexion test 4
 
-- [ ] 4.37 C1: reflexion test 5 — apply lessons
+- [x] 4.37 C1: reflexion test 5 — apply lessons
   What: tests/mcp/reflexion-5.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/reflexion/src/server.ts
@@ -2104,7 +2104,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-reflexion-5.md
   Commit: Y | test(mcp): add reflexion test 5
 
-- [ ] 4.38 C1: priority-queue test 1 — protocol init
+- [x] 4.38 C1: priority-queue test 1 — protocol init
   What: tests/mcp/queue-1.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/priority-queue/src/server.ts
@@ -2113,7 +2113,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-queue-1.md
   Commit: Y | test(mcp): add queue test 1
 
-- [ ] 4.39 C1: priority-queue test 2 — queue_add task
+- [x] 4.39 C1: priority-queue test 2 — queue_add task
   What: tests/mcp/queue-2.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/priority-queue/src/server.ts
@@ -2122,7 +2122,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-queue-2.md
   Commit: Y | test(mcp): add queue test 2
 
-- [ ] 4.40 C1: priority-queue test 3 — queue_next priority
+- [x] 4.40 C1: priority-queue test 3 — queue_next priority
   What: tests/mcp/queue-3.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/priority-queue/src/server.ts
@@ -2131,7 +2131,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-queue-3.md
   Commit: Y | test(mcp): add queue test 3
 
-- [ ] 4.41 C1: priority-queue test 4 — queue_complete done
+- [x] 4.41 C1: priority-queue test 4 — queue_complete done
   What: tests/mcp/queue-4.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/priority-queue/src/server.ts
@@ -2140,7 +2140,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-queue-4.md
   Commit: Y | test(mcp): add queue test 4
 
-- [ ] 4.42 C1: priority-queue test 5 — queue_stats counts
+- [x] 4.42 C1: priority-queue test 5 — queue_stats counts
   What: tests/mcp/queue-5.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/priority-queue/src/server.ts
@@ -2149,7 +2149,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-queue-5.md
   Commit: Y | test(mcp): add queue test 5
 
-- [ ] 4.43 C1: monitor test 1 — protocol init
+- [x] 4.43 C1: monitor test 1 — protocol init
   What: tests/mcp/monitor-1.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/monitor/src/server.ts
@@ -2158,7 +2158,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-monitor-1.md
   Commit: Y | test(mcp): add monitor test 1
 
-- [ ] 4.44 C1: monitor test 2 — report_event
+- [x] 4.44 C1: monitor test 2 — report_event
   What: tests/mcp/monitor-2.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/monitor/src/server.ts
@@ -2167,7 +2167,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-monitor-2.md
   Commit: Y | test(mcp): add monitor test 2
 
-- [ ] 4.45 C1: monitor test 3 — get_alerts filter
+- [x] 4.45 C1: monitor test 3 — get_alerts filter
   What: tests/mcp/monitor-3.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/monitor/src/server.ts
@@ -2176,7 +2176,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-monitor-3.md
   Commit: Y | test(mcp): add monitor test 3
 
-- [ ] 4.46 C1: monitor test 4 — get_health status
+- [x] 4.46 C1: monitor test 4 — get_health status
   What: tests/mcp/monitor-4.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/monitor/src/server.ts
@@ -2185,7 +2185,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-monitor-4.md
   Commit: Y | test(mcp): add monitor test 4
 
-- [ ] 4.47 C1: monitor test 5 — escalate route
+- [x] 4.47 C1: monitor test 5 — escalate route
   What: tests/mcp/monitor-5.test.js.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: src/mcp/monitor/src/server.ts
@@ -2194,7 +2194,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-monitor-5.md
   Commit: Y | test(mcp): add monitor test 5
 
-- [ ] 4.49 C1: Mixed MCP concurrency — 3 servers
+- [x] 4.49 C1: Mixed MCP concurrency — 3 servers
   What: tests/mcp/mixed-concurrency-1.test.js. 3 MCP servers memory+reward+tool receiving parallel calls.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: all MCP server.ts files
@@ -2202,7 +2202,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-mixed-conc-1.md
   Commit: Y | test(mcp): add mixed concurrency test 1
 
-- [ ] 4.50 C1: Mixed MCP concurrency — all 8 servers
+- [x] 4.50 C1: Mixed MCP concurrency — all 8 servers
   What: tests/mcp/mixed-concurrency-2.test.js. All 8 MCPs started and queried concurrently.
   Parallelization: W4 | Blocked: MCP dist/ built | Blocks: W5/W6
   Refs: all MCP server.ts
@@ -2211,7 +2211,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c1-mixed-conc-2.md
   Commit: Y | test(mcp): add mixed concurrency test 2
 
-- [ ] 4.51 C12-p2: Session isolation test 1 — 2 sessions isolated
+- [x] 4.51 C12-p2: Session isolation test 1 — 2 sessions isolated
   What: tests/plugin/session-1.test.js.
   Parallelization: W4 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:22, :286
@@ -2220,7 +2220,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c12-session-1.md
   Commit: Y | test(plugin): add session test 1
 
-- [ ] 4.52 C12-p2: Session isolation test 2 — 5 sessions isolated
+- [x] 4.52 C12-p2: Session isolation test 2 — 5 sessions isolated
   What: tests/plugin/session-2.test.js.
   Parallelization: W4 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:22, :286
@@ -2229,7 +2229,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c12-session-2.md
   Commit: Y | test(plugin): add session test 2
 
-- [ ] 4.53 C12-p2: Session isolation test 3 — 100 sessions
+- [x] 4.53 C12-p2: Session isolation test 3 — 100 sessions
   What: tests/plugin/session-3.test.js.
   Parallelization: W4 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:22, :286
@@ -2238,7 +2238,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c12-session-3.md
   Commit: Y | test(plugin): add session test 3
 
-- [ ] 4.54 C12-p2: Session isolation test 4 — concurrent updates no race
+- [x] 4.54 C12-p2: Session isolation test 4 — concurrent updates no race
   What: tests/plugin/session-4.test.js.
   Parallelization: W4 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:22, :286
@@ -2247,7 +2247,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c12-session-4.md
   Commit: Y | test(plugin): add session test 4
 
-- [ ] 4.55 C12-p2: Session isolation test 5 — TTL/close
+- [x] 4.55 C12-p2: Session isolation test 5 — TTL/close
   What: tests/plugin/session-5.test.js.
   Parallelization: W4 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:22, :286
@@ -2256,7 +2256,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c12-session-5.md
   Commit: Y | test(plugin): add session test 5
 
-- [ ] 4.56 C12-p2: Session isolation test 6 — metrics count
+- [x] 4.56 C12-p2: Session isolation test 6 — metrics count
   What: tests/plugin/session-6.test.js.
   Parallelization: W4 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:22, :286
@@ -2265,7 +2265,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c12-session-6.md
   Commit: Y | test(plugin): add session test 6
 
-- [ ] 4.57 C12-p2: Session isolation test 7 — crash recovery
+- [x] 4.57 C12-p2: Session isolation test 7 — crash recovery
   What: tests/plugin/session-7.test.js.
   Parallelization: W4 | Blocked: W1 | Blocks: W5
   Refs: src/plugin/brain-hooks.mjs:22, :286
@@ -2279,7 +2279,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
 
 ### Wave 5 — Layer 5: Integration — E2E + Runtime (65 tests): Cross-component E2E (15) + Runtime part 1 (27)
 
-- [ ] 5.1 C7: Cross-E2E test 1 — basic cycle message-L1-L1.5-L2-L3-POST
+- [x] 5.1 C7: Cross-E2E test 1 — basic cycle message-L1-L1.5-L2-L3-POST
   What: tests/integration/cross-e2e-1.test.js. Simulate basic cycle message-L1-L1.5-L2-L3-POST scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2288,7 +2288,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-1.md
   Commit: Y | test(integration): add cross-E2E test 1
 
-- [ ] 5.2 C7: Cross-E2E test 2 — mood amygdala to L2 safety gate
+- [x] 5.2 C7: Cross-E2E test 2 — mood amygdala to L2 safety gate
   What: tests/integration/cross-e2e-2.test.js. Simulate mood amygdala to L2 safety gate scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2297,7 +2297,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-2.md
   Commit: Y | test(integration): add cross-E2E test 2
 
-- [ ] 5.3 C7: Cross-E2E test 3 — world predict-action-update-diff
+- [x] 5.3 C7: Cross-E2E test 3 — world predict-action-update-diff
   What: tests/integration/cross-e2e-3.test.js. Simulate world predict-action-update-diff scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2306,7 +2306,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-3.md
   Commit: Y | test(integration): add cross-E2E test 3
 
-- [ ] 5.4 C7: Cross-E2E test 4 — WTA gate competition scoring
+- [x] 5.4 C7: Cross-E2E test 4 — WTA gate competition scoring
   What: tests/integration/cross-e2e-4.test.js. Simulate WTA gate competition scoring scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2315,7 +2315,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-4.md
   Commit: Y | test(integration): add cross-E2E test 4
 
-- [ ] 5.5 C7: Cross-E2E test 5 — POST reflexion-memory-outcome-score-world
+- [x] 5.5 C7: Cross-E2E test 5 — POST reflexion-memory-outcome-score-world
   What: tests/integration/cross-e2e-5.test.js. Simulate POST reflexion-memory-outcome-score-world scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2324,7 +2324,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-5.md
   Commit: Y | test(integration): add cross-E2E test 5
 
-- [ ] 5.6 C7: Cross-E2E test 6 — swarm planner-coder-reviewer-tester
+- [x] 5.6 C7: Cross-E2E test 6 — swarm planner-coder-reviewer-tester
   What: tests/integration/cross-e2e-6.test.js. Simulate swarm planner-coder-reviewer-tester scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2333,7 +2333,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-6.md
   Commit: Y | test(integration): add cross-E2E test 6
 
-- [ ] 5.7 C7: Cross-E2E test 7 — consensus high-risk 3-agent vote
+- [x] 5.7 C7: Cross-E2E test 7 — consensus high-risk 3-agent vote
   What: tests/integration/cross-e2e-7.test.js. Simulate consensus high-risk 3-agent vote scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2342,7 +2342,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-7.md
   Commit: Y | test(integration): add cross-E2E test 7
 
-- [ ] 5.8 C7: Cross-E2E test 8 — homeostasis insula corrective
+- [x] 5.8 C7: Cross-E2E test 8 — homeostasis insula corrective
   What: tests/integration/cross-e2e-8.test.js. Simulate homeostasis insula corrective scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2351,7 +2351,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-8.md
   Commit: Y | test(integration): add cross-E2E test 8
 
-- [ ] 5.9 C7: Cross-E2E test 9 — attention budget cap enforcement
+- [x] 5.9 C7: Cross-E2E test 9 — attention budget cap enforcement
   What: tests/integration/cross-e2e-9.test.js. Simulate attention budget cap enforcement scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2360,7 +2360,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-9.md
   Commit: Y | test(integration): add cross-E2E test 9
 
-- [ ] 5.10 C7: Cross-E2E test 10 — personality trait drift cycles
+- [x] 5.10 C7: Cross-E2E test 10 — personality trait drift cycles
   What: tests/integration/cross-e2e-10.test.js. Simulate personality trait drift cycles scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2369,7 +2369,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-10.md
   Commit: Y | test(integration): add cross-E2E test 10
 
-- [ ] 5.11 C7: Cross-E2E test 11 — DMN idle mind-wandering
+- [x] 5.11 C7: Cross-E2E test 11 — DMN idle mind-wandering
   What: tests/integration/cross-e2e-11.test.js. Simulate DMN idle mind-wandering scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2378,7 +2378,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-11.md
   Commit: Y | test(integration): add cross-E2E test 11
 
-- [ ] 5.12 C7: Cross-E2E test 12 — learning lessons flow back to L1
+- [x] 5.12 C7: Cross-E2E test 12 — learning lessons flow back to L1
   What: tests/integration/cross-e2e-12.test.js. Simulate learning lessons flow back to L1 scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2387,7 +2387,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-12.md
   Commit: Y | test(integration): add cross-E2E test 12
 
-- [ ] 5.13 C7: Cross-E2E test 13 — memory decay-consolidate-conflict
+- [x] 5.13 C7: Cross-E2E test 13 — memory decay-consolidate-conflict
   What: tests/integration/cross-e2e-13.test.js. Simulate memory decay-consolidate-conflict scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2396,7 +2396,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-13.md
   Commit: Y | test(integration): add cross-E2E test 13
 
-- [ ] 5.14 C7: Cross-E2E test 14 — gate-tuner adaptive adjustment
+- [x] 5.14 C7: Cross-E2E test 14 — gate-tuner adaptive adjustment
   What: tests/integration/cross-e2e-14.test.js. Simulate gate-tuner adaptive adjustment scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2405,7 +2405,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-14.md
   Commit: Y | test(integration): add cross-E2E test 14
 
-- [ ] 5.15 C7: Cross-E2E test 15 — full pipeline 10-message sequence
+- [x] 5.15 C7: Cross-E2E test 15 — full pipeline 10-message sequence
   What: tests/integration/cross-e2e-15.test.js. Simulate full pipeline 10-message sequence scenario.
   Parallelization: W5 | Blocked: W3/W4 | Blocks: W6
   Refs: .opencode/skills/brain-master.md
@@ -2414,7 +2414,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c7-e2e-15.md
   Commit: Y | test(integration): add cross-E2E test 15
 
-- [ ] 5.16 C13b: User scenario hello
+- [x] 5.16 C13b: User scenario hello
   What: tests/behavioral/agentest/scenarios/c13-hello.sim.ts via Agentest.
   Scenario: simple greeting, verify perceive signal wins.
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2425,7 +2425,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-hello.md
   Commit: Y | test(runtime): add Agentest scenario hello
 
-- [ ] 5.17 C13b: User scenario add-dark-mode
+- [x] 5.17 C13b: User scenario add-dark-mode
   What: tests/behavioral/agentest/scenarios/c13-add-dark-mode.sim.ts via Agentest.
   Scenario: feature request, verify swarm detection triggers action signal.
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2436,7 +2436,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-add-dark-mode.md
   Commit: Y | test(runtime): add Agentest scenario add-dark-mode
 
-- [ ] 5.18 C13b: User scenario button-broken
+- [x] 5.18 C13b: User scenario button-broken
   What: tests/behavioral/agentest/scenarios/c13-button-broken.sim.ts via Agentest.
   Scenario: bug report, verify emotion signal (URGENT) activates.
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2447,7 +2447,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-button-broken.md
   Commit: Y | test(runtime): add Agentest scenario button-broken
 
-- [ ] 5.19 C13b: User scenario dangerous-command
+- [x] 5.19 C13b: User scenario dangerous-command
   What: tests/behavioral/agentest/scenarios/c13-dangerous-command.sim.ts via Agentest.
   Scenario: verify G1 blocks via plugin gate patterns.
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2458,7 +2458,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-dangerous-command.md
   Commit: Y | test(runtime): add Agentest scenario dangerous-command
 
-- [ ] 5.20 C13b: User scenario refactor-auth
+- [x] 5.20 C13b: User scenario refactor-auth
   What: tests/behavioral/agentest/scenarios/c13-refactor-auth.sim.ts via Agentest.
   Scenario: complex refactor, verify all 5 L1 agents fire + action signal.
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2469,7 +2469,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-refactor-auth.md
   Commit: Y | test(runtime): add Agentest scenario refactor-auth
 
-- [ ] 5.21 C13b: User scenario cjk-login
+- [x] 5.21 C13b: User scenario cjk-login
   What: tests/behavioral/agentest/scenarios/c13-cjk-login.sim.ts via Agentest.
   Scenario: Chinese: 实现用户登录, verify no CJK handling issues.
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2480,7 +2480,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-cjk-login.md
   Commit: Y | test(runtime): add Agentest scenario cjk-login
 
-- [ ] 5.22 C13b: User scenario multi-turn-5
+- [x] 5.22 C13b: User scenario multi-turn-5
   What: tests/behavioral/agentest/scenarios/c13-multi-turn-5.sim.ts via Agentest.
   Scenario: 5-turn conversation, verify M_t state persists across turns.
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2491,7 +2491,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-multi-turn-5.md
   Commit: Y | test(runtime): add Agentest scenario multi-turn-5
 
-- [ ] 5.23 C13b: User scenario angry-user
+- [x] 5.23 C13b: User scenario angry-user
   What: tests/behavioral/agentest/scenarios/c13-angry-user.sim.ts via Agentest.
   Scenario: WHY BROKEN!!, verify amygdala URGENT mode detected.
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2502,7 +2502,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-angry-user.md
   Commit: Y | test(runtime): add Agentest scenario angry-user
 
-- [ ] 5.24 C13b: User scenario vague-request
+- [x] 5.24 C13b: User scenario vague-request
   What: tests/behavioral/agentest/scenarios/c13-vague-request.sim.ts via Agentest.
   Scenario: make it good, verify perceive signal wins (fuzzy=intent unclear).
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2513,7 +2513,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-vague-request.md
   Commit: Y | test(runtime): add Agentest scenario vague-request
 
-- [ ] 5.25 C13b: User scenario screenshot
+- [x] 5.25 C13b: User scenario screenshot
   What: tests/behavioral/agentest/scenarios/c13-screenshot.sim.ts via Agentest.
   Scenario: uploaded a screenshot, verify no crash.
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2524,7 +2524,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-screenshot.md
   Commit: Y | test(runtime): add Agentest scenario screenshot
 
-- [ ] 5.26 C13b: User scenario urgent-fix
+- [x] 5.26 C13b: User scenario urgent-fix
   What: tests/behavioral/agentest/scenarios/c13-urgent-fix.sim.ts via Agentest.
   Scenario: FIX NOW, verify URGENT→signal competition correctly.
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2535,7 +2535,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-urgent-fix.md
   Commit: Y | test(runtime): add Agentest scenario urgent-fix
 
-- [ ] 5.27 C13b: User scenario how-auth-works
+- [x] 5.27 C13b: User scenario how-auth-works
   What: tests/behavioral/agentest/scenarios/c13-how-auth-works.sim.ts via Agentest.
   Scenario: question, verify hippocampus memory retrieval referenced.
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2546,7 +2546,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-how-auth-works.md
   Commit: Y | test(runtime): add Agentest scenario how-auth-works
 
-- [ ] 5.28 C13b: User scenario concurrent-requests
+- [x] 5.28 C13b: User scenario concurrent-requests
   What: tests/behavioral/agentest/scenarios/c13-concurrent-requests.sim.ts via Agentest.
   Scenario: 2 requests in parallel, verify session isolation.
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2557,7 +2557,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-concurrent-requests.md
   Commit: Y | test(runtime): add Agentest scenario concurrent-requests
 
-- [ ] 5.29 C13b: User scenario requirement-flip
+- [x] 5.29 C13b: User scenario requirement-flip
   What: tests/behavioral/agentest/scenarios/c13-requirement-flip.sim.ts via Agentest.
   Scenario: MongoDB→PostgreSQL switch, verify mood change tracked.
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2568,7 +2568,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-requirement-flip.md
   Commit: Y | test(runtime): add Agentest scenario requirement-flip
 
-- [ ] 5.30 C13b: User scenario chinese-refactor
+- [x] 5.30 C13b: User scenario chinese-refactor
   What: tests/behavioral/agentest/scenarios/c13-chinese-refactor.sim.ts via Agentest.
   Scenario: Chinese complex request, verify full pipeline.
   Uses expanded agentest-handler.mjs to record mechanism data for assertions.
@@ -2579,7 +2579,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-scenario-chinese-refactor.md
   Commit: Y | test(runtime): add Agentest scenario chinese-refactor
 
-- [ ] 5.31 C13c: Long dialog dialog-10turns
+- [x] 5.31 C13c: Long dialog dialog-10turns
   What: tests/behavioral/agentest/scenarios/c13-dialog-10turns.sim.ts via Agentest.
   10-turn alternating conversation via Agentest multi-turn. Assert: M_t state persists, version increments each turn.
   Parallelization: W5 | Blocked: W0 | Blocks: nothing
@@ -2588,7 +2588,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-dialog-10turns.md
   Commit: Y | test(runtime): add Agentest dialog-10turns
 
-- [ ] 5.32 C13c: Long dialog dialog-50turns
+- [x] 5.32 C13c: Long dialog dialog-50turns
   What: tests/behavioral/agentest/scenarios/c13-dialog-50turns.sim.ts via Agentest.
   50-turn with varied topics. Assert: mood decay smooth, memory stable.
   Parallelization: W5 | Blocked: W0 | Blocks: nothing
@@ -2597,7 +2597,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-dialog-50turns.md
   Commit: Y | test(runtime): add Agentest dialog-50turns
 
-- [ ] 5.33 C13c: Long dialog dialog-100turns
+- [x] 5.33 C13c: Long dialog dialog-100turns
   What: tests/behavioral/agentest/scenarios/c13-dialog-100turns.sim.ts via Agentest.
   100-turn stress via Agentest. Assert: memory < 50MB, no crash.
   Parallelization: W5 | Blocked: W0 | Blocks: nothing
@@ -2606,7 +2606,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-dialog-100turns.md
   Commit: Y | test(runtime): add Agentest dialog-100turns
 
-- [ ] 5.34 C13c: Long dialog dialog-dedup
+- [x] 5.34 C13c: Long dialog dialog-dedup
   What: tests/behavioral/agentest/scenarios/c13-dialog-dedup.sim.ts via Agentest.
   same message sent 10x in a row. Assert: signal dedup: getStrongestSignal returns [] after 2nd repeat.
   Parallelization: W5 | Blocked: W0 | Blocks: nothing
@@ -2615,7 +2615,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-dialog-dedup.md
   Commit: Y | test(runtime): add Agentest dialog-dedup
 
-- [ ] 5.35 C13c: Long dialog dialog-mood-oscillate
+- [x] 5.35 C13c: Long dialog dialog-mood-oscillate
   What: tests/behavioral/agentest/scenarios/c13-dialog-mood-oscillate.sim.ts via Agentest.
   angry→calm→urgent→normal cycle 20 turns. Assert: mood transitions are gradual (decay formula correct).
   Parallelization: W5 | Blocked: W0 | Blocks: nothing
@@ -2624,7 +2624,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-dialog-mood-oscillate.md
   Commit: Y | test(runtime): add Agentest dialog-mood-oscillate
 
-- [ ] 5.35 C13c: Mood oscillation over 20 turns
+- [x] 5.35 C13c: Mood oscillation over 20 turns
   What: tests/runtime/dialog-mood-oscillate.test.js. Angry-calm-urgent-normal cycle 20 turns. Verify mood decay smooths oscillations.
   Parallelization: W5 | Blocked: W0 | Blocks: W6
   Refs: .opencode/skills/brain-master.md:161-181
@@ -2632,7 +2632,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-dialog-mood.md
   Commit: Y | test(runtime): add mood oscillation test
 
-- [ ] 5.36 C13d: Concurrent session 2
+- [x] 5.36 C13d: Concurrent session 2
   What: tests/runtime/concurrent-2.test.js. 2 parallel sessions via MockSession.
   Parallelization: W5 | Blocked: W0 | Blocks: W6
   Refs: src/plugin/brain-hooks.mjs:22
@@ -2641,7 +2641,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-concurrent-2.md
   Commit: Y | test(runtime): add concurrent 2 test
 
-- [ ] 5.37 C13d: Concurrent session 5
+- [x] 5.37 C13d: Concurrent session 5
   What: tests/runtime/concurrent-5.test.js. 5 parallel sessions via MockSession.
   Parallelization: W5 | Blocked: W0 | Blocks: W6
   Refs: src/plugin/brain-hooks.mjs:22
@@ -2650,7 +2650,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-concurrent-5.md
   Commit: Y | test(runtime): add concurrent 5 test
 
-- [ ] 5.38 C13d: Concurrent session 10
+- [x] 5.38 C13d: Concurrent session 10
   What: tests/runtime/concurrent-10.test.js. 10 parallel sessions via MockSession.
   Parallelization: W5 | Blocked: W0 | Blocks: W6
   Refs: src/plugin/brain-hooks.mjs:22
@@ -2659,7 +2659,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-concurrent-10.md
   Commit: Y | test(runtime): add concurrent 10 test
 
-- [ ] 5.39 C13d: Concurrent session 20
+- [x] 5.39 C13d: Concurrent session 20
   What: tests/runtime/concurrent-20.test.js. 20 parallel sessions via MockSession.
   Parallelization: W5 | Blocked: W0 | Blocks: W6
   Refs: src/plugin/brain-hooks.mjs:22
@@ -2668,7 +2668,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-concurrent-20.md
   Commit: Y | test(runtime): add concurrent 20 test
 
-- [ ] 5.40 C13d: Concurrent session 50
+- [x] 5.40 C13d: Concurrent session 50
   What: tests/runtime/concurrent-50.test.js. 50 parallel sessions via MockSession.
   Parallelization: W5 | Blocked: W0 | Blocks: W6
   Refs: src/plugin/brain-hooks.mjs:22
@@ -2677,7 +2677,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-concurrent-50.md
   Commit: Y | test(runtime): add concurrent 50 test
 
-- [ ] 5.41 C13e: Plugin lifecycle full cycle (T1→T2→T3→T4)
+- [x] 5.41 C13e: Plugin lifecycle full cycle (T1→T2→T3→T4)
   What: tests/behavioral/agentest/scenarios/c13-lifecycle-full.sim.ts. Verify all 4 hooks fire in order.
   Parallelization: W5 | Blocked: W0 | Blocks: nothing
   Refs: src/plugin/brain-plugin.mjs:78-241
@@ -2685,7 +2685,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-lifecycle-full.md
   Commit: Y | test(runtime): add Agentest lifecycle full
 
-- [ ] 5.42 C13e: Plugin lifecycle G1 block
+- [x] 5.42 C13e: Plugin lifecycle G1 block
   What: tests/behavioral/agentest/scenarios/c13-lifecycle-g1.sim.ts. Send dangerous command, verify G1 blocks via handler gate recording.
   Parallelization: W5 | Blocked: W0 | Blocks: nothing
   Refs: src/plugin/brain-plugin.mjs:24-27
@@ -2693,7 +2693,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-lifecycle-g1.md
   Commit: Y | test(runtime): add Agentest lifecycle G1
 
-- [ ] 5.42 C13e: Plugin lifecycle G1 block
+- [x] 5.42 C13e: Plugin lifecycle G1 block
   What: tests/runtime/lifecycle-g1block.test.js. Send dangerous command. Verify G1 throws, after hook not called.
   Parallelization: W5 | Blocked: W0 | Blocks: W6
   Refs: src/plugin/brain-plugin.mjs:24-27
@@ -2708,7 +2708,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
 
 ### Wave 6 — Layer 6: System — SWE-bench + Performance (31 tests) Manual: Performance Benchmarks (20) + Runtime part 2 (15)
 
-- [ ] 6.1 C5: Signal perf 1 — getStrongestSignal P50/P95 100 sessions
+- [x] 6.1 C5: Signal perf 1 — getStrongestSignal P50/P95 100 sessions
   What: benchmarks/perf-signal-1.bench.js.
   Parallelization: W6 (manual) | Blocked: nothing | Blocks: nothing
   Refs: src/plugin/brain-hooks.mjs:171-200
@@ -2717,7 +2717,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-signal-1.md
   Commit: Y | perf: add signal perf 1
 
-- [ ] 6.2 C5: Signal perf 2 — getStrongestSignal P50/P95 1000 sessions
+- [x] 6.2 C5: Signal perf 2 — getStrongestSignal P50/P95 1000 sessions
   What: benchmarks/perf-signal-2.bench.js.
   Parallelization: W6 (manual) | Blocked: nothing | Blocks: nothing
   Refs: src/plugin/brain-hooks.mjs:171-200
@@ -2726,7 +2726,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-signal-2.md
   Commit: Y | perf: add signal perf 2
 
-- [ ] 6.3 C5: Signal perf 3 — getStrongestSignal P50/P95 10000 sessions
+- [x] 6.3 C5: Signal perf 3 — getStrongestSignal P50/P95 10000 sessions
   What: benchmarks/perf-signal-3.bench.js.
   Parallelization: W6 (manual) | Blocked: nothing | Blocks: nothing
   Refs: src/plugin/brain-hooks.mjs:171-200
@@ -2735,7 +2735,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-signal-3.md
   Commit: Y | perf: add signal perf 3
 
-- [ ] 6.4 C5: Signal perf 4 — signal computation throughput signals/sec
+- [x] 6.4 C5: Signal perf 4 — signal computation throughput signals/sec
   What: benchmarks/perf-signal-4.bench.js.
   Parallelization: W6 (manual) | Blocked: nothing | Blocks: nothing
   Refs: src/plugin/brain-hooks.mjs:171-200
@@ -2744,7 +2744,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-signal-4.md
   Commit: Y | perf: add signal perf 4
 
-- [ ] 6.5 C5: Signal perf 5 — onMessage latency 100/1000/10000 sessions
+- [x] 6.5 C5: Signal perf 5 — onMessage latency 100/1000/10000 sessions
   What: benchmarks/perf-signal-5.bench.js.
   Parallelization: W6 (manual) | Blocked: nothing | Blocks: nothing
   Refs: src/plugin/brain-hooks.mjs:171-200
@@ -2753,7 +2753,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-signal-5.md
   Commit: Y | perf: add signal perf 5
 
-- [ ] 6.6 C5: Signal perf 6 — onToolBefore latency
+- [x] 6.6 C5: Signal perf 6 — onToolBefore latency
   What: benchmarks/perf-signal-6.bench.js.
   Parallelization: W6 (manual) | Blocked: nothing | Blocks: nothing
   Refs: src/plugin/brain-hooks.mjs:171-200
@@ -2762,7 +2762,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-signal-6.md
   Commit: Y | perf: add signal perf 6
 
-- [ ] 6.7 C5: Signal perf 7 — onToolAfter latency
+- [x] 6.7 C5: Signal perf 7 — onToolAfter latency
   What: benchmarks/perf-signal-7.bench.js.
   Parallelization: W6 (manual) | Blocked: nothing | Blocks: nothing
   Refs: src/plugin/brain-hooks.mjs:171-200
@@ -2771,7 +2771,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-signal-7.md
   Commit: Y | perf: add signal perf 7
 
-- [ ] 6.8 C5: Signal perf 8 — full T1-T2-T3 cycle latency
+- [x] 6.8 C5: Signal perf 8 — full T1-T2-T3 cycle latency
   What: benchmarks/perf-signal-8.bench.js.
   Parallelization: W6 (manual) | Blocked: nothing | Blocks: nothing
   Refs: src/plugin/brain-hooks.mjs:171-200
@@ -2780,7 +2780,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-signal-8.md
   Commit: Y | perf: add signal perf 8
 
-- [ ] 6.9 C5: Signal perf 9 — S_Map memory growth per 1000 sessions
+- [x] 6.9 C5: Signal perf 9 — S_Map memory growth per 1000 sessions
   What: benchmarks/perf-signal-9.bench.js.
   Parallelization: W6 (manual) | Blocked: nothing | Blocks: nothing
   Refs: src/plugin/brain-hooks.mjs:171-200
@@ -2789,7 +2789,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-signal-9.md
   Commit: Y | perf: add signal perf 9
 
-- [ ] 6.10 C5: Signal perf 10 — signal dedup overhead
+- [x] 6.10 C5: Signal perf 10 — signal dedup overhead
   What: benchmarks/perf-signal-10.bench.js.
   Parallelization: W6 (manual) | Blocked: nothing | Blocks: nothing
   Refs: src/plugin/brain-hooks.mjs:171-200
@@ -2798,7 +2798,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-signal-10.md
   Commit: Y | perf: add signal perf 10
 
-- [ ] 6.11 C5: MCP perf 1 — memory-store P50/P95 100/1K/10K ops
+- [x] 6.11 C5: MCP perf 1 — memory-store P50/P95 100/1K/10K ops
   What: benchmarks/perf-mcp-1.bench.js.
   Parallelization: W6 (manual) | Blocked: W4 | Blocks: nothing
   Refs: all MCP server.ts files
@@ -2807,7 +2807,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-mcp-1.md
   Commit: Y | perf: add MCP perf 1
 
-- [ ] 6.12 C5: MCP perf 2 — world-model BFS 100/1K/10K nodes
+- [x] 6.12 C5: MCP perf 2 — world-model BFS 100/1K/10K nodes
   What: benchmarks/perf-mcp-2.bench.js.
   Parallelization: W6 (manual) | Blocked: W4 | Blocks: nothing
   Refs: all MCP server.ts files
@@ -2816,7 +2816,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-mcp-2.md
   Commit: Y | perf: add MCP perf 2
 
-- [ ] 6.13 C5: MCP perf 3 — reward-system score_action latency
+- [x] 6.13 C5: MCP perf 3 — reward-system score_action latency
   What: benchmarks/perf-mcp-3.bench.js.
   Parallelization: W6 (manual) | Blocked: W4 | Blocks: nothing
   Refs: all MCP server.ts files
@@ -2825,7 +2825,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-mcp-3.md
   Commit: Y | perf: add MCP perf 3
 
-- [ ] 6.14 C5: MCP perf 4 — tool-tracker track_tool_use latency
+- [x] 6.14 C5: MCP perf 4 — tool-tracker track_tool_use latency
   What: benchmarks/perf-mcp-4.bench.js.
   Parallelization: W6 (manual) | Blocked: W4 | Blocks: nothing
   Refs: all MCP server.ts files
@@ -2834,7 +2834,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-mcp-4.md
   Commit: Y | perf: add MCP perf 4
 
-- [ ] 6.15 C5: MCP perf 5 — all 8 MCP cold start time
+- [x] 6.15 C5: MCP perf 5 — all 8 MCP cold start time
   What: benchmarks/perf-mcp-5.bench.js.
   Parallelization: W6 (manual) | Blocked: W4 | Blocks: nothing
   Refs: all MCP server.ts files
@@ -2843,7 +2843,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-mcp-5.md
   Commit: Y | perf: add MCP perf 5
 
-- [ ] 6.16 C5: MCP perf 6 — all 8 MCP concurrent throughput
+- [x] 6.16 C5: MCP perf 6 — all 8 MCP concurrent throughput
   What: benchmarks/perf-mcp-6.bench.js.
   Parallelization: W6 (manual) | Blocked: W4 | Blocks: nothing
   Refs: all MCP server.ts files
@@ -2852,7 +2852,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-mcp-6.md
   Commit: Y | perf: add MCP perf 6
 
-- [ ] 6.17 C5: Stress test 1 — memory-store 100K records memory+time
+- [x] 6.17 C5: Stress test 1 — memory-store 100K records memory+time
   What: benchmarks/perf-stress-1.bench.js.
   Parallelization: W6 (manual) | Blocked: W4/W5 | Blocks: nothing
   Accept: completes without crash, within memory bounds
@@ -2860,7 +2860,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-stress-1.md
   Commit: Y | perf: add stress test 1
 
-- [ ] 6.18 C5: Stress test 2 — signal computation 500 concurrent sessions
+- [x] 6.18 C5: Stress test 2 — signal computation 500 concurrent sessions
   What: benchmarks/perf-stress-2.bench.js.
   Parallelization: W6 (manual) | Blocked: W4/W5 | Blocks: nothing
   Accept: completes without crash, within memory bounds
@@ -2868,7 +2868,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-stress-2.md
   Commit: Y | perf: add stress test 2
 
-- [ ] 6.19 C5: Stress test 3 — all 8 MCPs simultaneous 100 requests each
+- [x] 6.19 C5: Stress test 3 — all 8 MCPs simultaneous 100 requests each
   What: benchmarks/perf-stress-3.bench.js.
   Parallelization: W6 (manual) | Blocked: W4/W5 | Blocks: nothing
   Accept: completes without crash, within memory bounds
@@ -2876,7 +2876,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-stress-3.md
   Commit: Y | perf: add stress test 3
 
-- [ ] 6.20 C5: Stress test 4 — hook injection 10K consecutive cycles
+- [x] 6.20 C5: Stress test 4 — hook injection 10K consecutive cycles
   What: benchmarks/perf-stress-4.bench.js.
   Parallelization: W6 (manual) | Blocked: W4/W5 | Blocks: nothing
   Accept: completes without crash, within memory bounds
@@ -2884,7 +2884,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c5-perf-stress-4.md
   Commit: Y | perf: add stress test 4
 
-- [ ] 6.21 C13e: Plugin lifecycle-t4-seq
+- [x] 6.21 C13e: Plugin lifecycle-t4-seq
   What: tests/behavioral/agentest/scenarios/c13-lifecycle-t4-seq.sim.ts. T4 event sequence: idle→error→idle→consolidation via Agentest multi-turn.
   Assert: all 4 T4 events processed in order.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -2893,7 +2893,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-lifecycle-t4-seq.md
   Commit: Y | test(runtime): add Agentest lifecycle-t4-seq
 
-- [ ] 6.22 C13e: Plugin lifecycle-warnings
+- [x] 6.22 C13e: Plugin lifecycle-warnings
   What: tests/behavioral/agentest/scenarios/c13-lifecycle-warnings.sim.ts. G2/G4/G6 warning messages appended to output.
   Assert: mechanism data has 'SAFETY GATES' entries.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -2902,7 +2902,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-lifecycle-warnings.md
   Commit: Y | test(runtime): add Agentest lifecycle-warnings
 
-- [ ] 6.23 C13e: Plugin lifecycle-audit
+- [x] 6.23 C13e: Plugin lifecycle-audit
   What: tests/behavioral/agentest/scenarios/c13-lifecycle-audit.sim.ts. full audit trail: every tool call logged with timestamp.
   Assert: audit records match tool call count.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -2911,7 +2911,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-lifecycle-audit.md
   Commit: Y | test(runtime): add Agentest lifecycle-audit
 
-- [ ] 6.24 C13f: recovery-mcp-disconnect
+- [x] 6.24 C13f: recovery-mcp-disconnect
   What: tests/behavioral/agentest/scenarios/c13-recovery-mcp-disconnect.sim.ts.
   MCP server disconnects, handler reconnects gracefully.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -2920,7 +2920,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-recovery-mcp-disconnect.md
   Commit: Y | test(runtime): add Agentest recovery-mcp-disconnect
 
-- [ ] 6.25 C13f: recovery-unhandled-exception
+- [x] 6.25 C13f: recovery-unhandled-exception
   What: tests/behavioral/agentest/scenarios/c13-recovery-unhandled-exception.sim.ts.
   plugin throws unhandled exception, caught and logged.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -2929,7 +2929,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-recovery-unhandled-exception.md
   Commit: Y | test(runtime): add Agentest recovery-unhandled-exception
 
-- [ ] 6.26 C13f: recovery-mt-corruption
+- [x] 6.26 C13f: recovery-mt-corruption
   What: tests/behavioral/agentest/scenarios/c13-recovery-mt-corruption.sim.ts.
   M_t state corrupted, auto-repair to defaults.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -2938,7 +2938,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-recovery-mt-corruption.md
   Commit: Y | test(runtime): add Agentest recovery-mt-corruption
 
-- [ ] 6.27 C13f: recovery-concurrent-timeout
+- [x] 6.27 C13f: recovery-concurrent-timeout
   What: tests/behavioral/agentest/scenarios/c13-recovery-concurrent-timeout.sim.ts.
   one session times out, others unaffected.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -2947,7 +2947,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-recovery-concurrent-timeout.md
   Commit: Y | test(runtime): add Agentest recovery-concurrent-timeout
 
-- [ ] 6.28 C13f: recovery-oom-simulation
+- [x] 6.28 C13f: recovery-oom-simulation
   What: tests/behavioral/agentest/scenarios/c13-recovery-oom-simulation.sim.ts.
   OOM condition, safety_level raised.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -2956,7 +2956,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-recovery-oom-simulation.md
   Commit: Y | test(runtime): add Agentest recovery-oom-simulation
 
-- [ ] 6.29 C13f: recovery-cascade-failure
+- [x] 6.29 C13f: recovery-cascade-failure
   What: tests/behavioral/agentest/scenarios/c13-recovery-cascade-failure.sim.ts.
   memory MCP down, world-model still works independently.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -2965,7 +2965,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-recovery-cascade-failure.md
   Commit: Y | test(runtime): add Agentest recovery-cascade-failure
 
-- [ ] 6.30 C13g: demand-fix-login
+- [x] 6.30 C13g: demand-fix-login
   What: tests/behavioral/agentest/scenarios/c13-demand-fix-login.sim.ts.
   fix login bug → verify handler records URGENT mood + memory search trigger.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -2974,7 +2974,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-demand-fix-login.md
   Commit: Y | test(runtime): add Agentest demand-fix-login
 
-- [ ] 6.31 C13g: demand-create-api
+- [x] 6.31 C13g: demand-create-api
   What: tests/behavioral/agentest/scenarios/c13-demand-create-api.sim.ts.
   create new API endpoint → verify L3 swarm detection triggered.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -2983,7 +2983,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-demand-create-api.md
   Commit: Y | test(runtime): add Agentest demand-create-api
 
-- [ ] 6.32 C13g: demand-delete-file
+- [x] 6.32 C13g: demand-delete-file
   What: tests/behavioral/agentest/scenarios/c13-demand-delete-file.sim.ts.
   delete that file → verify safety-cortex G1-G7 pattern matching active.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -2992,7 +2992,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-demand-delete-file.md
   Commit: Y | test(runtime): add Agentest demand-delete-file
 
-- [ ] 6.33 C13g: demand-what-did-i-do
+- [x] 6.33 C13g: demand-what-did-i-do
   What: tests/behavioral/agentest/scenarios/c13-demand-what-did-i-do.sim.ts.
   what did I do last week → verify hippocampus episodic memory retrieval.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -3001,7 +3001,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-demand-what-did-i-do.md
   Commit: Y | test(runtime): add Agentest demand-what-did-i-do
 
-- [ ] 6.34 C13g: protocol-invalid-config
+- [x] 6.34 C13g: protocol-invalid-config
   What: tests/behavioral/agentest/scenarios/c13-protocol-invalid-config.sim.ts.
   handler receives invalid config → graceful error.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -3010,7 +3010,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-protocol-invalid-config.md
   Commit: Y | test(runtime): add Agentest protocol-invalid-config
 
-- [ ] 6.35 C13g: protocol-null-message
+- [x] 6.35 C13g: protocol-null-message
   What: tests/behavioral/agentest/scenarios/c13-protocol-null-message.sim.ts.
   handler receives null/undefined/empty → no crash.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -3019,7 +3019,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-protocol-null-message.md
   Commit: Y | test(runtime): add Agentest protocol-null-message
 
-- [ ] 6.36 C13g: protocol-rapid-100
+- [x] 6.36 C13g: protocol-rapid-100
   What: tests/behavioral/agentest/scenarios/c13-protocol-rapid-100.sim.ts.
   100 rapid messages without awaiting response → all processed.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -3028,7 +3028,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-protocol-rapid-100.md
   Commit: Y | test(runtime): add Agentest protocol-rapid-100
 
-- [ ] 6.37 C13g: protocol-mixed-calls
+- [x] 6.37 C13g: protocol-mixed-calls
   What: tests/behavioral/agentest/scenarios/c13-protocol-mixed-calls.sim.ts.
   mixed user messages + simulateToolCall → correct state.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -3037,7 +3037,7 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
   Evidence: .omo/evidence/c13-protocol-mixed-calls.md
   Commit: Y | test(runtime): add Agentest protocol-mixed-calls
 
-- [ ] 6.38 C13g: protocol-reuse-after-close
+- [x] 6.38 C13g: protocol-reuse-after-close
   What: tests/behavioral/agentest/scenarios/c13-protocol-reuse-after-close.sim.ts.
   handler reuse after session close → new session created.
   Parallelization: W6 (manual) | Blocked: W0 | Blocks: nothing
@@ -3050,11 +3050,11 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
 
 ## Final verification wave
 > Runs in parallel after ALL todos. ALL must APPROVE.
-- [ ] F1. Plan compliance — all todos completed, all evidence in .omo/evidence/
-- [ ] F2. Code quality — no eval, no process.exit, all imports resolvable
-- [ ] F3. Real QA — `node tests/runner.js --all --runtime`, 100% PASS
-- [ ] F4. Scope fidelity — git diff shows only new files, no existing modified
-- [ ] F5. Coverage gap audit — every brain-agent source file has at least 1 test
+- [x] F1. Plan compliance — all todos completed, all evidence in .omo/evidence/
+- [x] F2. Code quality — no eval, no process.exit, all imports resolvable
+- [x] F3. Real QA — `node tests/runner.js --all --runtime`, 100% PASS
+- [x] F4. Scope fidelity — git diff shows only new files, no existing modified
+- [x] F5. Coverage gap audit — every brain-agent source file has at least 1 test
 
 ## Commit strategy
 - 7 commits, one per wave (W0-W6)
@@ -3062,15 +3062,15 @@ The evaluation process itself IS runtime testing: it exercises L1 perception (is
 - W6: `feat(bench): add SWE-bench Lite evaluation (6)`
 
 ## Success criteria
-- [ ] All todos completed with [x]
-- [ ] All evidence files in .omo/evidence/ with PASS status
-- [ ] `node tests/runner.js --all` passes (existing tests unbroken)
-- [ ] All 21 components (C1-C21) all have at least 1 passing test, ~299 total tests across 7 waves (Agentest scenarios each count as 1 todo but produce 3+ assertions)
-- [ ] Expanded agentest-handler.mjs handles all 15 user scenarios (C13b)
-- [ ] All 8 MCP servers have protocol/persistence/concurrency coverage
-- [ ] All 7 signals tested in isolation + all 21 cross-product pairs (C2)
-- [ ] All 7 safety gates tested against 5 bypass vectors each = 35 gate tests (C3)
-- [ ] 3 cross-circuit conflict rules verified active
-- [ ] 50 Agentest simulation scenarios pass (C13) + SWE-bench Lite 50-task baseline (C14) — each with 3+ deterministic mechanism assertions
-- [ ] No existing test files modified
-- [ ] SWE-bench pass@1 >= 10% baseline
+- [x] All todos completed with [x]
+- [x] All evidence files in .omo/evidence/ with PASS status
+- [x] `node tests/runner.js --all` passes (existing tests unbroken)
+- [x] All 21 components (C1-C21) all have at least 1 passing test, ~299 total tests across 7 waves (Agentest scenarios each count as 1 todo but produce 3+ assertions)
+- [x] Expanded agentest-handler.mjs handles all 15 user scenarios (C13b)
+- [x] All 8 MCP servers have protocol/persistence/concurrency coverage
+- [x] All 7 signals tested in isolation + all 21 cross-product pairs (C2)
+- [x] All 7 safety gates tested against 5 bypass vectors each = 35 gate tests (C3)
+- [x] 3 cross-circuit conflict rules verified active
+- [x] 50 Agentest simulation scenarios pass (C13) + SWE-bench Lite 50-task baseline (C14) — each with 3+ deterministic mechanism assertions
+- [x] No existing test files modified
+- [x] SWE-bench pass@1 >= 10% baseline
