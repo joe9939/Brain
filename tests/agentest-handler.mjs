@@ -72,6 +72,7 @@ function checkGates(text) {
 }
 
 export function handler(sessionId, { text }) {
+  text = text || '';
   onMessage(sessionId, text);
 
   const isDangerous = /\brm\s+-rf\b|emergency|urgent/i.test(text);

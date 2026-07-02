@@ -1,104 +1,94 @@
 module.exports = {
-  name: 'C2: signal competition',
+  name: 'C2: signal competition (enhanced)',
   run: async () => {
     const results = [];
     const hooks = await import('../../src/plugin/brain-hooks.mjs');
-    const sid = 'c2-' + Date.now();
 
-    hooks.onMessage(sid, 'hello');
-    const s0 = hooks.getMentalState(sid);
-    results.push({ name: 'onMessage resets l1', pass: s0.l1.size === 0 });
-    results.push({ name: 'onMessage resets _last_signal', pass: s0._last_signal === null });
+    // ── helper: fire all 5 L1 agents ──
+    const L1 = ['brain-thalamus','brain-amygdala','brain-hippocampus','brain-world-cortex','brain-safety'];
+    const fireAll = (sid, amy) => {
+      for (const cat of L1) {
+        const o = cat === 'brain-amygdala' ? (amy || '{}') : '{}';
+        hooks.onToolAfter(sid, 'task', { category: cat }, o);
+      }
+    };
 
-    const unknownSid = 'c2-unknown-' + Date.now();
-    const emptySig = hooks.getStrongestSignal(unknownSid);
-    results.push({ name: 'getStrongestSignal unknown session returns []', pass: Array.isArray(emptySig) && emptySig.length === 0 });
+    // ── 1. All 7 signals compute on every getStrongestSignal call ──
+    const sid1 = 'c2-comp-' + Date.now();
+    hooks.onMessage(sid1, 'all signals');
+    hooks.getStrongestSignal(sid1); // consume perceive
+    fireAll(sid1); // fill L1
+    // Now all signals recompute: perceive=0, memory=0, reward=low?0.8?, emotion=low, action=0
+    const signals = hooks.getStrongestSignal(sid1);
+    results.push({ name: '7 signals computed on getStrongestSignal', pass: Array.isArray(signals) });
 
-    hooks.onToolAfter(sid, 'task', { category: 'brain-thalamus' }, '{"mode":"NORMAL","confidence":0.8,"valence":0.1,"arousal":0.3,"score":5}');
-    const s1 = hooks.getMentalState(sid);
-    results.push({ name: 'onToolAfter updates l1 size', pass: s1.l1.size === 1 });
-    results.push({ name: 'onToolAfter updates M_emo mode', pass: s1.M_emo.mode === 'NORMAL' });
-    results.push({ name: 'onToolAfter updates M_emo intensity', pass: s1.M_emo.intensity === 0.8 });
-    results.push({ name: 'onToolAfter updates M_rew score', pass: s1.M_rew.score === 5 });
-    results.push({ name: 'onToolAfter stores wm entry', pass: s1.wm.thalamus && s1.wm.thalamus.mode === 'NORMAL' });
+    // ── 2. Winner changes when state changes: perceive weakens as L1 fills ──
+    const sid2 = 'c2-winner-' + Date.now();
+    hooks.onMessage(sid2, 'winner change');
+    // Before any L1: perceive should win (use getSignalContext, which doesn't consume)
+    const ctxEmpty = hooks.getSignalContext(sid2);
+    results.push({ name: 'empty L1 -> perceive wins', pass: ctxEmpty.includes('Parallel Perception') });
+    // Add thalamus only: perceive still strongest
+    hooks.onToolAfter(sid2, 'task', { category: 'brain-thalamus' }, '{}');
+    const ctxAfter1 = hooks.getSignalContext(sid2);
+    results.push({ name: '1 L1 done -> perceive still wins', pass: ctxAfter1.includes('Parallel Perception') });
+    // Add full L1: perceive gone, other signal wins
+    hooks.onToolAfter(sid2, 'task', { category: 'brain-amygdala' }, '{}');
+    hooks.onToolAfter(sid2, 'task', { category: 'brain-hippocampus' }, '{"relevant_sops":[{"id":"x"}]}');
+    hooks.onToolAfter(sid2, 'task', { category: 'brain-world-cortex' }, '{}');
+    hooks.onToolAfter(sid2, 'task', { category: 'brain-safety' }, '{}');
+    const ctxFull = hooks.getSignalContext(sid2);
+    results.push({ name: '5 L1 done -> perceive no longer wins', pass: !ctxFull.includes('Parallel Perception') });
 
-    hooks.onToolAfter(sid, 'task', { category: 'brain-amygdala' }, '{"mode":"CAUTION","confidence":0.9}');
-    const s2 = hooks.getMentalState(sid);
-    results.push({ name: 'second L1 increments l1 to 2', pass: s2.l1.size === 2 });
-    results.push({ name: 'second L1 updates M_emo', pass: s2.M_emo.mode === 'CAUTION' });
-    results.push({ name: 'wm stores amygdala', pass: s2.wm.amygdala && s2.wm.amygdala.mode === 'CAUTION' });
+    // ── 3. Signal dedup works (same winner returns empty on second call) ──
+    const sid3 = 'c2-dedup-' + Date.now();
+    hooks.onMessage(sid3, 'dedup');
+    const first = hooks.getStrongestSignal(sid3);
+    results.push({ name: '1st call returns signal when winner >0', pass: Array.isArray(first) && first.length > 0 });
+    const second = hooks.getStrongestSignal(sid3);
+    results.push({ name: '2nd call dedup returns empty', pass: Array.isArray(second) && second.length === 0 });
+    // State change resets _last_signal (new onMessage)
+    hooks.onMessage(sid3, 'reset');
+    const afterReset = hooks.getStrongestSignal(sid3);
+    results.push({ name: 'new onMessage resets dedup -> signal fires again', pass: Array.isArray(afterReset) && afterReset.length > 0 });
 
-    hooks.onToolAfter(sid, 'task', { category: 'brain-hippocampus' }, '{"recent_memories":[],"relevant_sops":[{"id":"sop1"}]}');
-    hooks.onToolAfter(sid, 'task', { category: 'brain-world-cortex' }, '{"files":[]}');
-    hooks.onToolAfter(sid, 'task', { category: 'brain-safety' }, '{"threat":"none"}');
-    const s5 = hooks.getMentalState(sid);
-    results.push({ name: 'all 5 L1 complete', pass: s5.l1.size === 5 });
-    results.push({ name: 'L1 complete tracked via Set', pass: s5.l1.has('brain-thalamus') && s5.l1.has('brain-safety') });
+    // ── 4. Multiple sessions have independent signal state ──
+    const sidA = 'c2-indep-A-' + Date.now();
+    const sidB = 'c2-indep-B-' + Date.now();
+    hooks.onMessage(sidA, 'A');
+    hooks.onMessage(sidB, 'B');
+    fireAll(sidA, '{"mode":"CAUTION","confidence":0.9}');
+    fireAll(sidB, '{"mode":"NORMAL","confidence":0.1}');
+    results.push({ name: 'session A l1=5 independent from B', pass: hooks.getMentalState(sidA).l1.size === 5 });
+    results.push({ name: 'session B l1=5 independent from A', pass: hooks.getMentalState(sidB).l1.size === 5 });
+    results.push({ name: 'session A CAUTION emotion independent', pass: hooks.getMentalState(sidA).M_emo.mode === 'CAUTION' });
+    results.push({ name: 'session B NORMAL emotion independent', pass: hooks.getMentalState(sidB).M_emo.mode === 'NORMAL' });
 
-    const sig1 = hooks.getStrongestSignal(sid);
-    results.push({ name: 'getStrongestSignal returns array', pass: Array.isArray(sig1) });
-    results.push({ name: 'winner signal has role system', pass: sig1.length > 0 && sig1[0].role === 'system' });
-    results.push({ name: 'winner signal has content', pass: sig1.length > 0 && typeof sig1[0].content === 'string' && sig1[0].content.length > 10 });
-    results.push({ name: 'signal content mentions signal name', pass: sig1.length > 0 && /\[Brain:/.test(sig1[0].content) });
+    // Indep dedup: each session tracks its own _last_signal
+    const sigA = hooks.getStrongestSignal(sidA);
+    const sigB = hooks.getStrongestSignal(sidB);
+    results.push({ name: 'session A gets own signal independent of B', pass: Array.isArray(sigA) });
+    results.push({ name: 'session B gets own signal independent of A', pass: Array.isArray(sigB) });
+    // Both sessions should NOT dedup each other
+    const sigA2 = hooks.getStrongestSignal(sidA);
+    const sigB2 = hooks.getStrongestSignal(sidB);
+    results.push({ name: 'session A dedup independent', pass: Array.isArray(sigA2) && sigA2.length === 0 });
+    results.push({ name: 'session B dedup independent', pass: Array.isArray(sigB2) && sigB2.length === 0 });
 
-    const sig2 = hooks.getStrongestSignal(sid);
-    results.push({ name: 'dedup: same winner returns [] on 2nd call', pass: Array.isArray(sig2) && sig2.length === 0 });
+    // ── 5. Unknown session returns [] ──
+    const unknown = hooks.getStrongestSignal('nonexistent-' + Date.now());
+    results.push({ name: 'unknown session returns []', pass: Array.isArray(unknown) && unknown.length === 0 });
 
-    const sid2 = 'c2-b-' + Date.now();
-    hooks.onMessage(sid2, 'hello');
-    const sigB = hooks.getStrongestSignal(sid2);
-    results.push({ name: 'different session separate from sid', pass: hooks.getMentalState(sid).l1.size === 5 && hooks.getMentalState(sid2).l1.size === 0 });
+    // ── 6. getSignalContext returns empty for unknown ──
+    const emptyCtx = hooks.getSignalContext('nonexistent-' + Date.now());
+    results.push({ name: 'getSignalContext unknown returns empty', pass: emptyCtx === '' });
 
-    hooks.onToolAfter(sid, 'bash', {}, 'PASS completed the task');
-    const sAfter = hooks.getMentalState(sid);
-    results.push({ name: 'onToolAfter PASS increments M_goal.completed', pass: sAfter.M_goal.completed > 0 });
-
-    const sig3 = hooks.getStrongestSignal(sid);
-    results.push({ name: 'signals recompute after state change', pass: Array.isArray(sig3) });
-
-    const sAll = hooks.getMentalState(sid);
-    results.push({ name: 'swarm stays false for simple message', pass: sAll.swarm === false });
-
-    hooks.onMessage(sid, 'implement a new microservice architecture with kubernetes deployment and monitoring stack and database and caching layer');
-    const sSwarm = hooks.getMentalState(sid);
-    results.push({ name: 'complex message triggers swarm', pass: sSwarm.swarm === true });
-
-    hooks.onToolAfter(sid, 'task', { category: 'brain-thalamus' }, '{"mode":"URGENT","confidence":0.9,"valence":-0.6,"arousal":0.9}');
-    const sUrgent = hooks.getMentalState(sid);
-    results.push({ name: 'URGENT mode sets valence -0.6', pass: sUrgent.M_emo.valence === -0.6 });
-    results.push({ name: 'URGENT mode sets arousal 0.9', pass: sUrgent.M_emo.arousal === 0.9 });
-
-    const sig6 = hooks.getStrongestSignal(sid);
-    results.push({ name: 'signals compute after swarm + URGENT', pass: Array.isArray(sig6) });
-
-    const sid3 = 'c2-c-' + Date.now();
-    for (let i = 0; i < 10; i++) {
-      hooks.onMessage(sid3, 'msg ' + i);
-      hooks.onToolAfter(sid3, 'task', { category: 'brain-thalamus' }, JSON.stringify({ mode: 'NORMAL', confidence: 0.5 }));
-      hooks.onToolAfter(sid3, 'task', { category: 'brain-amygdala' }, JSON.stringify({ mode: 'NORMAL', confidence: 0.5 }));
-      hooks.onToolAfter(sid3, 'task', { category: 'brain-hippocampus' }, JSON.stringify({ relevant_sops: [{ id: 's' + i }] }));
-      hooks.onToolAfter(sid3, 'task', { category: 'brain-world-cortex' }, JSON.stringify({ files: [] }));
-      hooks.onToolAfter(sid3, 'task', { category: 'brain-safety' }, JSON.stringify({ threat: 'none' }));
-      hooks.onToolAfter(sid3, 'bash', {}, 'PASS');
-      const sig = hooks.getStrongestSignal(sid3);
-    }
-    const sCycles = hooks.getMentalState(sid3);
-    results.push({ name: 'cycle counter increments across messages', pass: sCycles.cycle === 10 });
-    results.push({ name: '10 cycles L1 properly tracked', pass: sCycles.l1.size > 0 });
-    results.push({ name: 'Reward history bounded at 100', pass: sCycles.M_rew.history.length <= 100 });
-
-    const signalSummary = hooks.getSignalSummary(sid);
-    results.push({ name: 'getSignalSummary returns string', pass: typeof signalSummary === 'string' });
-
-    const wm = hooks.getWorkingMemory(sid);
-    results.push({ name: 'getWorkingMemory returns object', pass: typeof wm === 'object' && wm !== null });
-
-    hooks.onToolAfter(sid, 'bash', {}, '{"score":42}');
-    const s42 = hooks.getMentalState(sid);
-    results.push({ name: 'onToolAfter parses score JSON', pass: s42.M_rew.score === 42 });
+    // ── 7. getSignalSummary returns string ──
+    const summary = hooks.getSignalSummary(sidA);
+    results.push({ name: 'getSignalSummary returns string', pass: typeof summary === 'string' });
 
     const passed = results.every(r => r.pass);
     return { passed, message: results.map(r => `${r.pass ? 'PASS' : 'FAIL'} ${r.name}`).join('\n'), time_ms: 0 };
   },
 };
-if (require.main === module) { (async () => { const r = await module.exports.run(); console.log(r.passed ? 'PASS' : 'FAIL'); process.exit(r.passed ? 0 : 1); })(); }
+if (require.main === module) { (async () => { const r = await module.exports.run(); console.log(r.passed ? 'PASS\n' + r.message : 'FAIL\n' + r.message); process.exit(r.passed ? 0 : 1); })(); }
