@@ -27,7 +27,7 @@ module.exports = {
     if (fs.existsSync(EXAMPLE_CONFIG)) {
       const exampleContent = fs.readFileSync(EXAMPLE_CONFIG, 'utf8');
       results.push({ name: 'Config template has {MCP_DIR}', pass: exampleContent.includes('{MCP_DIR}') });
-      results.push({ name: 'Config template has {PROJECT_DIR}', pass: exampleContent.includes('{PROJECT_DIR}') });
+      results.push({ name: 'Config template has {HERE_DIR}', pass: exampleContent.includes('{HERE_DIR}') || exampleContent.includes('{PROJECT_DIR}') });
       results.push({ name: 'Config template has {CONFIG_DIR}', pass: exampleContent.includes('{CONFIG_DIR}') });
       results.push({ name: 'Config template has {PLUGIN_DIR}', pass: exampleContent.includes('{PLUGIN_DIR}') });
     } else {

@@ -3,8 +3,9 @@
 
 const fs = require('fs');
 const path = require('path');
+const config = require('../config');
 
-const ROOT = 'C:\\Users\\86189\\Desktop\\brain-agent';
+const ROOT = config.BRAIN_AGENT_DIR;
 const OMO = path.join(ROOT, 'oh-my-openagent.jsonc');
 const MCP_SRC = path.join(ROOT, 'src', 'mcp');
 const AGENTS_DIR = path.join(ROOT, '.opencode', 'agents');

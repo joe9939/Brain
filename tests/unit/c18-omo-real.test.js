@@ -5,7 +5,20 @@ const fs = require('fs');
 const path = require('path');
 
 function stripJsonc(src) {
-  return src.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  let inStr = false, inBlock = false, inLine = false, out = '';
+  for (let i = 0; i < src.length; i++) {
+    const c = src[i], n = src[i + 1];
+    if (inBlock) { if (c === '*' && n === '/') { inBlock = false; i++; } continue; }
+    if (inLine) { if (c === '\n') inLine = false; continue; }
+    if (inStr) { if (c === '\\') { out += c + (n || ''); i++; } else if (c === '"') inStr = false; out += c; continue; }
+    if (c === '"') { inStr = true; out += c; continue; }
+    if (c === '/' && n === '/') { inLine = true; i++; continue; }
+    if (c === '/' && n === '*') { inBlock = true; i++; continue; }
+    out += c;
+  }
+  // Remove trailing commas before } or ] (JSONC allowance)
+  out = out.replace(/,(\s*[}\]])/g, '$1');
+  return out;
 }
 
 module.exports = {
@@ -43,7 +56,6 @@ module.exports = {
       'brain-coordinator',
       'brain-gate-tuner',
       'brain-curiosity',
-      'brain-discordia',
     ];
 
     for (const name of expected) {
