@@ -1,5 +1,5 @@
-// z1-full-session-trace.test.js — 完整会话追踪：从消息到最终状态，记录中间所有活动
-// 测试"发消息 → 信号竞争 → L1派出 → 状态变更 → 信号切换"的完整链路
+// z1-full-session-trace.test.js — Full session trace: from message to final state, logging all intermediate activity
+// Tests the full chain: message → signal competition → L1 dispatch → state change → signal switch
 
 module.exports = {
   name: 'TRACE: full session lifecycle',
@@ -17,13 +17,13 @@ module.exports = {
       return s;
     }
 
-    // Step 1: 用户发消息
+    // Step 1: User sends message
     hooks.onMessage(sid, 'implement a complex microservice architecture with kubernetes deployment monitoring stack alerting logging and healthcheck');
-    snap('STEP1: 收到消息');
+    snap('STEP1: Message received');
     const s1 = hooks.getMentalState(sid);
     log.push(`  CYCLES: ${s1.cycle}  swarm=${s1.swarm}  l1.size=${s1.l1.size}`);
 
-    // Step 2: 模拟5个L1 agent逐一完成
+    // Step 2: Simulate 5 L1 agents completing one by one
     const agents = ['brain-thalamus','brain-amygdala','brain-hippocampus','brain-world-cortex','brain-safety'];
     for (const a of agents) {
       hooks.onToolAfter(sid, 'task', { category: a }, JSON.stringify({mode:'NORMAL',score:5}));
@@ -31,18 +31,18 @@ module.exports = {
     snap('STEP2: L1 5/5 complete');
     log.push(`  L1_SET: ${Array.from(hooks.getMentalState(sid).l1).join(', ')}`);
 
-    // Step 3: 信号竞争——第一个信号会被dedup吃掉，第二次调用得到空
+    // Step 3: Signal competition — first signal consumed by dedup, second call returns empty
     const sigAfter = hooks.getStrongestSignal(sid);
     log.push(`  SIGNAL_AFTER_L1: ${sigAfter.length > 0 ? 'winner=' + (sigAfter[0]?.content?.slice(8, 50) || '?') : '(dedup - same winner)'}`);
 
-    // Step 4: 任务完成 → 增长goal
+    // Step 4: Task complete → increment goal
     hooks.onToolAfter(sid, 'bash', {}, 'PASS completed');
     snap('STEP3: PASS completed');
     log.push(`  TD_ERROR: ${hooks.getMentalState(sid).td_error.toFixed(2)}`);
 
-    // Step 5: CAUTION 模式
+    // Step 5: CAUTION mode
     hooks.onMessage(sid, 'urgent security issue detected');
-    snap('STEP4: 紧急消息');
+    snap('STEP4: Urgent message');
     log.push(`  FRESH_CYCLE: cycle=${hooks.getMentalState(sid).cycle}`);
 
     for (const a of agents) {
@@ -51,11 +51,11 @@ module.exports = {
     snap('STEP5: L1 CAUTION');
     log.push(`  EMOTION_STRENGTH: mode=${hooks.getMentalState(sid).M_emo.mode} intensity=${hooks.getMentalState(sid).M_emo.intensity}`);
 
-    // Step 6: 低分数 → reward signal
+    // Step 6: Low score → reward signal
     hooks.onToolAfter(sid, 'bash', {}, '{"score":2}');
     log.push(`  AFTER_LOW_SCORE: reward.score=${hooks.getMentalState(sid).M_rew.score.toFixed(1)}`);
 
-    // Step 7: BrainTracer 记录追踪
+    // Step 7: BrainTracer records trace
     const events = hooks.BrainTracer.export(sid);
     log.push(`  TRACER: ${events.length} total events`);
     const eventTypes = [...new Set(events.map(e => e.event))];
@@ -63,7 +63,7 @@ module.exports = {
     const t1blocks = events.filter(e => e.event === 'T1:before' && e.data?.blocked);
     log.push(`  G1_BLOCKS: ${t1blocks.length}`);
 
-    // 验证关键通路
+    // Verify critical path
     const finalState = hooks.getMentalState(sid);
     const passed = (
       finalState.cycle >= 2 &&

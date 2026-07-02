@@ -1,4 +1,4 @@
-// z2-trace-normal-conversation.test.js — 普通对话回路追踪
+// z2-trace-normal-conversation.test.js — Normal conversation loop trace
 module.exports = {
   name: 'TRACE: normal conversation',
   run: async () => {
@@ -17,35 +17,35 @@ module.exports = {
       }
     }
 
-    // 场景1：普通问候 → perceive 胜出 → 5个L1派出
+    // Scenario 1: Normal greeting → perceive wins → 5 L1 agents dispatched
     hooks.onMessage(sid, 'hello world');
-    snap('消息: hello world');
-    log.push('  ↓ 预期: perceive 胜出 (L1为空)');
+    snap('Message: hello world');
+    log.push('  ↓ Expect: perceive wins (L1 empty)');
 
     l1complete('NORMAL', 7);
-    snap('L1完成');
-    log.push('  ↓ 预期: L1完成，信号切换');
+    snap('L1 complete');
+    log.push('  ↓ Expect: L1 complete, signal switches');
 
-    // 工具调用
+    // Tool call
     hooks.onToolAfter(sid, 'bash', {}, 'done');
-    snap('工具返回');
+    snap('Tool returned');
 
-    // 场景2：紧急消息 → emotion 胜出
+    // Scenario 2: Urgent message → emotion wins
     hooks.onMessage(sid, 'URGENT security breach detected');
-    snap('消息: URGENT');
-    log.push('  ↓ 预期: emotion/safety 胜出 (URGENT)');
+    snap('Message: URGENT');
+    log.push('  ↓ Expect: emotion/safety wins (URGENT)');
 
     l1complete('URGENT', 5);
-    snap('L1 URGENT完成');
+    snap('L1 URGENT complete');
 
-    // 场景3：完成任务
+    // Scenario 3: Complete task
     hooks.onToolAfter(sid, 'bash', {}, 'PASS completed');
-    snap('任务完成');
+    snap('Task complete');
 
     const events = hooks.BrainTracer.export(sid);
-    log.push(`\n=== 最终状态 ===`);
-    log.push(`周期: ${hooks.getMentalState(sid).cycle}  目标: ${hooks.getMentalState(sid).M_goal.completed}`);
-    log.push(`BrainTracer事件: ${events.length}  类型: ${[...new Set(events.map(e=>e.event))].join(', ')}`);
+    log.push(`\n=== Final state ===`);
+    log.push(`Cycles: ${hooks.getMentalState(sid).cycle}  Goals: ${hooks.getMentalState(sid).M_goal.completed}`);
+    log.push(`BrainTracer events: ${events.length}  Types: ${[...new Set(events.map(e=>e.event))].join(', ')}`);
 
     const passed = hooks.getMentalState(sid).cycle >= 2 && hooks.getMentalState(sid).M_goal.completed >= 1;
     return { passed, message: log.join('\n'), time_ms: 0 };

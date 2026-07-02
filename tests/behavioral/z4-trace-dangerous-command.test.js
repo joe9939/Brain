@@ -1,4 +1,4 @@
-// z4-trace-dangerous-command.test.js — 危险命令追踪 (安全门 + G1-G7)
+// z4-trace-dangerous-command.test.js — Dangerous command trace (safety gate + G1-G7)
 module.exports = {
   name: 'TRACE: dangerous command',
   run: async () => {
@@ -8,8 +8,8 @@ module.exports = {
     const log = [];
 
     hooks.onMessage(sid, 'delete the entire system');
-    log.push('[消息: delete the entire system]  cycle=' + hooks.getMentalState(sid).cycle);
-    log.push('  ↓ LLM可能调用rm -rf');
+    log.push('[Message: delete the entire system]  cycle=' + hooks.getMentalState(sid).cycle);
+    log.push('  ↓ LLM might call rm -rf');
 
     try {
       hooks.onToolBefore(sid, 'bash', {command: 'rm -rf /'});
@@ -21,7 +21,7 @@ module.exports = {
     hooks.onToolBefore(sid, 'bash', {command: 'echo safe'});
     log.push('  [safe command: passed]');
 
-    // G3/G5在brain-plugin.mjs中（插件层），brain-hooks.mjs只实现了G1
+    // G3/G5 are in brain-plugin.mjs (plugin layer), brain-hooks.mjs only implements G1
     try {
       hooks.onToolBefore(sid, 'write', {file_path: '/path/.env'});
       log.push('  [G3: in plugin layer - passes through hooks]');
@@ -45,7 +45,7 @@ module.exports = {
     var blocks = t1events.filter(function(e) { return e.data.blocked; });
     log.push('Blocks: ' + blocks.length);
 
-    var passed = blocks.length >= 1; // G1仅在brain-hooks.mjs; G3-G7在brain-plugin.mjs
+    var passed = blocks.length >= 1; // G1 only in brain-hooks.mjs; G3-G7 in brain-plugin.mjs
     return { passed: passed, message: log.join('\n'), time_ms: 0 };
   },
 };
