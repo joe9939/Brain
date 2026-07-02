@@ -6,3 +6,6 @@ dist/
 *.log
 .env
 brain.log
+*.pem
+*.key
+config*.json

@@ -1,6 +1,6 @@
 # Circuit: Conflict Rule D-K (attention_budget)
 **Status**: FAIL
-**Timestamp**: 2026-06-30T18:28:12.162Z
+**Timestamp**: 2026-07-02T16:36:04.374Z
 **Duration**: 0ms
 
 ## Checks

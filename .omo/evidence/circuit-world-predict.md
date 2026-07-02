@@ -1,14 +1,18 @@
 # Circuit: World Model Predict→Verify
 **Status**: FAIL
-**Timestamp**: 2026-06-30T18:28:12.159Z
-**Duration**: 1ms
+**Timestamp**: 2026-07-02T16:36:04.372Z
+**Duration**: 0ms
 
 ## Checks
-- [x] L3 has world_predict before coder
-- [x] POST-ACTION has world_diff verification
-- [x] Predict output feeds coder context
-- [x] world_update exists in POST-ACTION
+- [ ] L3 has world_predict before coder
+- [ ] POST-ACTION has world_diff verification
+- [ ] Predict output feeds coder context
+- [ ] world_update exists in POST-ACTION
 - [ ] Predict→verify cycle section exists
 
 ## Failures
+- L3 has world_predict before coder
+- POST-ACTION has world_diff verification
+- Predict output feeds coder context
+- world_update exists in POST-ACTION
 - Predict→verify cycle section exists

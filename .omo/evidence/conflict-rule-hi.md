@@ -1,7 +1,7 @@
 # Circuit: Conflict Rule H-I (threshold clamp)
 **Status**: FAIL
-**Timestamp**: 2026-06-30T18:28:12.164Z
-**Duration**: 1ms
+**Timestamp**: 2026-07-02T16:36:04.376Z
+**Duration**: 0ms
 
 ## Checks
 - [ ] Conflict Resolution Rules section exists

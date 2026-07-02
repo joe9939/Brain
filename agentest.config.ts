@@ -55,7 +55,7 @@ export default defineConfig({
   // LLM for simulated user + evaluation judges
   // Uses your OpenCode Go subscription
   provider: 'openai-compatible',
-  model: 'deepseek-v4-flash',
+  model: 'opencode-go/deepseek-v4-flash',
   providerOptions: {
     baseURL: 'https://opencode.ai/zen/go/v1',
     apiKey: process.env.OPENCODE_GO_API_KEY || '',
