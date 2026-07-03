@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧠 Brain Agent — 3D Visualizer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a1a; color: #e0e0e0; font-family: 'Segoe UI', system-ui, sans-serif; overflow: hidden; height: 100vh; }
+  #app { display: grid; grid-template-columns: 1fr 380px; height: 100vh; gap: 0; }
+  #canvas-wrap { position: relative; background: radial-gradient(ellipse at center, #0d0d2b 0%, #0a0a1a 100%); overflow: hidden; cursor: grab; }
+  #canvas-wrap:active { cursor: grabbing; }
+  #brain-canvas { width: 100%; height: 100%; display: block; }
+  #sidebar { background: #111128; border-left: 1px solid #2a2a5a; display: flex; flex-direction: column; overflow-y: auto; }
+  .panel { border-bottom: 1px solid #1a1a3a; }
+  .panel-header { padding: 6px 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+  .panel-header:hover { background: #15153a; }
+  .panel-title { font-size: 9px; text-transform: uppercase; letter-spacing: 1.2px; color: #5555aa; font-weight: 600; }
+  .panel-toggle { font-size: 8px; color: #444477; transition: transform .2s; }
+  .panel-toggle.open { transform: rotate(90deg); }
+  .panel-body { padding: 4px 12px 8px; overflow: hidden; transition: max-height .3s ease; max-height: 0; }
+  .panel-body.open { max-height: 500px; overflow-y: auto; }
+  .panel-body.auto { max-height: none; }
+  #mt-panel.body { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 2px; font-size: 10px; }
+  #status-bar { display: flex; justify-content: space-between; align-items: center; padding: 4px 12px; background: #0d0d22; font-size: 10px; color: #7777aa; top:0;sticky:0;z-index:1; }
+  #status-bar .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 4px; }
+  .dot.green { background: #4CAF50; box-shadow: 0 0 4px #4CAF50; }
+  
+  #mt-panel { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 2px; font-size: 10px; }
+  .mt-item { background: #0d0d22; padding: 3px 6px; border-radius: 3px; }
+  .mt-label { color: #5555aa; font-size: 8px; }
+  .mt-value { color: #ccccee; font-weight: 600; }
+  
+  .signal-row { display: flex; align-items: center; gap: 4px; padding: 2px 0; position: relative; transition: opacity .3s; }
+  .signal-row.inactive { opacity: .25; }
+  .signal-row.winner { opacity: 1; }
+  .signal-row.winner::before { content:'▶'; position:absolute; left:-12px; top:50%; transform:translateY(-50%); color:#FFD700; font-size:8px; animation:pulse .8s infinite; }
+  .signal-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink:0; }
+  .signal-name { font-size: 10px; width: 55px; flex-shrink:0; color: #ccccee; }
+  .signal-bar-wrap { flex:1; height: 5px; background: #1a1a3a; border-radius: 3px; overflow:hidden; }
+  .signal-bar { height:100%; border-radius:3px; transition: width .2s; }
+  .signal-val { font-size: 9px; width: 24px; text-align:right; color:#8888bb; }
+  .signal-raw { font-size: 8px; width: 24px; text-align:right; color:#555588; }
+  .signal-pri { font-size: 8px; width: 16px; text-align:center; color:#666699; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.2} }
+  
+  .l1-chip { padding: 1px 5px; border-radius: 6px; font-size: 9px; background:#1a1a3a; color:#555588; border:1px solid #2a2a5a; }
+  .l1-chip.done { background:#0d2a0d; color:#4CAF50; border-color:#4CAF50; }
+  
+  .pathway-row { font-size: 9px; padding: 1px 0; color: #555588; }
+  .pathway-row.active { color: #aaddff; }
+  .gate-chip { padding: 1px 6px; border-radius: 4px; font-size: 9px; background:#1a1a3a; color:#555588; border:1px solid #2a2a5a; }
+  .gate-chip.active { background:#0d2a0d; color:#4CAF50; border-color:#4CAF50; }
+  .gate-chip.blocked { background:#2a0d0d; color:#F44336; border-color:#F44336; }
+  
+  .formula-row { font-size: 8px; padding: 1px 0; color: #666699; }
+  .agent-row { font-size: 8px; padding: 1px 0; color: #666699; display:flex; gap:4px; }
+  .agent-name { color: #8888bb; width: 80px; flex-shrink:0; }
+  .agent-model { color: #555588; }
+  
+  #event-log { max-height: 80px; overflow-y: auto; font-family: 'Cascadia Code','Consolas',monospace; font-size: 8px; line-height: 1.4; }
+  #event-log .e { color: #444466; }
+  #event-log .e.winner { color: #4CAF50; font-weight:bold; }
+  #event-log .e.l1 { color: #64B5F6; }
+  #event-log .e.cycle { color: #8888cc; }
+  
+  #help { position:absolute; bottom:8px; left:50%; transform:translateX(-50%); font-size:9px; color:#333366; pointer-events:none; }
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: #0a0a1a; }
+  ::-webkit-scrollbar-thumb { background: #2a2a5a; border-radius: 2px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="canvas-wrap"><canvas id="brain-canvas"></canvas><div id="help">🖱 Drag to rotate · Scroll to zoom</div></div>
+  <div id="sidebar">
+    <div id="status-bar"><span><span class="dot green"></span><span id="status-text">Live</span></span><span id="cycle-display">—</span></div>
+    
+    <div class="panel">
+      <div class="panel-header" onclick="togglePanel(this)">
+        <span class="panel-title">M_t State</span>
+        <span class="panel-toggle open">▶</span>
+      </div>
+      <div class="panel-body open" id="mt-body" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:2px;font-size:10px;">
+        <div class="mt-item"><div class="mt-label">MOOD</div><div class="mt-value" id="mood-v">—</div></div>
+        <div class="mt-item"><div class="mt-label">SCORE</div><div class="mt-value" id="score-v">0</div></div>
+        <div class="mt-item"><div class="mt-label">TD ERR</div><div class="mt-value" id="td-v">0</div></div>
+        <div class="mt-item"><div class="mt-label">GOALS</div><div class="mt-value" id="goal-v">0</div></div>
+      </div>
+    </div>
+    
+    <div class="panel">
+      <div class="panel-header" onclick="togglePanel(this)">
+        <span class="panel-title">Signals</span>
+        <span class="panel-toggle open">▶</span>
+      </div>
+      <div class="panel-body open" style="max-height:180px;overflow-y:auto;" id="sig-body">
+        <div id="signal-list"></div>
+      </div>
+    </div>
+    
+    <div class="panel">
+      <div class="panel-header" onclick="togglePanel(this)">
+        <span class="panel-title">L1 + Pathways + Gates</span>
+        <span class="panel-toggle open">▶</span>
+      </div>
+      <div class="panel-body open" id="l1-body">
+        <div style="margin-bottom:4px;"><span class="panel-title" style="font-size:8px;">L1</span>
+          <div id="l1-agents" style="display:flex;flex-wrap:wrap;gap:2px;margin-top:2px;"></div>
+        </div>
+        <div style="margin-bottom:4px;"><span class="panel-title" style="font-size:8px;">Pathways</span>
+          <div id="pathway-list"></div>
+        </div>
+        <div><span class="panel-title" style="font-size:8px;">Gates</span>
+          <div id="gate-list" style="display:flex;flex-wrap:wrap;gap:3px;margin-top:2px;"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="panel">
+      <div class="panel-header" onclick="togglePanel(this)">
+        <span class="panel-title">Sub-Agents</span>
+        <span class="panel-toggle">▶</span>
+      </div>
+      <div class="panel-body" style="max-height:150px;overflow-y:auto;">
+        <div id="agent-list"></div>
+      </div>
+    </div>
+    
+    <div class="panel">
+      <div class="panel-header" onclick="togglePanel(this)">
+        <span class="panel-title">MCP + Formulas</span>
+        <span class="panel-toggle">▶</span>
+      </div>
+      <div class="panel-body" style="max-height:120px;overflow-y:auto;">
+        <div style="margin-bottom:4px;"><span class="panel-title" style="font-size:8px;">MCP Servers</span>
+          <div id="mcp-list" style="display:flex;flex-wrap:wrap;gap:3px;margin-top:2px;"></div>
+        </div>
+        <div><span class="panel-title" style="font-size:8px;">Formulas</span>
+          <div id="formula-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="flex:1;display:flex;flex-direction:column;min-height:100px;">
+      <div class="panel-header" onclick="togglePanel(this)" style="border-bottom:1px solid #1a1a3a;">
+        <span class="panel-title">Event Log</span>
+        <span class="panel-toggle open">▶</span>
+      </div>
+      <div class="panel-body open auto" style="flex:1;overflow-y:auto;" id="log-body">
+        <div id="event-log"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('brain-canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+
+function resize() {
+  const r = canvas.parentElement.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  W = r.width; H = r.height;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ─── 3D State ───
+let rotX = 0.5, rotY = -0.4; // radians — default: 前上3/4视角
+let zoom = 3.5;
+let isDragging = false, lastMX = 0, lastMY = 0;
+
+const wrap = document.getElementById('canvas-wrap');
+wrap.addEventListener('mousedown', e => { isDragging = true; lastMX = e.clientX; lastMY = e.clientY; });
+window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  const dx = e.clientX - lastMX, dy = e.clientY - lastMY;
+  rotY += dx * 0.01;
+  rotX += dy * 0.01;
+  rotX = Math.max(-1.2, Math.min(1.2, rotX));
+  lastMX = e.clientX; lastMY = e.clientY;
+});
+window.addEventListener('mouseup', () => { isDragging = false; });
+wrap.addEventListener('wheel', e => {   zoom *= (e.deltaY > 0 ? 0.92 : 1.08);
+  zoom = Math.max(0.2, Math.min(12, zoom)); e.preventDefault(); }, { passive: false });
+
+// ─── Fibonacci Sphere — 均匀球面分布 ───
+// 标准 Connectome 做法：golden angle spiral
+const R = 2.8; // sphere radius
+const REGIONS = (() => {
+  const items = [
+    ['world-cortex',  '🌍 W. Cortex',     '#9C27B0'],
+    ['attention',     '🔦 Attention',     '#FFC107'],
+    ['amygdala',      '❤️ Amygdala',      '#FF9800'],
+    ['hippocampus',   '💾 Hippocampus',   '#2196F3'],
+    ['insula',        '🔍 Insula',        '#E91E63'],
+    ['thalamus',      '📡 Thalamus',      '#4CAF50'],
+    ['basal-ganglia', '🎯 B.Ganglia',     '#795548'],
+    ['hypothalamus',  '🌡️ Hypothalamus', '#FF5722'],
+    ['reward',        '💰 Reward',        '#9C27B0'],
+    ['cerebellum',    '⚙️ Cerebellum',    '#00BCD4'],
+    ['dmn',           '💭 DMN',           '#607D8B'],
+    ['safety',        '🛡️ Safety',        '#F44336'],
+    ['self-optimizer','🔧 Optimizer',     '#8BC34A'],
+    ['offline-consol','💤 Consol.',       '#3F51B5'],
+    ['self-enhance',  '📈 S.Enhance',     '#009688'],
+    ['swarm-planner', '📋 Planner',       '#FF9800'],
+    ['swarm-coder',   '💻 Coder',         '#4CAF50'],
+    ['swarm-reviewer','👁️ Reviewer',     '#F44336'],
+    ['swarm-tester',  '🧪 Tester',        '#2196F3'],
+    ['brain',         '🧠 Brain',         '#FFD700'],
+  ];
+  const n = items.length;
+  const golden = Math.PI * (3 - Math.sqrt(5)); // ≈137.5°
+  return items.map(([id, label, color], i) => {
+    const y = 1 - (i / (n - 1)) * 2; // -1 to 1
+    const radius = Math.sqrt(1 - y * y);
+    const theta = golden * i;
+    return {
+      id, label, color,
+      x: R * radius * Math.cos(theta),
+      y: R * y,
+      z: R * radius * Math.sin(theta),
+    };
+  });
+})();
+
+// ─── Complete connection map ───
+const CIRCUITS = [
+  { name:'perception', color:'#4CAF50', paths:[
+    // L1 parallel group (star from thalamus)
+    ['thalamus','amygdala'],['thalamus','hippocampus'],['thalamus','world-cortex'],['thalamus','safety'],
+    // L1 cross-links
+    ['amygdala','hippocampus'],['hippocampus','world-cortex'],['world-cortex','safety'],
+    // L1 → evaluation layer
+    ['thalamus','cerebellum'],['thalamus','attention'],['thalamus','insula'],
+    ['amygdala','insula'],['hippocampus','basal-ganglia'],['hippocampus','dmn'],
+    ['world-cortex','attention'],['world-cortex','self-optimizer'],
+    ['safety','basal-ganglia'],['safety','insula'],
+  ]},
+  { name:'emotion', color:'#FF9800', paths:[
+    ['amygdala','cerebellum'],['amygdala','hypothalamus'],['amygdala','reward'],
+    ['amygdala','self-enhance'],['amygdala','brain'],
+  ]},
+  { name:'memory', color:'#2196F3', paths:[
+    ['hippocampus','basal-ganglia'],['hippocampus','attention'],['hippocampus','dmn'],
+    ['hippocampus','offline-consol'],['hippocampus','self-enhance'],
+  ]},
+  { name:'reward', color:'#9C27B0', paths:[
+    ['basal-ganglia','reward'],['reward','hypothalamus'],
+    ['reward','self-optimizer'],['reward','self-enhance'],['reward','brain'],
+  ]},
+  { name:'safety', color:'#F44336', paths:[
+    ['safety','insula'],['safety','basal-ganglia'],
+    ['insula','attention'],['insula','hypothalamus'],
+    ['attention','brain'],['insula','brain'],
+  ]},
+  { name:'execution', color:'#00BCD4', paths:[
+    ['cerebellum','attention'],['cerebellum','dmn'],
+    ['attention','swarm-planner'],['attention','cerebellum'],
+    ['hypothalamus','swarm-planner'],['dmn','swarm-coder'],
+    ['self-optimizer','swarm-reviewer'],['self-enhance','swarm-tester'],
+  ]},
+  { name:'swarm', color:'#FF9800', paths:[
+    ['swarm-planner','swarm-coder'],['swarm-coder','swarm-reviewer'],['swarm-reviewer','swarm-tester'],
+    ['swarm-planner','brain'],['swarm-coder','brain'],['swarm-reviewer','brain'],['swarm-tester','brain'],
+  ]},
+  { name:'regulation', color:'#607D8B', paths:[
+    ['cerebellum','dmn'],['dmn','self-optimizer'],['self-optimizer','offline-consol'],
+    ['offline-consol','hippocampus'],['offline-consol','self-enhance'],
+    ['self-enhance','self-optimizer'],['self-enhance','brain'],
+    ['hypothalamus','brain'],
+  ]},
+];
+
+const CONNECTIONS = [];
+CIRCUITS.forEach(c => c.paths.forEach(([f,t]) => CONNECTIONS.push({from:f,to:t,circuit:c.name,color:c.color})));
+
+// ─── 3D projection ───
+function project3D(reg) {
+  let x = reg.x, y = reg.y, z = reg.z;
+  // Rotate Y
+  const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+  let x1 = x * cosY - z * sinY;
+  let z1 = x * sinY + z * cosY;
+  // Rotate X
+  const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+  let y1 = y * cosX - z1 * sinX;
+  let z2 = y * sinX + z1 * cosX;
+  
+  // Perspective
+  const scale = zoom * 80 / (4 + z2);
+  const sx = W/2 + x1 * scale;
+  const sy = H/2 - y1 * scale;
+  const r = 14 * scale / 80;
+  return { x: sx, y: sy, r: Math.max(4, r), z: z2, depth: z2 };
+}
+
+// ─── State ───
+let signals={},winner=null,mood={},reward={},l1Done=[],cycle=0,regionActivity={},eventLog=[];
+let activePathways=[],gates={},agentConfigs={},signalFormulas={},mcpConfigs={};
+
+// ─── SSE ───
+new EventSource('/events').onmessage = e => {
+  try {
+    const d = JSON.parse(e.data);
+    signals=d.signals||{}; winner=d.winner; l1Done=d.l1Progress||[];
+    cycle=d.cycle||0; mood=d.mood||{}; reward=d.reward||{};
+    regionActivity=d.regionActivity||{}; eventLog=d.eventLog||[];
+      activePathways=d.activePathways||[]; gates=d.gates||{};
+      agentConfigs=d.agentConfigs||{}; signalFormulas=d.signalFormulas||{}; mcpConfigs=d.mcpConfigs||{};
+    updateUI();
+  } catch {}
+};
+
+function updateUI() {
+  const mc = {NORMAL:'#4CAF50',CAUTION:'#FF9800',URGENT:'#F44336',EXPLORE:'#2196F3',SUPPORT:'#00BCD4'};
+  document.getElementById('mood-v').textContent = `${mood.mode||'—'} @${(mood.intensity||0).toFixed(1)}`;
+  document.getElementById('mood-v').style.color = mc[mood.mode]||'#4CAF50';
+  document.getElementById('score-v').textContent = (reward.score||0).toFixed(1);
+  document.getElementById('td-v').textContent = (reward.td_error||0).toFixed(2);
+  document.getElementById('goal-v').textContent = reward.goals||0;
+  document.getElementById('cycle-display').textContent = `Cycle: ${cycle}`;
+  
+  const order={perceive:0,emotion:1,safety:2,memory:3,reward:4,action:5,learning:6};
+  const sC={perceive:'#4CAF50',emotion:'#FF9800',safety:'#F44336',memory:'#2196F3',reward:'#9C27B0',action:'#00BCD4',learning:'#607D8B'};
+  const sL={perceive:'Perceive',emotion:'Emotion',safety:'Safety',memory:'Memory',reward:'Reward',action:'Action',learning:'Learning'};
+  document.getElementById('signal-list').innerHTML = Object.entries(signals).sort((a,b)=>(order[a[0]]||99)-(order[b[0]]||99)).map(([k,s])=>{
+    const isW = k===winner?.key;
+    const bar = Math.min((s.strength||0)*6,100);
+    return `<div class="signal-row ${isW?'winner':s.raw>0?'':'inactive'}">
+      <span class="signal-dot" style="background:${sC[k]||'#666'}"></span>
+      <span class="signal-name">${sL[k]||k}</span>
+      <span class="signal-raw">${(s.raw||0).toFixed(2)}</span>
+      <span class="signal-pri">×${s.priority||0}</span>
+      <div class="signal-bar-wrap"><div class="signal-bar" style="width:${bar}%;background:${sC[k]||'#666'}"></div></div>
+      <span class="signal-val">${(s.strength||0).toFixed(1)}</span>
+    </div>`;
+  }).join('');
+  
+  document.getElementById('l1-agents').innerHTML = ['thalamus','amygdala','hippocampus','world-cortex','safety'].map(a =>
+    `<span class="l1-chip ${l1Done.includes(a)?'done':''}">${a}</span>`
+  ).join('');
+  
+  const pDef = {perception:'New msg→L1',emotion:'CAUTION/URGENT',safety:'CAUTION mode',memory:'SOPs matched',reward:'score<3',action:'Complex task',learning:'Task done+L1'};
+  document.getElementById('pathway-list').innerHTML = Object.entries(pDef).map(([k,v]) =>
+    `<div class="pathway-row ${activePathways.includes(k)?'active':''}">${activePathways.includes(k)?'▶':' '} ${k}: ${v}</div>`
+  ).join('');
+  
+  document.getElementById('gate-list').innerHTML = Object.entries(gates).map(([k,v]) =>
+    `<span class="gate-chip ${v==='blocked'?'blocked':v==='pass'?'active':''}">${k} ${v==='blocked'?'⛔':v==='pass'?'✅':'💤'}</span>`
+  ).join('');
+  
+  document.getElementById('formula-list').innerHTML = Object.entries(signalFormulas).map(([k,f]) =>
+    `<div class="formula-row"><span style="color:${f.color}">●</span> ${k}: ${f.formula}</div>`
+  ).join('');
+  
+  const agentEntries = Object.entries(agentConfigs).slice(0,20);
+  document.getElementById('agent-list').innerHTML = agentEntries.length ? agentEntries.map(([k,v]) =>
+    `<div class="agent-row"><span class="agent-name">${k}</span><span class="agent-model">${v.model||'—'}</span></div>`
+  ).join('') : '<div class="formula-row">(waiting for config)</div>';
+  
+  document.getElementById('mcp-list').innerHTML = Object.entries(mcpConfigs).map(([k,v]) =>
+    `<span class="gate-chip ${v.enabled?'active':''}">${k} ${v.enabled?'✅':'❌'}</span>`
+  ).join('') || '<span class="formula-row">(no MCP data)</span>';
+  
+  document.getElementById('event-log').innerHTML = eventLog.map(e => `<div class="e ${e.type}">${e.detail}</div>`).join('');
+}
+
+// ═══ CANVAS 3D RENDERING ═══
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  const now = Date.now();
+  
+  // Project all regions
+  const proj = REGIONS.map(r => ({ ...r, ...project3D(r) }));
+  const sigRegs = { perceive:['thalamus','amygdala','hippocampus','world-cortex','safety'],
+    emotion:['amygdala'], safety:['safety','insula'], memory:['hippocampus'],
+    reward:['reward','basal-ganglia'], action:['swarm-planner','swarm-coder','swarm-reviewer','swarm-tester'],
+    learning:['self-optimizer','offline-consol','self-enhance'] };
+  const isWinnerReg = id => winner && (sigRegs[winner.key]||[]).includes(id);
+  
+  // Draw connections (sorted by depth of midpoint)
+  const cDepths = CONNECTIONS.map(c => {
+    const f = proj.find(r=>r.id===c.from), t = proj.find(r=>r.id===c.to);
+    return { ...c, f, t, depth: f && t ? (f.depth + t.depth) / 2 : 0 };
+  }).sort((a,b) => b.depth - a.depth);
+  
+  cDepths.forEach(c => {
+    if (!c.f || !c.t) return;
+    const actSig = { perception:'perceive', emotion:'emotion', memory:'memory', reward:'reward', safety:'safety', execution:'action', swarm:'action', regulation:'learning' };
+    const isAct = actSig[c.circuit] === winner?.key;
+    const alpha = isAct ? 0.6 : 0.25;
+    
+    ctx.beginPath();
+    ctx.moveTo(c.f.x, c.f.y);
+    ctx.lineTo(c.t.x, c.t.y);
+    ctx.strokeStyle = c.color + Math.floor(alpha * 255).toString(16).padStart(2,'0');
+    ctx.lineWidth = isAct ? 2 : 1;
+    ctx.stroke();
+    
+    if (isAct) {
+      const phase = (now + CIRCUITS.findIndex(x=>x.name===c.circuit)*200) % 2000 / 2000;
+      for (let p = 0; p < 3; p++) {
+        const pp = (phase + p/3) % 1;
+        ctx.beginPath();
+        ctx.arc(c.f.x + (c.t.x-c.f.x)*pp, c.f.y + (c.t.y-c.f.y)*pp, 2 + Math.sin(pp*Math.PI)*2, 0, Math.PI*2);
+        ctx.fillStyle = c.color + Math.floor(80+100*Math.sin(pp*Math.PI)).toString(16).padStart(2,'0');
+        ctx.fill();
+      }
+    }
+  });
+  
+  // Draw regions (sorted back-to-front)
+  proj.sort((a,b) => b.depth - a.depth).forEach(reg => {
+    const last = regionActivity[reg.id] || 0;
+    const age = (now - last) / 1000;
+    const glow = last > 0 ? Math.max(0, 1 - age/3) : 0;
+    const isW = isWinnerReg(reg.id) || reg.id === 'brain';
+    const breathe = Math.sin(now/1500 + REGIONS.indexOf(reg)*1.7) * 0.12 + 1;
+    const r = reg.r * breathe + (isW ? 3 : glow*5);
+    
+    // Halo
+    if (glow > 0 || isW) {
+      const g = ctx.createRadialGradient(reg.x, reg.y, 0, reg.x, reg.y, r*4);
+      g.addColorStop(0, reg.color + Math.floor((isW?.3:glow*.15)*255).toString(16).padStart(2,'0'));
+      g.addColorStop(1, reg.color + '00');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(reg.x, reg.y, r*4, 0, Math.PI*2); ctx.fill();
+    }
+    
+    // Ring
+    if (isW) {
+      const ring = r + 2 + Math.sin((now%1000)/1000*Math.PI*2)*1.5;
+      ctx.beginPath(); ctx.arc(reg.x, reg.y, ring, 0, Math.PI*2);
+      ctx.strokeStyle = '#FFD70066'; ctx.lineWidth = 1.5; ctx.stroke();
+    }
+    
+    // Circle
+    ctx.beginPath(); ctx.arc(reg.x, reg.y, r, 0, Math.PI*2);
+    const br = isW ? 1 : glow*.4 + .25;
+    ctx.fillStyle = reg.color + Math.floor(br*255).toString(16).padStart(2,'0');
+    ctx.fill();
+    ctx.strokeStyle = isW ? '#fff' : reg.color + '66';
+    ctx.lineWidth = isW ? 2 : 1;
+    ctx.stroke();
+    
+    // Label
+    ctx.fillStyle = isW ? '#fff' : '#7777aa';
+    ctx.font = (isW?'bold ':'') + '7.5px system-ui,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(reg.label, reg.x, reg.y + r + 10);
+  });
+  
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
