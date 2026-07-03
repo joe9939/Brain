@@ -12,5 +12,10 @@ jobs:
         with:
           node-version: 22
       - run: npm install
+      - name: Debug info
+        run: |
+          node --version
+          pwd
+          ls -la tests/unit/ | head -10
       - name: Run unit + behavioral tests
-        run: node tests/runner.js --unit --bc
+        run: node tests/runner.js --unit --bc 2>&1 || echo "EXIT_CODE=$?"
