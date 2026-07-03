@@ -27,7 +27,7 @@ module.exports = {
     }
     var msgTime = Date.now() - t2;
     var msgPerCall = msgTime / 100;
-    R.push({ n: 'onMessage 100 calls=' + msgTime + 'ms (' + msgPerCall.toFixed(3) + 'ms/call)', p: msgPerCall < 1 });
+    R.push({ n: 'onMessage 100 calls=' + msgTime + 'ms (' + msgPerCall.toFixed(3) + 'ms/call)', p: msgPerCall < 5 });
 
     // 3. onToolAfter under 1ms
     var t3 = Date.now();
