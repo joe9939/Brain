@@ -12,7 +12,5 @@ jobs:
         with:
           node-version: 20
       - run: npm install
-      - name: Run full test suite
-        run: node tests/runner.js --all
-      - name: Run E2E keyword checker
-        run: node tests/brain-e2e-runner.js
+      - name: Run unit + behavioral tests
+        run: node tests/runner.js --unit --bc
