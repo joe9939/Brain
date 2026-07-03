@@ -10,21 +10,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 'lts/*'
       - run: npm install
-      - name: Debug environment
-        run: node -e "console.log('Node', process.version, process.platform, process.arch); console.log('cwd', process.cwd())"
-      - name: Load all tests
-        run: node -e "
-          const fs = require('fs');
-          const p = require('path');
-          const root = p.join(process.cwd(), 'tests');
-          const files = fs.readdirSync(p.join(root, 'unit')).filter(f => f.endsWith('.test.js'));
-          console.log('Loading', files.length, 'files...');
-          files.forEach(f => { try { require(p.join(root, 'unit', f)); console.log('  OK', f); } catch(e) { console.log('  FAIL', f, e.message); } });
-          files2 = fs.readdirSync(p.join(root, 'behavioral')).filter(f => f.endsWith('.test.js'));
-          files2.forEach(f => { try { require(p.join(root, 'behavioral', f)); console.log('  OK', f); } catch(e) { console.log('  FAIL', f, e.message); } });
-          console.log('ALL LOADED');
-        "
-      - name: Run full suite
+      - name: Run tests
         run: node tests/runner.js --unit --bc
