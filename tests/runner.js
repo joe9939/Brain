@@ -76,6 +76,7 @@ async function runTest(category, test) {
     const status = result.passed ? 'PASS' : 'FAIL';
     const display = '[' + category.label + '] ' + pad(test.name, 40) + '... ' + status + ' (' + elapsed + 'ms)';
     console.log(display);
+    if (!result.passed && result.message) console.log('  >> ' + result.message.replace(/\n/g, '\n  >> '));
     return { name: test.name, passed: result.passed, message: result.message, time_ms: elapsed, status };
   } catch (e) {
     const elapsed = Date.now() - start;
