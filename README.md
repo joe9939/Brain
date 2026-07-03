@@ -31,6 +31,19 @@ Restart OpenCode. Press Tab → select **[brain]**.
 
 ---
 
+## Visualizer
+
+Watch brain activity in real-time: [3D Connectome Visualizer](visualizer/)
+
+```
+node visualizer/server.mjs
+# Open http://localhost:3456
+```
+
+Shows 20 brain region agents as an interactive 3D sphere, 7 competing signals with live strength bars, active pathways, G1-G7 gate status, MCP server status, and real-time event log.
+
+![Visualizer](docs/visualizer-screenshot.png)
+
 ## Architecture
 
 7 signals are **always active**. At each tool boundary, the strongest signal injects a `[Brain: ...]` instruction directing the next action.
