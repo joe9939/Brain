@@ -144,6 +144,9 @@ export const BrainPlugin = async (ctx) => {
       const verdicts = [];
       const sid = getSessionId(input);
 
+      // Skip all gates if not in brain mode (installed but using other agents)
+      if (!brainSessions.has(sid)) return;
+      
       // G7: Audit
       audit({ gate: "G7", tool, tool_args: JSON.stringify(args).slice(0, 200), timestamp: Date.now() });
 
