@@ -1,204 +1,212 @@
-﻿# 🧠 Brain Agent
+﻿<div align="center">
 
-**OpenCode plugin** implementing 7-signal competition architecture from [arXiv 2504.01990](https://arxiv.org/abs/2504.01990).  
-20 brain-region agents, 8 MCP servers, G1-G7 safety gates. **149/149 tests passing.**
+# 🧠 Brain Agent
 
-<div align="center">
+**The only OpenCode plugin with real brain-inspired signal competition.**  
+20 agents · 7 competing signals · G1-G7 safety gates · 3D live visualizer
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![arXiv](https://img.shields.io/badge/arXiv-2504.01990-b31b1b.svg)](https://arxiv.org/abs/2504.01990)
-[![OpenCode](https://img.shields.io/badge/OpenCode-plugin-purple)](https://opencode.ai)
-[![OMO](https://img.shields.io/badge/OMO-integrated-blue)](https://github.com/code-yeongyu/oh-my-opencode)
+[![CI](https://github.com/joe9939/Brain/actions/workflows/test.yml/badge.svg)](https://github.com/joe9939/Brain/actions)
 [![Tests](https://img.shields.io/badge/Tests-149%2F149-brightgreen)]()
-[![CI](https://github.com/joe9939/Brain/actions/workflows/test.yml/badge.svg)]()
+[![arXiv](https://img.shields.io/badge/arXiv-2504.01990-b31b1b)](https://arxiv.org/abs/2504.01990)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![OpenCode](https://img.shields.io/badge/OpenCode-plugin-purple)](https://opencode.ai)
+
+---
+
+![visualizer](docs/visualizer-screenshot.png)
+
+*🧠 3D real-time brain activity visualizer — [run it yourself](visualizer/)*
+
+---
 
 </div>
 
+## 🔥 Why Brain Agent?
+
+Most agent frameworks use **fixed pipelines** or **role-based teams**. Brain Agent works differently — like a real brain.
+
+| Instead of… | Brain Agent does… |
+|------------|------------------|
+| `Planner → Coder → Reviewer` (fixed order) | **7 signals compete** to decide what happens next |
+| One agent gives orders, others obey | **Parallel perception** — 5 agents fire on every message |
+| Safety = prompt engineering | **G1-G7 gates** intercept every tool call |
+| Black box execution | **BrainTracer** records every signal, every gate, every state change |
+
+### Compare with other OpenCode plugins
+
+| | **OMO** | **Swarm** | **Ensemble** | **Orchestrator** | **Brain (us)** |
+|---|---|---|---|---|---|
+| Agents | 11 agents | Architect + swarm | Parallel teams | Commander + crew | **20 brain-mapped agents** |
+| Decision | Fixed delegation | Architect decides | Lead coordinates | Mission loop | **7 signals compete** |
+| Safety | Prompt-level | Gate system | None | None | **G1-G7 at tool level** |
+| Observability | Basic logging | Audit trails | Session logs | Basic metrics | **BrainTracer + 3D viz** |
+| Brain mapping | ❌ | ❌ | ❌ | ❌ | **✅ 20 brain regions** |
+| Signal competition | ❌ | ❌ | ❌ | ❌ | **✅ 7 parallel signals** |
+
 ---
 
-https://github.com/user-attachments/assets/visualizer-demo
-
-> *Interactive 3D connectome showing real-time brain activity. [Run it yourself](visualizer/).*
-
----
-
-## ✨ Features
-
-| | | |
-|---|---|---|
-| 🧠 **7 Competing Signals** | 🛡️ **G1-G7 Safety Gates** | 🔄 **Real-Time Visualizer** |
-| Perceive · Emotion · Memory · Reward · Action · Learning · Safety | Tool-level security at every layer | 3D brain activity in your browser |
-| ⚡ **20 Brain-Region Agents** | 🔌 **8 MCP Servers** | 📊 **149 Tests** |
-| Specialized sub-agents for every task | Memory, world model, reward, tools, SOPs… | 100% passing on CI |
-
----
-
-## 🚀 Install
+## ⚡ Quick Install
 
 ```bash
 git clone https://github.com/joe9939/Brain.git
 cd Brain
-node install.js
-node install.js --status          # verify installation
+node install.js              # installs plugin + agents + MCPs
+node install.js --status     # verify everything works
 ```
 
 Restart OpenCode → press **Tab** → select **[brain]**.
 
-> Requires Node.js 18+, [OpenCode](https://opencode.ai), and [Oh My OpenAgent](https://github.com/code-yeongyu/oh-my-opencode).
+> Requires Node.js 18+, [OpenCode](https://opencode.ai), [Oh My OpenAgent](https://github.com/code-yeongyu/oh-my-opencode)
 
 ---
 
-## 🎮 Quick Start
+## 🧬 How It Works
 
-```bash
-# All 149 tests
-node tests/runner.js --all
+### 7 Signals Compete — The Strongest Wins
 
-# Brain circuit activity (behavioral)
-node tests/runner.js --bc
-
-# Unit tests only
-node tests/runner.js --unit
-```
-
-### Trace a full session
-
-```bash
-node tests/runner.js --bc
-```
-
-Output shows every step: `message → signal competition → L1 dispatch → state changes → signal switch`.
-
----
-
-## 🏗 Architecture
+On every message, 7 neural signals compute their strength in parallel. The winner injects a `[Brain: ...]` instruction directing the next action.
 
 ```
-                      ┌─────────────────────────────┐
-                      │      7 Signals Compute       │
-                      │  perceive · emotion · memory │
-                      │  reward · action · learning  │
-                      │          safety              │
-                      └──────────┬──────────────────┘
-                                 │ strongest wins
-                                 ▼
-┌──────────┐           ┌──────────────────┐          ┌──────────┐
-│  Input   │ ────────→ │  Brain Agent     │ ───────→ │   LLM    │
-│ Message  │           │  injects signal   │          │  Acts    │
-└──────────┘           └──────────────────┘          └────┬─────┘
-                                                          │
-                    ┌─────────────────────────────────────┘
-                    ▼
-          ┌──────────────────┐
-          │  M_t State Update │
-          │  · recompute      │
-          │  · switch winner  │
-          └──────────────────┘
+                    ┌──────────────────┐
+                    │   perceived(×5)  │ ◄── L1 not done? Perceive wins
+                    │   emotion  (×4)  │ ◄── CAUTION/URGENT? Emotion boosts
+                    │   safety   (×4)  │ ◄── CAUTION mode? Safety gates up
+Input ───────────→  │   memory   (×3)  │ ◄── SOPs found? Memory retrieves
+                    │   reward   (×3)  │ ◄── Score low? Deep reasoning
+                    │   action   (×2)  │ ◄── Complex task? Swarm executes
+                    │   learning (×1)  │ ◄── Task done? Reflect & learn
+                    └────────┬─────────┘
+                             │ strongest
+                             ▼
+                    ┌──────────────────┐
+                    │  Signal Gate     │ ◄── Winner decides allowed tools
+                    │  → inject into   │
+                    │  → LLM acts      │
+                    └──────────────────┘
 ```
-
-### Signal Competition
-
-| Signal | Priority | Triggers When | Raw Strength |
-|--------|----------|--------------|-------------|
-| **perceive** | ×5 | L1 not complete | `1.0 − n × 0.15` |
-| **emotion** | ×4 | CAUTION/URGENT mood | `0.9` / `intensity × 0.5` |
-| **safety** | ×4 | CAUTION mode | `0.9` |
-| **memory** | ×3 | SOPs or episodic found | `0.8` / `0.5` |
-| **reward** | ×3 | score < 3 or \|td_error\| > 1 | `0.8` / `0.6` |
-| **action** | ×2 | Complex task (swarm) | `0.8` |
-| **learning** | ×1 | Goals done + L1 complete | `0.7` |
 
 **Winner** = `raw × priority`. Deduplicated — only injects when top signal changes.
 
-### Hook Tiers
+### Signal Gate (arXiv 2504.01990 §3.3.4)
 
-| Hook | Timing | Role |
-|------|--------|------|
-| **T0** | `chat.messages.transform` | Inject brain status before LLM |
-| **T1** | `tool.execute.before` | Safety gates G1-G7 + signal injection |
-| **T2** | `tool.execute.after` | Update M_t state, recompute signals |
-| **T3** | `chat.system.transform` | Detect brain mode from system prompt |
-| **T4** | `session.event` | Lifecycle (idle, error), BrainTracer |
-| **P** | `permission.ask` | Permission request logging |
+Like the basal ganglia in a real brain, the winning signal gates which tools the LLM may use:
+
+| Signal | Allows | Use Case |
+|--------|--------|----------|
+| **perceive** | `task()` only | Complete L1 perception first |
+| **safety** | Read-only ops | Security incident |
+| **emotion** (CAUTION) | Read + `task()` | High-alert mode |
+| **reward** (low score) | Read + `task()` | Need deeper reasoning |
+| **action** | All tools | Complex task execution |
+| **learning** | `task()` only | Post-task reflection |
+| *(normal)* | All tools | Free operation |
+
+### 20 Brain-Region Agents
+
+```
+CORTEX        │ world-cortex · attention
+TEMPORAL      │ amygdala · hippocampus · insula
+DEEP CORE     │ thalamus · basal-ganglia · hypothalamus · reward
+HINDBRAIN     │ cerebellum · dmn · safety
+FRONTAL       │ self-optimizer · offline-consol · self-enhance
+SWARM         │ swarm-planner · coder · reviewer · tester
+ORCHESTRATOR  │ 🧠 brain
+```
+
+Each agent maps to a real brain region and runs as a specialized sub-agent via OpenCode's `task()`.
 
 ---
 
-## 🖥 Real-Time Visualizer
+## 🖥️ Real-Time Visualizer
 
-Watch every signal compete, every gate fire, and every brain region light up — in real time.
+Watch every signal compete, every region light up, every gate fire — live in your browser.
 
 ```bash
 node visualizer/server.mjs
-# Open http://localhost:3456
+# → http://localhost:3456
 ```
 
-| Feature | Description |
-|---------|------------|
+| Feature | What you see |
+|---------|-------------|
 | 🏐 **3D Connectome** | 20 brain regions on an interactive sphere |
-| 📊 **Signal Bars** | Raw strength × priority = final score |
-| 🔀 **Pathways** | Which circuit is active and why |
-| 🛡️ **Gates** | G1-G7 live status (block/pass) |
-| 📝 **Event Log** | Real-time trace of every cycle |
-| 🖱 **Controls** | Drag to rotate · Scroll to zoom |
-
-![Visualizer Demo](docs/visualizer-screenshot.png)
+| 📊 **Signal Bars** | `raw × priority = strength` for all 7 signals |
+| 🔀 **Pathways** | Which circuit is active right now |
+| 🛡️ **Gates** | G1-G7 status (pass/block/warn) |
+| 📝 **Event Log** | Real-time cycle trace |
+| 🖱️ **Controls** | Drag to rotate · Scroll to zoom |
 
 ---
 
-## 🔌 MCP Servers
+## 🛡️ Safety Gates G1-G7
 
-| Server | Purpose | Tools |
-|--------|---------|-------|
-| **memory-store** | Episodic/semantic/procedural memory | store, retrieve, search, decay, consolidate |
-| **world-model** | Codebase dependency graph | query, update, predict, diff |
-| **reward-system** | Reward scoring + value learning | score_action, record_outcome, value_learn |
-| **tool-tracker** | Usage patterns + agent reliability | track, stats, score_agent |
-| **sop-tracker** | Procedure memory | register, match, ppo_score |
-| **reflexion** | Self-refinement loop | start, add_observation, generate_lessons |
-| **priority-queue** | Task scheduling | add, next, complete, prioritize |
-| **monitor** | Health dashboard | get_health, get_alerts, report_event |
+Every tool call goes through 7 layers of safety — not just prompt engineering:
+
+| Gate | What it catches | Action |
+|------|----------------|--------|
+| **G1** | `rm -rf /`, `dd`, `mkfs` | 🚫 Block |
+| **G2** | `curl | bash`, `base64 -d` | ⚠️ Warn |
+| **G3** | `.env` writes, prompt injection | 🚫 Block |
+| **G4** | Network egress to unknown hosts | ⚠️ Warn |
+| **G5** | Full-context injection attacks | 🚫 Block |
+| **G6** | `git push --force`, `rm -rf` | ⚠️ Warn |
+| **G7** | Every audit log | 📝 Log |
 
 ---
 
-## 📁 Project Structure
+## 📦 8 MCP Servers
 
-```
-src/
-├── plugin/
-│   ├── brain-hooks.mjs      # Signal competition engine (7 signals, M_t, BrainTracer)
-│   └── brain-plugin.mjs     # G1-G7 safety gates + hook wiring
-├── skills/
-│   └── brain-master.md      # Orchestrator prompt
-└── mcp/                     # 8 MCP servers
-    ├── memory-store/
-    ├── world-model/
-    └── ...
-tests/
-├── runner.js                # Test runner (149 tests)
-├── unit/                    # 60 unit tests
-├── behavioral/              # 21 full-session trace tests
-├── plugin/                  # 20 plugin hook tests
-├── mcp/                     # 8 MCP server tests
-├── tracer/                  # 8 BrainTracer tests
-├── circuits/                # 12 circuit tests
-├── integration/             # 7 integration tests
-├── e2e/                     # 9 end-to-end tests
-└── qc/                      # 4 quality control tests
-visualizer/
-├── server.mjs               # WebSocket + SSE server
-└── index.html               # 3D brain visualization
-```
+| Server | What it does |
+|--------|-------------|
+| **memory-store** | Episodic, semantic, procedural memory |
+| **world-model** | Codebase dependency graph |
+| **reward-system** | Reward scoring + value learning |
+| **tool-tracker** | Usage patterns + agent reliability |
+| **sop-tracker** | Procedure memory (SOP matching) |
+| **reflexion** | Self-refinement loop |
+| **priority-queue** | Task scheduling |
+| **monitor** | Health dashboard |
 
 ---
 
 ## ✅ Test Status
 
 ```
-All 149 tests passing
+All 149 tests passing — CI verified on ubuntu-latest
 
 Unit:         60/60  ✅   Plugin:    20/20  ✅   MCP:        8/8  ✅
 Behavioral:  21/21  ✅   Tracer:     8/8  ✅   Circuits:  12/12  ✅
 Integration:  7/7  ✅   E2E:        9/9  ✅   QC:         4/4  ✅
+```
+
+---
+
+## 🚀 Quick Start for Developers
+
+```bash
+# Run all tests
+node tests/runner.js --all
+
+# Watch brain circuit activity (21 behavioral tests)
+node tests/runner.js --bc
+
+# Unit tests only
+node tests/runner.js --unit
+```
+
+---
+
+## 📁 Project Layout
+
+```
+src/
+├── plugin/
+│   ├── brain-hooks.mjs      ← Signal competition engine
+│   └── brain-plugin.mjs     ← G1-G7 + hook wiring
+├── skills/
+│   └── brain-master.md      ← Orchestrator prompt
+└── mcp/                     ← 8 MCP servers
+tests/                       ← 149 tests
+visualizer/                  ← 3D real-time visualizer
 ```
 
 ---
