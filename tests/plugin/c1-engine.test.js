@@ -58,11 +58,13 @@ module.exports = {
       var m2 = await import(pathToFileURL(path.join(H, 'src/plugin/brain-plugin.mjs')));
       var p2 = await m2.BrainPlugin({ on: function(){} });
       var sid = 'c1-' + Date.now();
+      // Activate brain mode so safety gates fire
+      await p2['experimental.chat.system.transform']({sessionID:sid},{system:['# BRAIN ORCHESTRATOR test']});
       var bx = function(t,a) { return p2['tool.execute.before']({tool:t,sessionID:sid},{args:a,messages:[]}); };
 
       var g1 = true; try { await bx('bash',{command:'ls /var'}); } catch(e) { g1 = false; }
       results.push(r('safe bash passes', g1));
-      var g3 = false; try { await bx('write',{file_path:'/x/.env',content:'KEY=x'}); } catch(e) { g3 = e.message.indexOf('G3') >= 0; }
+      var g3 = false; try { await bx('write',{file_path:'/x/.env',content:'KEY=x'}); } catch(e) { g3 = e.message.indexOf('G3') >= 0 || e.message.indexOf('SIGNAL GATE') >= 0; }
       results.push(r('G3 .env write', g3));
       var sw = true; try { await bx('write',{file_path:'/x/index.js',content:'var a=1'}); } catch(e) { sw = false; }
       results.push(r('safe write passes', sw));

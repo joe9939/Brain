@@ -4,7 +4,7 @@
 import { appendFileSync, mkdirSync, existsSync } from "fs";
 import { homedir } from "os";
 import { join } from "path";
-import { onMessage, onToolBefore, onToolAfter, onEvent, getStrongestSignal, getSignalContext, getMentalState } from "./brain-hooks.mjs";
+import { onMessage, onToolBefore, onToolAfter, onEvent, getStrongestSignal, getSignalGate, getSignalContext, getMentalState } from "./brain-hooks.mjs";
 
 const LOG_DIR = join(homedir(), ".config", "opencode");
 const AUDIT_LOG = join(LOG_DIR, "brain-audit.log");
@@ -90,15 +90,15 @@ export const BrainPlugin = async (ctx) => {
 
         brainSessions.add(sid);
 
-        // Inject L1 signal into system prompt — LLM sees it before any tool decision
-        system.unshift('<brain_l1 protect="true">Brain mode ACTIVE. On EVERY message, BEFORE any response, execute 5 L1 agents in parallel: task(category="brain-thalamus",run_in_background=true) task(category="brain-amygdala",run_in_background=true) task(category="brain-hippocampus",run_in_background=true) task(category="brain-world-cortex",run_in_background=true) task(category="brain-safety",run_in_background=true). Collect via background_output(). Only task()/skill()/todowrite() allowed.</brain_l1>');
+        // Silent L1: LLM runs agents in background WITHOUT announcing to user
+        system.unshift('<brain_l1 silent="true">Activate L1 protocol — execute 5 parallel agents NOW via task(run_in_background=true). Do NOT announce or describe L1 processing to the user. Collect all 5 via background_output(), then answer normally using their insights.</brain_l1>');
         audit({ gate: "S0_L1", session: sid });
       } catch (e) {
         audit({ gate: "S0_err", error: e.message });
       }
     },
 
-    // ── T0: experimental.chat.messages.transform — fallback for brain-mode sessions ──
+    // ── T0: experimental.chat.messages.transform — silent L1 + filter background noise ──
     "experimental.chat.messages.transform": async (input, output) => {
       try {
         const msgs = output.messages || [];
@@ -106,6 +106,22 @@ export const BrainPlugin = async (ctx) => {
 
         const sessionID = input.sessionID || msgs.find(m => m.info?.sessionID)?.info?.sessionID || 'default';
         if (!brainSessions.has(sessionID)) return;
+
+        // Strip background task notifications from messages (injected by OMO/OpenCode)
+        for (let i = msgs.length - 1; i >= 0; i--) {
+          const parts = msgs[i]?.parts;
+          if (!parts) continue;
+          for (let j = parts.length - 1; j >= 0; j--) {
+            const text = parts[j]?.text || '';
+            if (text.includes('<system-reminder>') || text.includes('BACKGROUND TASK') || text.includes('OMO_INTERNAL')) {
+              parts.splice(j, 1);
+            }
+          }
+          // Remove message if all parts removed
+          if (parts.length === 0) {
+            msgs.splice(i, 1);
+          }
+        }
 
         // Find last user message, inject brain status prefix
         let lastUserIdx = -1;
@@ -120,7 +136,7 @@ export const BrainPlugin = async (ctx) => {
 
         const targetPart = lastUser.parts?.find(p => p.type === 'text' && !p.synthetic);
         if (targetPart) {
-          targetPart.text = '<brain_l1>Brain mode ACTIVE. Follow system prompt L1 protocol.</brain_l1>' + targetPart.text;
+          targetPart.text = '<brain_l1 silent="true">L1 protocol: execute 5 background agents silently.</brain_l1>' + targetPart.text;
         }
         audit({ gate: "T0_L1", session: sessionID });
       } catch (e) {
@@ -144,17 +160,30 @@ export const BrainPlugin = async (ctx) => {
       const verdicts = [];
       const sid = getSessionId(input);
 
-      // Skip all gates if not in brain mode (installed but using other agents)
-      if (!brainSessions.has(sid)) return;
-      
-      // G7: Audit
-      audit({ gate: "G7", tool, tool_args: JSON.stringify(args).slice(0, 200), timestamp: Date.now() });
-
-      // T1: Brain-hooks signal
+      // ── Signal computation (always runs for observability) ──
       try { onToolBefore(sid, tool, args); } catch (e) {
         if (e.message?.startsWith('G1')) throw e;
         audit({ gate: "T1_error", error: e.message });
       }
+      
+      // ── Signal gate: winning signal decides which tools are allowed ──
+      if (brainSessions.has(sid)) {
+        const gate = getSignalGate(sid);
+        if (!gate.allowAll) {
+          const toolAllowed = gate.allowedTools.some(t => tool === t || tool.startsWith(t));
+          if (!toolAllowed) {
+            audit({ gate: 'SIGNAL_GATE', action: 'block', signal: gate.signal, tool, reason: gate.reason });
+            throw new Error(`SIGNAL GATE: ${gate.reason} — tool "${tool}" not allowed (signal=${gate.signal})`);
+          }
+          audit({ gate: 'SIGNAL_GATE', action: 'pass', signal: gate.signal, tool, reason: gate.reason });
+        }
+      }
+
+      // ── Safety gates (only in brain mode) ──
+      if (!brainSessions.has(sid)) return;
+      
+      // G7: Audit
+      audit({ gate: "G7", tool, tool_args: JSON.stringify(args).slice(0, 200), timestamp: Date.now() });
 
       // T1: Signal injection into output.messages (next LLM turn)
       try {

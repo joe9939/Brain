@@ -334,6 +334,60 @@ export const BrainTracer = {
   }
 }
 
+// ─── Signal Gate — which tools the winning signal allows ───
+// Based on basal-ganglia Go/NoGo mechanism (arXiv 2504.01990 §3.3.4)
+const READ_TOOLS = ['task','read','grep','glob','look_at','lsp','list','session','codegraph','background','context7','skill'];
+const ALL_TOOLS = ['task','bash','read','write','edit','grep','glob','webfetch','websearch','skill','todowrite',
+  'look_at','lsp','list','session','codegraph','background','context7','grep_app','skill_mcp',
+  'read_mcp','websearch_web_search','background_cancel','background_output'];
+
+function matchTool(tool, patterns) {
+  return patterns.some(p => tool === p || tool.startsWith(p));
+}
+
+export function getSignalGate(id) {
+  const s = S.get(id)
+  if (!s) return { allowAll: true, reason: 'no_session', signal: null }
+
+  // Find winner
+  const results = Object.entries(SIGNALS).map(([key, sig]) => ({
+    key, strength: sig.strength(s) * sig.priority, raw: sig.strength(s),
+  }))
+  results.sort((a, b) => b.strength - a.strength)
+  const winner = results[0]
+  if (!winner || winner.strength <= 0) return { allowAll: true, reason: 'idle', signal: null }
+
+  switch (winner.key) {
+    case 'perceive':
+      // L1 not complete → only task() to finish L1 agents
+      return { allowAll: false, allowedTools: ['task'], reason: 'L1 perception incomplete', signal: 'perceive' }
+    case 'safety':
+      // CAUTION mode → only read operations, no actions
+      return { allowAll: false, allowedTools: READ_TOOLS, reason: 'safety gate active', signal: 'safety' }
+    case 'emotion': {
+      const m = s.M_emo
+      if (m.mode === 'CAUTION' || m.mode === 'URGENT') {
+        return { allowAll: false, allowedTools: READ_TOOLS, reason: `emotion:${m.mode}`, signal: 'emotion' }
+      }
+      return { allowAll: true, reason: 'normal_emotion', signal: 'emotion' }
+    }
+    case 'memory':
+      // Retrieving memories → allow reads + task
+      return { allowAll: false, allowedTools: READ_TOOLS, reason: 'memory retrieval', signal: 'memory' }
+    case 'reward':
+      // Low score → need deep reasoning via task()
+      return { allowAll: false, allowedTools: READ_TOOLS, reason: 'low score - reasoning', signal: 'reward' }
+    case 'action':
+      // Complex task → allow execution tools
+      return { allowAll: false, allowedTools: ALL_TOOLS, reason: 'action execution', signal: 'action' }
+    case 'learning':
+      // Post-task reflection → only task() for reflexion
+      return { allowAll: false, allowedTools: ['task'], reason: 'post-task learning', signal: 'learning' }
+    default:
+      return { allowAll: true, reason: 'unknown_signal', signal: winner.key }
+  }
+}
+
 // ─── State access — for MCP reads, not context injection ───
 export function getMentalState(id) { return S.get(id) }
 export function getWorkingMemory(id) { return S.get(id)?.wm }
