@@ -3,9 +3,15 @@
 
 import { BrainEngine } from '../src/core/brain-engine';
 import { EmotionEngine } from '../src/core/emotion';
+import { readFileSync } from 'fs';
+
+// Load API key from .env
+const env = readFileSync('C:/Users/86189/Desktop/brain-agent/.env', 'utf8');
+const match = env.match(/DEEPSEEK_API_KEY=(.+)/);
+const API_KEY = match?.[1] || '';
 
 const engine = new BrainEngine({
-  apiKey: 'test-key',
+  apiKey: API_KEY,
   baseUrl: 'https://api.deepseek.com/v1',
   model: 'deepseek-chat',
 });

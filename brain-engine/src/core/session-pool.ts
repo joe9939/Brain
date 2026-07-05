@@ -1,142 +1,105 @@
-// Session Pool — §1.3A: Each brain component has its own LLM session
-// Independent context windows, parallel execution, different models possible
+// Session Pool — v2: Each brain component has its own LLM session
+// arXiv 2504.01990v2 §1.3A: Independent context windows, fully parallel
 
 import { BrainComponent, ComponentOutput, MentalState } from './types';
-
-interface LLMConfig {
-  apiKey: string;
-  baseUrl: string;
-  model: string;
-}
+import { LLMClient, LLMConfig, Message } from './llm-client';
 
 interface Session {
   id: string;
   componentId: string;
-  history: { role: string; content: string }[];
+  history: Message[];
   config: LLMConfig;
   createdAt: number;
 }
 
 export class SessionPool {
   private sessions: Map<string, Session> = new Map();
+  private clients: Map<string, LLMClient> = new Map();
   private defaultConfig: LLMConfig;
 
   constructor(config: LLMConfig) {
     this.defaultConfig = config;
   }
 
-  /**
-   * Get or create a session for a component
-   */
-  getOrCreate(componentId: string, config?: Partial<LLMConfig>): Session {
+  private getClient(componentId: string, model?: string): LLMClient {
+    const key = model || this.defaultConfig.model;
+    if (!this.clients.has(key)) {
+      this.clients.set(key, new LLMClient({ ...this.defaultConfig, model: key }));
+    }
+    return this.clients.get(key)!;
+  }
+
+  getOrCreate(componentId: string, model?: string): Session {
     const existing = this.sessions.get(componentId);
     if (existing) return existing;
-
     const session: Session = {
       id: `br-${componentId}`,
       componentId,
       history: [],
-      config: { ...this.defaultConfig, ...config },
+      config: { ...this.defaultConfig, model: model || this.defaultConfig.model },
       createdAt: Date.now(),
     };
     this.sessions.set(componentId, session);
     return session;
   }
 
-  /**
-   * Run a component with its own session context
-   */
-  async runComponent(
-    component: BrainComponent,
-    input: string,
-    state: MentalState
-  ): Promise<ComponentOutput> {
-    const session = this.getOrCreate(component.id, { model: component.model });
-
-    // Build prompt with context
+  async runComponent(component: BrainComponent, input: string, state: MentalState): Promise<ComponentOutput> {
+    const session = this.getOrCreate(component.id, component.model);
+    const client = this.getClient(component.id, component.model);
     const systemPrompt = component.prompt;
-    const contextPrompt = this.buildContextPrompt(input, state);
+    const context = this.buildContext(input, state);
 
-    // In real implementation: call LLM API here
-    // For now, return a mock that passes the signal computation
-    const output = await this.callLLM(session, systemPrompt, contextPrompt);
+    const result = await client.complete([
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: context },
+    ], { temperature: 0.3 });
 
-    // Parse structured output
-    try {
-      const parsed = JSON.parse(output);
-      return {
-        componentId: component.id,
-        summary: parsed.summary || output.slice(0, 200),
-        signals: parsed.signals || {},
-        state: parsed.state || {},
-      };
-    } catch {
-      return {
-        componentId: component.id,
-        summary: output.slice(0, 200),
-        signals: {},
-        state: {},
-      };
-    }
-  }
-
-  /**
-   * Run multiple components in parallel
-   */
-  async runAll(
-    components: BrainComponent[],
-    input: string,
-    state: MentalState
-  ): Promise<Map<string, ComponentOutput>> {
-    const results = await Promise.all(
-      components.map(c => this.runComponent(c, input, state)
-        .then(r => [c.id, r] as const)
-        .catch(e => [c.id, { componentId: c.id, summary: `Error: ${e.message}`, signals: {}, state: {} }] as const)
-      )
+    session.history.push(
+      { role: 'user', content: context.slice(0, 500) },
+      { role: 'assistant', content: result.content },
     );
-    return new Map(results);
+    if (session.history.length > 20) session.history.splice(0, 2);
+
+    return this.parseOutput(result.content, component.id);
   }
 
-  private buildContextPrompt(input: string, state: MentalState): string {
-    return `
-## Input
-${input}
-
-## Current Mental State
-- Emotion: ${state.emo.mode} @${state.emo.intensity.toFixed(1)}
-- Score: ${state.rew.score.toFixed(1)}, td_error: ${state.rew.td_error.toFixed(2)}
-- Goals completed: ${state.goal.completed}
-- Working memory: ${state.mem.working.length} items
-- Episodic memories: ${state.mem.episodic.length}
-- SOPs available: ${state.mem.procedural.length}
-`;
+  async runAll(components: BrainComponent[], input: string, state: MentalState): Promise<Map<string, ComponentOutput>> {
+    const results = await Promise.allSettled(
+      components.map(c => this.runComponent(c, input, state).then(r => [c.id, r] as const))
+    );
+    const map = new Map<string, ComponentOutput>();
+    for (const r of results) {
+      if (r.status === 'fulfilled') map.set(r.value[0], r.value[1]);
+      else map.set('error', { componentId: 'error', summary: r.reason?.message || 'unknown error', signals: {}, state: {} });
+    }
+    return map;
   }
 
-  private async callLLM(session: Session, system: string, context: string): Promise<string> {
-    // Store in history
-    session.history.push({ role: 'user', content: context });
-
-    // TODO: replace with actual LLM API call
-    // For now, return a structured response based on component
-    session.history.push({ role: 'assistant', content: '{}' });
-    return '{}';
+  private buildContext(input: string, state: MentalState): string {
+    return `## User Input\n${input}\n\n## Current Mental State\n- Emotion: ${state.emo.mode} @${state.emo.intensity.toFixed(2)}\n- Score: ${state.rew.score.toFixed(1)}\n- Goals: ${state.goal.active.length} active, ${state.goal.completed} done\n- Working memory: ${state.mem.working.length} items`;
   }
 
-  /**
-   * Clear a component's session history
-   */
-  clear(componentId: string): void {
-    this.sessions.delete(componentId);
+  private parseOutput(text: string, componentId: string): ComponentOutput {
+    let signals: Record<string, number> = {};
+    let state: Record<string, any> = {};
+    let summary = text.slice(0, 500);
+
+    // Try to extract JSON from the response
+    const jsonMatch = text.match(/\{[\s\S]*"signals"[\s\S]*\}/);
+    if (jsonMatch) {
+      try {
+        const parsed = JSON.parse(jsonMatch[0]);
+        signals = parsed.signals || {};
+        state = parsed.state || {};
+        summary = parsed.summary || summary;
+      } catch {}
+    }
+    return { componentId, summary, signals, state };
   }
 
-  /**
-   * Get session stats
-   */
-  stats(): { total: number; sessions: { id: string; historyLen: number }[] } {
-    const sessions = Array.from(this.sessions.values()).map(s => ({
-      id: s.id,
-      historyLen: s.history.length,
-    }));
-    return { total: sessions.length, sessions };
+  clear(componentId: string): void { this.sessions.delete(componentId); }
+
+  stats(): { total: number } {
+    return { total: this.sessions.size };
   }
 }
