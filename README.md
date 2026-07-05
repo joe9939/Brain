@@ -13,7 +13,7 @@
 
 ---
 
-![visualizer](docs/visualizer-screenshot.png)
+![visualizer](docs/visualizer-demo.gif)
 
 *🧠 3D real-time brain activity visualizer — [run it yourself](visualizer/)*
 
