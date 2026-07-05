@@ -131,35 +131,35 @@ Respond in JSON: { signals: { learning: 0.3 }, state: {}, summary: "Lesson: ..."
   },
 ];
 
-// §2.7 Action execution — swarm components
+// §2.7 Action execution — 对应脑区运动执行系统
 const Swarm: BrainComponent[] = [
   {
-    id: 'swarm-planner', label: '📋 Planner', sessionId: 'br-planner',
-    prompt: `You are the Swarm Planner — task decomposition.
-Break complex requests into parallel subtasks with dependencies.
+    id: 'dlpfc', label: '🧠 DLPFC', sessionId: 'br-dlpfc',
+    prompt: `You are the Dorsolateral Prefrontal Cortex — planning and task decomposition (§2.7).
+Break complex goals into structured action sequences with dependencies.
 
-Respond in JSON: { signals: {}, state: {}, summary: "Plan: ..." }`,
+Respond in JSON: { signals: { action: 0.8 }, state: {}, summary: "Action plan: ..." }`,
   },
   {
-    id: 'swarm-coder', label: '💻 Coder', sessionId: 'br-coder',
-    prompt: `You are the Coder — implementation.
-Write code to implement the planned solution. Focus on correctness and clarity.
+    id: 'motor-cortex', label: '🏃 Motor Cortex', sessionId: 'br-motor',
+    prompt: `You are the Motor Cortex — action execution (§2.7).
+Execute planned actions. Translate plans into concrete tool calls.
 
-Respond in JSON: { signals: {}, state: {}, summary: "Implementation: ..." }`,
+Respond in JSON: { signals: {}, state: {}, summary: "Executed: ..." }`,
   },
   {
-    id: 'swarm-reviewer', label: '👁️ Reviewer', sessionId: 'br-reviewer',
-    prompt: `You are the Reviewer — code review and quality check.
-Check for: bugs, edge cases, security issues, performance problems.
+    id: 'anterior-cingulate', label: '🎯 ACC', sessionId: 'br-acc',
+    prompt: `You are the Anterior Cingulate Cortex — error monitoring and conflict detection (§2.7).
+Check executed actions for: errors, conflicts, risks, correctness.
 
-Respond in JSON: { signals: {}, state: {}, summary: "Review: ..." }`,
+Respond in JSON: { signals: {}, state: {}, summary: "Error check: ..." }`,
   },
   {
-    id: 'swarm-tester', label: '🧪 Tester', sessionId: 'br-tester',
-    prompt: `You are the Tester — verification and testing.
-Design and run tests for the implementation. Verify it works correctly.
+    id: 'orbitofrontal', label: '⚖️ OFC', sessionId: 'br-ofc',
+    prompt: `You are the Orbitofrontal Cortex — outcome evaluation and verification (§2.7).
+Evaluate action outcomes. Verify results match expected goals.
 
-Respond in JSON: { signals: {}, state: {}, summary: "Tests: ..." }`,
+Respond in JSON: { signals: { reward: 0.3 }, state: {}, summary: "Outcome: ..." }`,
   },
 ];
 
@@ -177,3 +177,8 @@ export const ALL_COMPONENTS = { L1, Evaluation, Regulation, Swarm, brain };
 export function getAllComponents(): BrainComponent[] {
   return [...L1, ...Evaluation, ...Regulation, ...Swarm, brain];
 }
+
+export function getL1Components(): BrainComponent[] { return [...L1]; }
+export function getEvaluationComponents(): BrainComponent[] { return [...Evaluation]; }
+export function getRegulationComponents(): BrainComponent[] { return [...Regulation]; }
+export function getSwarmComponents(): BrainComponent[] { return [...Swarm]; }

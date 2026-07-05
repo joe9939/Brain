@@ -7,7 +7,7 @@ const all = getAllComponents();
 const L1 = all.filter(c => ['thalamus','amygdala','hippocampus','world-cortex','safety'].includes(c.id));
 const Evaluation = all.filter(c => ['cerebellum','basal-ganglia','insula','attention','reward'].includes(c.id));
 const Regulation = all.filter(c => ['dmn','hypothalamus','self-optimizer','offline-consol','self-enhance'].includes(c.id));
-const Swarm = all.filter(c => ['swarm-planner','swarm-coder','swarm-reviewer','swarm-tester'].includes(c.id));
+const Swarm = all.filter(c => ['dlpfc','motor-cortex','anterior-cingulate','orbitofrontal'].includes(c.id));
 
 let passed = 0, failed = 0;
 function assert(ok: boolean, name: string) {
@@ -171,33 +171,32 @@ console.log('\n🧠 REGULATION LAYER (§3)');
 
 console.log('\n🤖 SWARM EXECUTION LAYER (§2.7)');
 
-// 16. Planner — task decomposition
+// 16. DLPFC — planning
 {
-  const c = Swarm.find(x => x.id === 'swarm-planner');
-  assert(!!c, 'swarm-planner component exists');
-  assert(c!.prompt.includes('decompos') || c!.prompt.includes('subtask') || c!.prompt.includes('depend'), 'planner prompt covers decomposition');
+  const c = Swarm.find(x => x.id === 'dlpfc');
+  assert(!!c, 'DLPFC component exists');
+  assert(c!.prompt.includes('plan') || c!.prompt.includes('decompos'), 'DLPFC prompt covers planning');
 }
 
-// 17. Coder — implementation
+// 17. Motor Cortex — execution
 {
-  const c = Swarm.find(x => x.id === 'swarm-coder');
-  assert(!!c, 'swarm-coder component exists');
-  assert(c!.prompt.includes('implement') || c!.prompt.includes('code'), 'coder prompt covers implementation');
-  assert(c!.prompt.includes('correct'), 'coder prompt covers correctness');
+  const c = Swarm.find(x => x.id === 'motor-cortex');
+  assert(!!c, 'motor-cortex component exists');
+  assert(c!.prompt.includes('execut') || c!.prompt.includes('action'), 'motor cortex prompt covers execution');
 }
 
-// 18. Reviewer — code review
+// 18. ACC — error monitoring
 {
-  const c = Swarm.find(x => x.id === 'swarm-reviewer');
-  assert(!!c, 'swarm-reviewer component exists');
-  assert(c!.prompt.includes('review') || c!.prompt.includes('bug') || c!.prompt.includes('secur'), 'reviewer prompt covers review');
+  const c = Swarm.find(x => x.id === 'anterior-cingulate');
+  assert(!!c, 'anterior-cingulate component exists');
+  assert(c!.prompt.includes('error') || c!.prompt.includes('conflict'), 'ACC prompt covers error monitoring');
 }
 
-// 19. Tester — verification
+// 19. OFC — outcome evaluation
 {
-  const c = Swarm.find(x => x.id === 'swarm-tester');
-  assert(!!c, 'swarm-tester component exists');
-  assert(c!.prompt.includes('test') || c!.prompt.includes('verif'), 'tester prompt covers testing');
+  const c = Swarm.find(x => x.id === 'orbitofrontal');
+  assert(!!c, 'orbitofrontal component exists');
+  assert(c!.prompt.includes('outcome') || c!.prompt.includes('verif'), 'OFC prompt covers outcome evaluation');
 }
 
 // 20. Brain — orchestrator
@@ -250,8 +249,8 @@ assert(!!L1.find(x => x.id === 'thalamus'), 'Perception: thalamus (§2.1)');
 assert(!!L1.find(x => x.id === 'amygdala'), 'Perception: amygdala (§2.5)');
 assert(!!L1.find(x => x.id === 'hippocampus'), 'Cognition: hippocampus (§2.2)');
 assert(!!Evaluation.find(x => x.id === 'reward'), 'Cognition: reward (§2.4)');
-assert(!!Swarm.find(x => x.id === 'swarm-planner'), 'Action: planner (§2.7)');
-assert(!!Swarm.find(x => x.id === 'swarm-coder'), 'Action: coder (§2.7)');
+assert(!!Swarm.find(x => x.id === 'dlpfc'), 'Action: DLPFC planner (§2.7)');
+assert(!!Swarm.find(x => x.id === 'motor-cortex'), 'Action: motor cortex (§2.7)');
 assert(!!Regulation.find(x => x.id === 'self-enhance'), 'Self-enhancement: enhance (§3)');
 assert(!!Regulation.find(x => x.id === 'offline-consol'), 'Self-enhancement: consolidation (§3)');
 
