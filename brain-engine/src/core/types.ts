@@ -129,6 +129,18 @@ export interface ComponentOutput {
  */
 export type ToolCategory = 'task' | 'read' | 'write' | 'exec' | 'web' | 'admin';
 
+/**
+ * Output Router — 信号决定谁负责输出 (§2.7)
+ * 人脑没有"一个输出区", 谁赢了信号谁负责输出
+ */
+export interface OutputRouter {
+  component: string;        // 哪个组件负责输出
+  signal: string | null;    // 获胜信号
+  usedLLM: boolean;         // 是否调用了 LLM
+  model: string;            // 使用的模型
+  latency: number;          // ms
+}
+
 export const TOOL_MAP: Record<string, ToolCategory> = {
   task: 'task',
   read: 'read', grep: 'read', glob: 'read', look_at: 'read',
