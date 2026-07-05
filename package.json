@@ -34,6 +34,8 @@
   },
   "devDependencies": {
     "@agentesting/agentest": "^0.0.22",
-    "@opencode-ai/sdk": "^1.17.11"
+    "@opencode-ai/sdk": "^1.17.11",
+    "gif-encoder": "^0.7.2",
+    "pngjs": "^7.0.0"
   }
 }
