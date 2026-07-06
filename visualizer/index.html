@@ -306,17 +306,45 @@ let signals={},winner=null,mood={},reward={},l1Done=[],cycle=0,regionActivity={}
 let activePathways=[],gates={},agentConfigs={},signalFormulas={},mcpConfigs={};
 
 // ─── SSE ───
+let connected = false;
 new EventSource('/events').onmessage = e => {
   try {
     const d = JSON.parse(e.data);
     signals=d.signals||{}; winner=d.winner; l1Done=d.l1Progress||[];
     cycle=d.cycle||0; mood=d.mood||{}; reward=d.reward||{};
     regionActivity=d.regionActivity||{}; eventLog=d.eventLog||[];
-      activePathways=d.activePathways||[]; gates=d.gates||{};
+      activePathways=d.activePathways||{}; gates=d.gates||{}; connected=true;
       agentConfigs=d.agentConfigs||{}; signalFormulas=d.signalFormulas||{}; mcpConfigs=d.mcpConfigs||{};
     updateUI();
   } catch {}
 };
+
+// ─── Demo fallback (for GitHub Pages) ───
+setTimeout(() => {
+  if (connected) return;
+  const sigKeys = ['perceive','emotion','safety','memory','reward','action','learning'];
+  const sigColors = ['#4CAF50','#F44336','#FF9800','#2196F3','#9C27B0','#FF5722','#00BCD4'];
+  const regions = ['thalamus','amygdala','hippocampus','world-cortex','safety','cerebellum','basal-ganglia','insula','attention','reward','dmn','hypothalamus','dlpfc','motor-cortex','anterior-cingulate','orbitofrontal','brain'];
+  const moodModes = ['NORMAL','CAUTION','URGENT','EXPLORE','SUPPORT'];
+  const statusEl = document.getElementById('status-text');
+  if (statusEl) statusEl.textContent = 'DEMO MODE';
+  setInterval(() => {
+    const activeSig = sigKeys[Math.floor(Math.random() * sigKeys.length)];
+    signals = {};
+    sigKeys.forEach((k, i) => {
+      const s = k === activeSig ? 0.7 + Math.random() * 0.3 : Math.random() * 0.4;
+      signals[k] = s;
+    });
+    winner = { key: activeSig, label: activeSig.charAt(0).toUpperCase() + activeSig.slice(1), strength: signals[activeSig] };
+    mood = { mode: moodModes[Math.floor(Math.random() * moodModes.length)], intensity: 0.3 + Math.random() * 0.7 };
+    reward = { score: Math.random() * 5, td_error: (Math.random() - 0.5) * 0.5, goals: Math.floor(Math.random() * 3) };
+    regionActivity = {};
+    regions.forEach(r => { regionActivity[r] = Math.random() > 0.6 ? Math.random() : 0; });
+    activePathways = [sigKeys.filter(() => Math.random() > 0.7)];
+    cycle++;
+    updateUI();
+  }, 1500);
+}, 3000);
 
 function updateUI() {
   const mc = {NORMAL:'#4CAF50',CAUTION:'#FF9800',URGENT:'#F44336',EXPLORE:'#2196F3',SUPPORT:'#00BCD4'};
