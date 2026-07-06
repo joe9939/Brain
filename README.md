@@ -6,7 +6,7 @@
 
 [![CI](https://github.com/joe9939/Brain/actions/workflows/test.yml/badge.svg)](https://github.com/joe9939/Brain/actions)
 [![npm version](https://img.shields.io/badge/npm-brain--engine-blue)](https://www.npmjs.com/package/brain-engine)
-[![Tests](https://img.shields.io/badge/Tests-470%2B-brightgreen)]()
+[![Tests](https://img.shields.io/badge/Tests-550%2B-brightgreen)]()
 [![arXiv](https://img.shields.io/badge/arXiv-2504.01990-b31b1b)](https://arxiv.org/abs/2504.01990)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -100,11 +100,36 @@ Every message updates the internal state `M_t = {M^mem, M^wm, M^emo, M^goal, M^r
 | M^goal | GoalState | Active & completed goals |
 | M^rew | RewardState | Extrinsic + intrinsic reward, TD error |
 
+### Streaming Tick Architecture (NEW)
+
+Brain Engine v2 now supports a **50ms tick loop** for stream/real-time scenarios (games, robotics, continuous monitoring):
+
+```
+50ms tick ──→ ReflexRegistry (pluggable handlers)
+              │ SurvivalReflex (Minecraft survival)
+              │ CodingReflex (G1-G7, existing)
+              │ No reflex?
+              ├─→ PredictiveLayer (PhysicsPredictor)
+              │   │ Prediction matches? → ✅ free pass (0 LLM)
+              │   │ Mismatch?
+              │   └─→ HabitLayer (online learning)
+              │       │ Known pattern? → auto-execute
+              │       │ Unknown?
+              │       └─→ Cognitive (LLM, async, non-blocking)
+              │
+              StateEvolution runs in background (emotion decay, homeostasis)
+```
+
+- **`brain.tick(snapshot)`** — synchronous processing, returns within 50ms
+- **`brain.start(worldInterface)` / `brain.stop()`** — manage the loop
+- **`PredictionEngine`** interface — swap `PhysicsPredictor` (now) for `LatentPredictor` (later)
+- **`ReflexHandler`** interface — plug Minecraft survival, coding safety, or custom reflexes
+
 ---
 
 ## 🧪 Test Suite
 
-**17 test files · 470+ tests · 0 failures**
+**23 test files · 550+ tests · 0 failures**
 
 | Category | Tests | Status |
 |----------|:-----:|:------:|
@@ -124,6 +149,12 @@ Every message updates the internal state `M_t = {M^mem, M^wm, M^emo, M^goal, M^r
 | Brain Engine Integration | 15 | ✅ |
 | Package Config | 16 | ✅ |
 | Barrel Exports | 13 | ✅ |
+| **Reflex Arc** (NEW) | 20 | ✅ |
+| **Predictive Layer** (NEW) | 15 | ✅ |
+| **Belief Store** (NEW) | 18 | ✅ |
+| **State Evolution** (NEW) | 10 | ✅ |
+| **Habit Layer** (NEW) | 13 | ✅ |
+| **Brain Loop** (NEW) | 10 | ✅ |
 
 ```bash
 # Run all static tests (no API key needed)
@@ -140,16 +171,20 @@ npx tsx test/pathways.test.ts
 
 ---
 
-## 🖥️ Visualizer
+## 🖥️ Visualizer & Playground
 
-Real-time 3D brain activity visualization in your browser.
+**Live on GitHub Pages:** [https://joe9939.github.io/Brain/](https://joe9939.github.io/Brain/)
+
+- **3D Brain Visualizer** — real-time connectome with signal bars, pathway tracing, mood display
+- **Playground** — chat with Brain Engine directly in browser ([playground](https://joe9939.github.io/Brain/playground.html))
+
+The visualizer runs in **demo mode** automatically (no backend needed). For real data:
 
 ```bash
-npx tsx visualizer/server-v2.mjs
-# → http://localhost:3458
+node adapter/openai-server.mjs
+# → Visualizer: http://localhost:3458
+# → Playground: http://localhost:3458/
 ```
-
-Or view the [GitHub Pages demo](https://joe9939.github.io/Brain/visualizer/) (standalone animation).
 
 ---
 
