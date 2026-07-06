@@ -13,7 +13,7 @@ import { randomBytes } from 'crypto';
 import { networkInterfaces } from 'os';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const PORT = parseInt(process.argv[2] || '3458', 10);
+const PORT = parseInt(process.argv[2] || process.env.PORT || '3458', 10);
 
 // ── Load .env ──
 function loadEnv(key) {
