@@ -12,5 +12,40 @@ jobs:
         with:
           node-version: 'lts/*'
       - run: npm install
-      - name: Run tests
+      - name: Run v1 tests
         run: node tests/runner.js --unit --bc
+
+  brain-engine-static:
+    name: Brain Engine v2 — Static Tests (no API)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: brain-engine
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      - run: npm install
+      - name: Component Verification
+        run: npx tsx test/components.test.ts
+      - name: Basal Ganglia
+        run: npx tsx test/basal-ganglia.test.ts
+      - name: Brain Architecture
+        run: npx tsx test/brain-architecture.test.ts
+      - name: Emotion (unit)
+        run: npx tsx test/emotion.test.ts
+      - name: Goal (unit)
+        run: npx tsx test/goal.test.ts
+      - name: Memory (unit)
+        run: npx tsx test/memory.test.ts
+      - name: Reward (unit)
+        run: npx tsx test/reward.test.ts
+      - name: World Model (unit)
+        run: npx tsx test/world-model.test.ts
+      - name: Package Config
+        run: npx tsx test/package.test.ts
+      - name: Barrel Exports
+        run: npx tsx test/index.test.ts
+
+
