@@ -6,30 +6,58 @@
 //   OpenCode:  add model "brain-engine" with baseUrl "http://localhost:3458/v1"
 
 import { createServer } from 'http';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { randomBytes } from 'crypto';
 import { networkInterfaces } from 'os';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = parseInt(process.argv[2] || '3458', 10);
 
-// Load API key
-let apiKey = process.env.DEEPSEEK_API_KEY || '';
-try {
-  const env = readFileSync(join(__dirname, '..', '.env'), 'utf8');
-  const m = env.match(/DEEPSEEK_API_KEY=(.+)/);
-  if (m) apiKey = m[1];
-} catch {}
-if (!apiKey) { console.error('Missing DEEPSEEK_API_KEY'); process.exit(1); }
+// ── Load .env ──
+function loadEnv(key) {
+  if (process.env[key]) return process.env[key];
+  try {
+    const env = readFileSync(join(__dirname, '..', '.env'), 'utf8');
+    const m = env.match(new RegExp(`${key}=(.+)`));
+    if (m) return m[1];
+  } catch {}
+  return '';
+}
+
+// ── Brain API key (for clients to authenticate to this server) ──
+let BRAIN_API_KEY = loadEnv('BRAIN_API_KEY');
+if (!BRAIN_API_KEY) {
+  BRAIN_API_KEY = 'brain-' + randomBytes(16).toString('hex');
+  console.log(`\n🔑 BRAIN_API_KEY not set — generated temporary key:`);
+  console.log(`   ${BRAIN_API_KEY}`);
+  console.log(`   Set BRAIN_API_KEY in .env to use a fixed key.\n`);
+}
+
+// ── DeepSeek API key (for Brain Engine's underlying LLM) ──
+let DEEPSEEK_KEY = loadEnv('DEEPSEEK_API_KEY');
+if (!DEEPSEEK_KEY) { console.error('❌ Missing DEEPSEEK_API_KEY in .env'); process.exit(1); }
 
 // Dynamic import BrainEngine
 const { BrainEngine } = await import('../brain-engine/src/core/brain-engine.js');
 const engine = new BrainEngine({
-  apiKey,
+  apiKey: DEEPSEEK_KEY,
   baseUrl: 'https://api.deepseek.com/v1',
   model: 'deepseek-chat',
 });
+
+// ─── Auth check ───
+function authenticate(req, res) {
+  const auth = req.headers['authorization'] || '';
+  const token = auth.replace(/^Bearer\s+/i, '').trim();
+  if (token !== BRAIN_API_KEY) {
+    res.writeHead(401, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: { message: 'Invalid API key', type: 'auth_error' } }));
+    return false;
+  }
+  return true;
+}
 
 // ─── Handler ───
 async function handleChat(body) {
@@ -81,8 +109,9 @@ const server = createServer((req, res) => {
     return;
   }
 
-  // Chat completions (non-streaming only)
+  // Chat completions (non-streaming only, auth required)
   if (path === '/v1/chat/completions' && req.method === 'POST') {
+    if (!authenticate(req, res)) return;
     let body = '';
     req.on('data', c => body += c);
     req.on('end', async () => {
@@ -106,7 +135,7 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`\n🧠 Brain Engine API (OpenAI-compatible)`);
   console.log(`   http://localhost:${PORT}/v1/chat/completions`);
   console.log(`   Playground: http://localhost:${PORT}/`);
-  console.log(`\n   Test: curl http://localhost:${PORT}/v1/chat/completions -d '{"model":"brain-engine","messages":[{"role":"user","content":"Hello"}]}'`);
-  console.log(`   AI Clinic: ai-clinic check brain-engine --base-url http://localhost:${PORT}/v1`);
-  console.log(`   OpenCode: add model "brain-engine" with baseUrl "http://localhost:${PORT}/v1"\n`);
+  console.log(`\n   Test: curl http://localhost:${PORT}/v1/chat/completions -H "Authorization: Bearer ${BRAIN_API_KEY}" -d '{"model":"brain-engine","messages":[{"role":"user","content":"Hello"}]}'`);
+  console.log(`   AI Clinic: ai-clinic check brain-engine --base-url http://localhost:${PORT}/v1 --api-key ${BRAIN_API_KEY}`);
+  console.log(`   OpenCode: add model "brain-engine" with apiKey "${BRAIN_API_KEY}" baseUrl "http://localhost:${PORT}/v1"\n`);
 });
