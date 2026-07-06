@@ -153,3 +153,114 @@ export const TOOL_MAP: Record<string, ToolCategory> = {
   webfetch: 'web', websearch: 'web',
   websearch_web_search_exa: 'web',
 };
+
+// ═══════════════════════════════════════════════════════
+// Streaming Architecture Types
+// ═══════════════════════════════════════════════════════
+
+/** Minecraft-style world snapshot — what the agent perceives */
+export interface WorldSnapshot {
+  position: { x: number; y: number; z: number };
+  velocity: { x: number; y: number; z: number };
+  health: number;
+  healthDelta: number;
+  hunger: number;
+  oxygen: number;
+  onFire: boolean;
+  inLava: boolean;
+  falling: boolean;
+  blocks: { type: string; position: { x: number; y: number; z: number } }[];
+  entities: { id: string; type: string; position: { x: number; y: number; z: number }; velocity: { x: number; y: number; z: number } }[];
+  inventory: { item: string; count: number }[];
+  timeOfDay: number;
+  dimension: string;
+}
+
+/** Action the agent can take */
+export interface Action {
+  type: string;
+  params: Record<string, any>;
+}
+
+/** Multi-dimensional prediction error signal */
+export interface SurpriseSignal {
+  total: number;
+  dimensions: { position: number; health: number; threat: number; inventory: number };
+  attention: number;
+}
+
+/** Processing level needed — the core streaming decision */
+export type CognitiveDemand =
+  | { level: 'none' }
+  | { level: 'reflex'; action: ReflexAction; handler: string }
+  | { level: 'predictive_pass' }
+  | { level: 'habit'; habit: Habit }
+  | { level: 'cognitive'; surprise: SurpriseSignal; attention: number };
+
+/** Result of one engine tick */
+export interface TickResult {
+  type: 'reflex' | 'predictive_pass' | 'habit' | 'cognitive';
+  latency: number;
+  action?: any;
+  output?: string;
+  handler?: string;
+}
+
+/** What a reflex handler decided to do */
+export interface ReflexAction {
+  priority: number;
+  action: string;
+  target?: string;
+  params?: Record<string, any>;
+}
+
+/** Pluggable reflex handler interface */
+export interface ReflexHandler {
+  name: string;
+  priority: number;
+  check(snapshot: WorldSnapshot): ReflexAction | null;
+}
+
+/** What the predictor predicted */
+export interface PredictedState {
+  position: { x: number; y: number; z: number };
+  health: number;
+  threats: { id: string; distance: number }[];
+  confidence: number;
+}
+
+/** Prediction engine interface — swap Physics for Latent later */
+export interface PredictionEngine {
+  predict(prev: WorldSnapshot, action?: Action): PredictedState;
+  confidence(): number;
+}
+
+/** A learned habit (SOP-like, but learned online) */
+export interface Habit {
+  id: string;
+  trigger: string;
+  action: Action;
+  frequency: number;
+  lastUsed: number;
+  successRate: number;
+}
+
+/** A stored belief (prediction + outcome) */
+export interface Belief {
+  id: string;
+  timestamp: number;
+  context: string;
+  prediction: any;
+  outcome: any;
+  surprise: number;
+  confidence: number;
+  tags: string[];
+}
+
+/** Internal homeostasis state for idle evolution */
+export interface HomeostasisState {
+  hunger: number;      // 0-100, higher = more hungry
+  energy: number;      // 0-100, higher = more rested
+  boredom: number;     // 0-100, higher = more bored
+  lastInputTime: number;
+}

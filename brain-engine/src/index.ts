@@ -12,6 +12,12 @@ export { SessionPool } from './core/session-pool';
 export { LLMClient } from './core/llm-client';
 export { Persistence } from './core/persistence';
 export { getAllComponents } from './core/brain-components';
+export { PredictiveLayer, PhysicsPredictor } from './core/predictive-layer';
+export { BeliefStore } from './core/belief-store';
+export { StateEvolution } from './core/state-evolution';
+export { SurvivalReflex, ReflexRegistry } from './core/reflex-arc';
+export { HabitLayer } from './core/habit-layer';
+export { BrainLoop } from './core/brain-loop';
 
 export type {
   MentalState,
@@ -30,4 +36,16 @@ export type {
   ComponentOutput,
   OutputRouter,
   ToolCategory,
+  WorldSnapshot,
+  Action,
+  SurpriseSignal,
+  CognitiveDemand,
+  TickResult,
+  ReflexAction,
+  ReflexHandler,
+  PredictedState,
+  PredictionEngine,
+  Habit,
+  Belief,
+  HomeostasisState,
 } from './core/types';
