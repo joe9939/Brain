@@ -10,6 +10,11 @@
 [![arXiv](https://img.shields.io/badge/arXiv-2504.01990-b31b1b)](https://arxiv.org/abs/2504.01990)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+<br>
+
+> **🎮 [Live Visualizer](https://joe9939.github.io/Brain/)** — 3D brain activity viewer
+> **💬 [Playground](https://joe9939.github.io/Brain/playground.html)** — chat with Brain Engine in browser
+
 ---
 
 > **Standalone library** — no platform dependency. Runs anywhere Node.js runs.  
