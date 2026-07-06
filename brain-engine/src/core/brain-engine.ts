@@ -1,9 +1,8 @@
-// Brain Engine v2 — 完整人脑架构
-// All 20 components activate correctly:
-// 1. Reflex (0 LLM) → 2. L1+Eval ALL parallel → 3. Signal competition
-// 4. Swarm (if action) / Reg (if idle) → 5. Output routing
+// Brain Engine v2 — 完整人脑架构 + 流式改造
+// 50ms tick 循环: 反射→预测→习惯→认知(异步)
+// 参考: predictive-mind §8 main loop, xagent fused kernel
 
-import { MentalState, OutputRouter, BrainComponent, GateResult } from './types';
+import { MentalState, OutputRouter, BrainComponent, GateResult, WorldSnapshot, TickResult, ReflexHandler, CognitiveDemand } from './types';
 import { SessionPool } from './session-pool';
 import { BasalGanglia } from './basal-ganglia';
 import { MemorySystem } from './memory';
@@ -14,9 +13,16 @@ import { GoalSystem } from './goal';
 import { LLMClient } from './llm-client';
 import { Persistence } from './persistence';
 import { getL1Components, getEvaluationComponents, getSwarmComponents, getRegulationComponents } from './brain-components';
+import { PredictiveLayer } from './predictive-layer';
+import { BeliefStore } from './belief-store';
+import { StateEvolution } from './state-evolution';
+import { ReflexRegistry } from './reflex-arc';
+import { HabitLayer } from './habit-layer';
+import { BrainLoop, WorldInterface } from './brain-loop';
 
 export interface BrainEngineConfig {
   apiKey: string; baseUrl: string; model: string; persistencePath?: string;
+  scenario?: 'coding' | 'minecraft';
 }
 
 export class BrainEngine {
@@ -28,8 +34,18 @@ export class BrainEngine {
   readonly worldModel: WorldModel;
   readonly goals: GoalSystem;
   readonly persistence?: Persistence;
+
+  // Streaming components
+  readonly predictiveLayer: PredictiveLayer;
+  readonly beliefStore: BeliefStore;
+  readonly stateEvolution: StateEvolution;
+  readonly reflexRegistry: ReflexRegistry;
+  readonly habitLayer: HabitLayer;
+  readonly loop: BrainLoop;
+
   private llm: LLMClient;
   private turnCount = 0;
+  private cognitivePromise: Promise<void> | null = null;
 
   state: MentalState;
 
@@ -44,6 +60,14 @@ export class BrainEngine {
     this.llm = new LLMClient(config);
     if (config.persistencePath) this.persistence = new Persistence(config.persistencePath);
 
+    // Initialize streaming components
+    this.predictiveLayer = new PredictiveLayer();
+    this.beliefStore = new BeliefStore();
+    this.stateEvolution = new StateEvolution();
+    this.reflexRegistry = new ReflexRegistry();
+    this.habitLayer = new HabitLayer();
+    this.loop = new BrainLoop({ onTick: (s) => this.handleTick(s) });
+
     this.state = {
       mem: { working: [], episodic: [], semantic: [], procedural: [] },
       wm: WorldModel.default(),
@@ -51,6 +75,72 @@ export class BrainEngine {
       goal: GoalSystem.default(),
       rew: RewardSystem.default(),
     };
+  }
+
+  /**
+   * 流式 tick — 每 50ms 跑一次
+   * 反射 → 预测 → 习惯 → 认知(异步)
+   */
+  async tick(snapshot: WorldSnapshot): Promise<TickResult> {
+    const start = Date.now();
+
+    // 1. Reflex (0 LLM, <1ms)
+    const reflex = this.reflexRegistry.check(snapshot);
+    if (reflex) {
+      this.stateEvolution.tick(this.state, 50);
+      return { type: 'reflex', action: reflex, handler: reflex.action, latency: Date.now() - start };
+    }
+
+    // 2. Predictive coding (0 LLM, <1ms)
+    const demand = this.predictiveLayer.tick(snapshot);
+    if (demand.level === 'none' || demand.level === 'predictive_pass') {
+      this.stateEvolution.tick(this.state, 50);
+      return { type: 'predictive_pass', latency: Date.now() - start };
+    }
+
+    // 3. Habit (0 LLM, ~10ms)
+    const habit = this.habitLayer.match(this.serializeSnapshot(snapshot));
+    if (habit) {
+      this.stateEvolution.tick(this.state, 50);
+      return { type: 'habit', action: habit.action, latency: Date.now() - start };
+    }
+
+    // 4. Cognitive (LLM, ~2-5s) — async, don't block tick
+    if (!this.cognitivePromise && demand.level === 'cognitive') {
+      this.cognitivePromise = this.process(this.serializeSnapshot(snapshot)).then(() => {
+        this.cognitivePromise = null;
+      });
+    }
+
+    this.stateEvolution.tick(this.state, 50);
+    return {
+      type: 'cognitive',
+      latency: Date.now() - start,
+      output: demand.level === 'cognitive' ? 'cognitive_triggered' : undefined,
+    };
+  }
+
+  /** 启动 50ms 连续运行 */
+  start(world: WorldInterface): void {
+    this.loop.start(world);
+  }
+
+  /** 停止 */
+  stop(): void {
+    this.loop.stop();
+  }
+
+  /** 是否在运行 */
+  isRunning(): boolean {
+    return this.loop.isRunning();
+  }
+
+  private serializeSnapshot(snapshot: WorldSnapshot): string {
+    return JSON.stringify(snapshot);
+  }
+
+  private async handleTick(snapshot: WorldSnapshot): Promise<TickResult> {
+    return this.tick(snapshot);
   }
 
   async process(input: string): Promise<{
