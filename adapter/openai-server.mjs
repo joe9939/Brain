@@ -40,7 +40,7 @@ let DEEPSEEK_KEY = loadEnv('DEEPSEEK_API_KEY');
 if (!DEEPSEEK_KEY) { console.error('❌ Missing DEEPSEEK_API_KEY in .env'); process.exit(1); }
 
 // Dynamic import BrainEngine
-const { BrainEngine } = await import('../brain-engine/src/core/brain-engine.js');
+const { BrainEngine } = await import('../brain-engine/dist/index.js');
 const engine = new BrainEngine({
   apiKey: DEEPSEEK_KEY,
   baseUrl: 'https://api.deepseek.com/v1',
