@@ -3,8 +3,6 @@ name: Deploy Visualizer to GitHub Pages
 on:
   push:
     branches: [master]
-    paths:
-      - 'visualizer/**'
   workflow_dispatch:
 
 permissions:
