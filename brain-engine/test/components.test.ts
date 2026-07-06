@@ -45,8 +45,9 @@ console.log('\n📡 L1 PERCEPTION LAYER (§2.1)');
   assert(c!.prompt.includes('CAUTION'), 'amygdala prompt covers CAUTION mode');
   assert(c!.prompt.includes('URGENT'), 'amygdala prompt covers URGENT mode');
   assert(c!.prompt.includes('intensity'), 'amygdala prompt covers intensity');
-  assert(c!.prompt.includes('valence') || c!.prompt.includes('sentiment') || c!.prompt.includes('mood'), 'amygdala prompt covers valence');
-  assert(c!.prompt.includes('arousal') || c!.prompt.includes('excitement') || c!.prompt.includes('energy'), 'amygdala prompt covers arousal');
+  const pLow = c!.prompt.toLowerCase();
+  assert(pLow.includes('valence') || pLow.includes('sentiment') || pLow.includes('mood'), 'amygdala prompt covers valence');
+  assert(pLow.includes('arousal') || pLow.includes('excitement') || pLow.includes('energy'), 'amygdala prompt covers arousal');
 }
 
 // 3. Hippocampus — memory retrieval
@@ -63,7 +64,8 @@ console.log('\n📡 L1 PERCEPTION LAYER (§2.1)');
   const c = L1.find(x => x.id === 'world-cortex');
   assert(!!c, 'world-cortex component exists');
   assert(c!.prompt.includes('context') || c!.prompt.includes('impact'), 'world-cortex prompt covers context analysis');
-  assert(c!.prompt.includes('predict') || c!.prompt.includes('impact') || c!.prompt.includes('future'), 'world-cortex prompt covers prediction');
+  const pLow2 = c!.prompt.toLowerCase();
+  assert(pLow2.includes('predict') || pLow2.includes('impact') || pLow2.includes('future'), 'world-cortex prompt covers prediction');
 }
 
 // 5. Safety — security scan

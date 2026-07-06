@@ -113,7 +113,7 @@ export interface BrainComponent {
   sessionId: string;
   model?: string;
   prompt: string;
-  async run(input: string, state: MentalState): Promise<ComponentOutput>;
+  run?(input: string, state: MentalState): Promise<ComponentOutput>;
 }
 
 export interface ComponentOutput {

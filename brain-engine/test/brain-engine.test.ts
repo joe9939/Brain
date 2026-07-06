@@ -76,7 +76,8 @@ async function testSignals() {
 
 // Test 7: Multiple messages maintain state
 async function testStatePersistence() {
-  const e2 = new BrainEngine({ apiKey: 'k', baseUrl: 'u', model: 'm' });
+  const baseUrl = 'https://api.deepseek.com/v1';
+  const e2 = new BrainEngine({ apiKey: API_KEY, baseUrl, model: 'deepseek-chat' });
   await e2.process('msg1');
   await e2.process('msg2');
   await e2.process('msg3');
@@ -85,7 +86,8 @@ async function testStatePersistence() {
 
 // Test 8: Gate adapts to state
 async function testGateAdaptation() {
-  const e3 = new BrainEngine({ apiKey: 'k', baseUrl: 'u', model: 'm' });
+  const baseUrl = 'https://api.deepseek.com/v1';
+  const e3 = new BrainEngine({ apiKey: API_KEY, baseUrl, model: 'deepseek-chat' });
   const result1 = await e3.process('test');
   assert(result1.gate.signal === 'perceive' || !result1.gate.allowAll, 'perceive gate on fresh state');
 }

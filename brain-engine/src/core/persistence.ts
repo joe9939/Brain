@@ -26,7 +26,7 @@ export interface PreferenceRow {
 }
 
 // Decay constants from FadeMem (§2.2.5)
-const DECAY_LAMBDAS = { episodic: 0.05, procedural: 0.15, semantic: 0.02, working: 0.3 };
+const DECAY_LAMBDAS: Record<string, number> = { episodic: 0.05, procedural: 0.15, semantic: 0.02, working: 0.3 };
 const FORGET_THRESHOLD = 0.01; // below this → eligible for pruning
 
 export class Persistence {
