@@ -40,7 +40,7 @@ import { BrainEngine } from 'brain-engine';
 const brain = new BrainEngine({
   apiKey: process.env.DEEPSEEK_API_KEY,
   baseUrl: 'https://api.deepseek.com/v1',
-  model: 'deepseek-chat',
+  model: 'deepseek-v4-flash',
 });
 
 const result = await brain.process('What is the capital of France?');
@@ -95,7 +95,7 @@ Input ───────────→  │   safety    (×4) │ ◄── 
 
 ### Core Mental State
 
-Every message updates the internal state `M_t = {M^mem, M^wm, M^emo, M^goal, M^rew}`:
+Every message updates the internal state `M_t = {M^mem, M^wm, M^emo, M^goal, M^rew, M^hormone}`:
 
 | Component | Type | Description |
 |-----------|------|-------------|
@@ -104,8 +104,26 @@ Every message updates the internal state `M_t = {M^mem, M^wm, M^emo, M^goal, M^r
 | M^emo | EmotionState | 5 modes: NORMAL / CAUTION / URGENT / EXPLORE / SUPPORT |
 | M^goal | GoalState | Active & completed goals |
 | M^rew | RewardState | Extrinsic + intrinsic reward, TD error |
+| M^hormone | HormoneState | **6 hormones** — adrenaline, cortisol, endorphin, dopamine, serotonin, oxytocin |
 
-### Streaming Tick Architecture (NEW)
+### Hormone System (NEW — 全局调制器)
+
+Hormones modulate all subsystems simultaneously, just like a real brain:
+
+```
+Emotion → Hormone → Reflex(阈值↓/↑) → Predictive(阈值↓/↑) → Memory(重要性↑)
+```
+
+| Hormone | Trigger | Effect |
+|---------|---------|--------|
+| **Adrenaline** | URGENT mode | ↑ reflex sensitivity, ↑ memory encoding, ↓ serotonin |
+| **Cortisol** | CAUTION (chronic) | ↑ predictive sensitivity (more alert), slow decay |
+| **Endorphin** | Reward success | ↑ relaxation, ↓ cortisol, ↓ reflex sensitivity |
+| **Dopamine** | Baseline 0.5 | Motivation from goal progress |
+| **Serotonin** | Baseline 0.5 | Wellbeing, depleted by adrenaline |
+| **Oxytocin** | SUPPORT mode | Social bonding, medium decay |
+
+### Streaming Tick Architecture
 
 Brain Engine v2 now supports a **50ms tick loop** for stream/real-time scenarios (games, robotics, continuous monitoring):
 

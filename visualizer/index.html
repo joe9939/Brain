@@ -88,6 +88,17 @@
         <div class="mt-item"><div class="mt-label">GOALS</div><div class="mt-value" id="goal-v">0</div></div>
       </div>
     </div>
+
+    <!-- Hormone Panel (NEW) -->
+    <div class="panel">
+      <div class="panel-header" onclick="togglePanel(this)">
+        <span class="panel-title">🧪 Hormones</span>
+        <span class="panel-toggle">▶</span>
+      </div>
+      <div class="panel-body" id="hormone-body">
+        <div id="hormone-bars"></div>
+      </div>
+    </div>
     
     <div class="panel">
       <div class="panel-header" onclick="togglePanel(this)">
@@ -302,7 +313,7 @@ function project3D(reg) {
 }
 
 // ─── State ───
-let signals={},winner=null,mood={},reward={},l1Done=[],cycle=0,regionActivity={},eventLog=[];
+let signals={},winner=null,mood={},reward={},hormone={},l1Done=[],cycle=0,regionActivity={},eventLog=[];
 let activePathways=[],gates={},agentConfigs={},signalFormulas={},mcpConfigs={};
 
 // ─── SSE ───
@@ -311,7 +322,7 @@ new EventSource('/events').onmessage = e => {
   try {
     const d = JSON.parse(e.data);
     signals=d.signals||{}; winner=d.winner; l1Done=d.l1Progress||[];
-    cycle=d.cycle||0; mood=d.mood||{}; reward=d.reward||{};
+    cycle=d.cycle||0; mood=d.mood||{}; reward=d.reward||{}; hormone=d.hormone||{};
     regionActivity=d.regionActivity||{}; eventLog=d.eventLog||[];
       activePathways=d.activePathways||{}; gates=d.gates||{}; connected=true;
       agentConfigs=d.agentConfigs||{}; signalFormulas=d.signalFormulas||{}; mcpConfigs=d.mcpConfigs||{};
@@ -338,6 +349,7 @@ setTimeout(() => {
     winner = { key: activeSig, label: activeSig.charAt(0).toUpperCase() + activeSig.slice(1), strength: signals[activeSig] };
     mood = { mode: moodModes[Math.floor(Math.random() * moodModes.length)], intensity: 0.3 + Math.random() * 0.7 };
     reward = { score: Math.random() * 5, td_error: (Math.random() - 0.5) * 0.5, goals: Math.floor(Math.random() * 3) };
+    hormone = { adrenaline: Math.random()*0.8, cortisol: Math.random()*0.4, endorphin: Math.random()*0.6, dopamine: 0.3+Math.random()*0.5, serotonin: 0.3+Math.random()*0.4, oxytocin: Math.random()*0.3 };
     regionActivity = {};
     regions.forEach(r => { regionActivity[r] = Math.random() > 0.6 ? Math.random() : 0; });
     activePathways = [sigKeys.filter(() => Math.random() > 0.7)];
@@ -354,6 +366,15 @@ function updateUI() {
   document.getElementById('td-v').textContent = (reward.td_error||0).toFixed(2);
   document.getElementById('goal-v').textContent = reward.goals||0;
   document.getElementById('cycle-display').textContent = `Cycle: ${cycle}`;
+  
+  // ── Hormone bars (NEW) ──
+  const hKeys = ['adrenaline','cortisol','endorphin','dopamine','serotonin','oxytocin'];
+  const hColors = ['#F44336','#FF9800','#4CAF50','#2196F3','#9C27B0','#00BCD4'];
+  const hLabels = { adrenaline:'A', cortisol:'C', endorphin:'E', dopamine:'D', serotonin:'S', oxytocin:'O' };
+  document.getElementById('hormone-bars').innerHTML = hKeys.map((k,i) => {
+    const v = hormone[k]||0;
+    return `<div class="signal-row"><span class="signal-dot" style="background:${hColors[i]}"></span><span class="signal-name">${hLabels[k]}</span><div class="signal-bar-wrap"><div class="signal-bar" style="width:${v*100}%;background:${hColors[i]}"></div></div><span style="font-size:9px;color:#888;width:28px;text-align:right">${(v*100).toFixed(0)}%</span></div>`;
+  }).join('');
   
   const order={perceive:0,emotion:1,safety:2,memory:3,reward:4,action:5,learning:6};
   const sC={perceive:'#4CAF50',emotion:'#FF9800',safety:'#F44336',memory:'#2196F3',reward:'#9C27B0',action:'#00BCD4',learning:'#607D8B'};

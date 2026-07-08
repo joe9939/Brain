@@ -94,21 +94,21 @@ export class BrainEngine {
     // 1. Reflex — with hormone-modulated thresholds
     const reflex = this.reflexRegistry.check(snapshot, this.hormone);
     if (reflex) {
-      this.stateEvolution.tick(this.state, 50);
+      this.stateEvolution.tick(this.state, 50, this.hormone.state);
       return { type: 'reflex', action: reflex, handler: reflex.action, latency: Date.now() - start };
     }
 
     // 2. Predictive coding (0 LLM, <1ms)
     const demand = this.predictiveLayer.tick(snapshot);
     if (demand.level === 'none' || demand.level === 'predictive_pass') {
-      this.stateEvolution.tick(this.state, 50);
+      this.stateEvolution.tick(this.state, 50, this.hormone.state);
       return { type: 'predictive_pass', latency: Date.now() - start };
     }
 
     // 3. Habit (0 LLM, ~10ms)
     const habit = this.habitLayer.match(this.serializeSnapshot(snapshot));
     if (habit) {
-      this.stateEvolution.tick(this.state, 50);
+      this.stateEvolution.tick(this.state, 50, this.hormone.state);
       return { type: 'habit', action: habit.action, latency: Date.now() - start };
     }
 
@@ -119,7 +119,7 @@ export class BrainEngine {
       });
     }
 
-    this.stateEvolution.tick(this.state, 50);
+    this.stateEvolution.tick(this.state, 50, this.hormone.state);
     return {
       type: 'cognitive',
       latency: Date.now() - start,
@@ -146,6 +146,20 @@ export class BrainEngine {
     return JSON.stringify(snapshot);
   }
 
+  /** Look up semantic memory for relevant concepts in the input */
+  private lookupSemantic(input: string): string[] {
+    const results: string[] = [];
+    const words = input.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+    const phrases = [...new Set(words)];
+    for (const phrase of phrases) {
+      const mem = this.memory.retrieveSemantic(phrase);
+      if (mem) {
+        results.push(`[Know] ${mem.concept}: ${mem.facts.join(', ')}`);
+      }
+    }
+    return results;
+  }
+
   private async handleTick(snapshot: WorldSnapshot): Promise<TickResult> {
     return this.tick(snapshot);
   }
@@ -155,6 +169,19 @@ export class BrainEngine {
   }> {
     const start = Date.now();
     this.turnCount++;
+
+    // ── 0. Active Memory Retrieval — hippocampus queries episodic/semantic memory ──
+    const episodes = this.memory.retrieveEpisodic(input, 3);
+    const semantic = this.lookupSemantic(input);
+    const memoryContext = [
+      ...episodes.map(e => `[Past: ${e.tags.join('/')}] ${e.content}`),
+      ...semantic,
+      ...this.state.mem.working.map(w => `[Recent] ${w}`),
+    ].join('\n');
+
+    const enrichedInput = memoryContext
+      ? `## Relevant Memories\n${memoryContext}\n\n## Input\n${input}`
+      : input;
 
     // ── 1. Reflex Arc (§5) — 0 LLM ──
     const reflexBlock = this.reflexCheck(input);
@@ -166,7 +193,7 @@ export class BrainEngine {
 
     // ── 2. ALL 10 Cognitive Components — 并行 (§2.1 + §2.7) ──
     const allComponents = [...getL1Components(), ...getEvaluationComponents()];
-    const cognitiveResults = await this.sessionPool.runAll(allComponents, input, this.state);
+    const cognitiveResults = await this.sessionPool.runAll(allComponents, enrichedInput, this.state);
 
     // ── 3. Update state from component outputs ──
     this.updateStateFromComponents(cognitiveResults, input);

@@ -4,14 +4,20 @@
 
 import { EmotionState } from './types';
 
+export interface HormoneModulator {
+  adrenaline: number;
+  cortisol: number;
+  endorphin: number;
+}
+
 export class EmotionEngine {
   // Default baseline emotion
   static default(): EmotionState {
     return { mode: 'NORMAL', intensity: 0.1, valence: 0.1, arousal: 0.3, dominance: 0.5 };
   }
 
-  // Update emotion based on input analysis
-  update(state: EmotionState, input: string): EmotionState {
+  // Update emotion based on input analysis, optionally modulated by hormones
+  update(state: EmotionState, input: string, hormone?: HormoneModulator): EmotionState {
     const urgency = this.detectUrgency(input);
     const caution = this.detectCaution(input);
     const support = this.detectSupport(input);
@@ -25,13 +31,21 @@ export class EmotionEngine {
     if (support) {
       return { ...state, mode: 'SUPPORT', intensity: 0.6, valence: 0.7, arousal: 0.3 };
     }
-    // Decay to normal
+    // Decay to normal — hormone modulated
+    const adr = hormone?.adrenaline ?? 0;
+    const cort = hormone?.cortisol ?? 0;
+    const endo = hormone?.endorphin ?? 0;
+
+    // adrenaline/cortisol slow decay; endorphin accelerates
+    const intensityFactor = 0.9 * (1 + adr * 0.4 + cort * 0.2) * (1 - endo * 0.3);
+    const arousalFactor = 0.95 * (1 + cort * 0.3) * (1 - endo * 0.2);
+
     return {
       ...state,
       mode: 'NORMAL',
-      intensity: Math.max(0.05, state.intensity * 0.9),
+      intensity: Math.max(0.05, state.intensity * Math.min(1, intensityFactor)),
       valence: state.valence * 0.95,
-      arousal: state.arousal * 0.95,
+      arousal: Math.max(0.05, state.arousal * Math.min(1, arousalFactor)),
     };
   }
 
