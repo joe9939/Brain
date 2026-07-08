@@ -7,12 +7,17 @@ import { WorldSnapshot, ReflexHandler, ReflexAction } from './types';
 /**
  * SurvivalReflex — Minecraft 场景生存反射
  * 优先级: 0=最高(致命), 5=最低(常规)
+ * 激素影响: adrenaline ↑ → 阈值降低(更敏感)
  */
 export class SurvivalReflex implements ReflexHandler {
   name = 'minecraft-survival';
   priority = 0;
 
-  check(snapshot: WorldSnapshot): ReflexAction | null {
+  check(snapshot: WorldSnapshot, hormone?: { modulateReflexThreshold(base: number): number }): ReflexAction | null {
+    // 用激素调制阈值
+    const healthThreshold = hormone ? hormone.modulateReflexThreshold(5) : 5;
+    const hungerThreshold = hormone ? hormone.modulateReflexThreshold(10) : 10;
+
     // R1: 掉落虚空 (y < -10) — 最紧急
     if (snapshot.position.y < -10) {
       return { priority: 0, action: 'place_block', target: 'below' };
@@ -25,12 +30,12 @@ export class SurvivalReflex implements ReflexHandler {
     if (snapshot.oxygen < 5) {
       return { priority: 1, action: 'move_to_surface' };
     }
-    // R4: 低血量 (< 5)
-    if (snapshot.health < 5) {
+    // R4: 低血量 — 阈值受激素影响
+    if (snapshot.health < healthThreshold) {
       return { priority: 2, action: 'eat_food' };
     }
-    // R5: 饥饿 (< 10)
-    if (snapshot.hunger < 10) {
+    // R5: 饥饿 — 阈值受激素影响
+    if (snapshot.hunger < hungerThreshold) {
       return { priority: 3, action: 'eat_food' };
     }
     return null;
@@ -49,9 +54,9 @@ export class ReflexRegistry {
     this.handlers.sort((a, b) => a.priority - b.priority);
   }
 
-  check(snapshot: WorldSnapshot): ReflexAction | null {
+  check(snapshot: WorldSnapshot, hormone?: { modulateReflexThreshold(base: number): number }): ReflexAction | null {
     for (const handler of this.handlers) {
-      const action = handler.check(snapshot);
+      const action = handler.check(snapshot, hormone);
       if (action) return action;
     }
     return null;

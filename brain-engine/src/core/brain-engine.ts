@@ -19,6 +19,7 @@ import { StateEvolution } from './state-evolution';
 import { ReflexRegistry } from './reflex-arc';
 import { HabitLayer } from './habit-layer';
 import { BrainLoop, WorldInterface } from './brain-loop';
+import { HormoneSystem } from './brain-hormone';
 
 export interface BrainEngineConfig {
   apiKey: string; baseUrl: string; model: string; persistencePath?: string;
@@ -42,6 +43,7 @@ export class BrainEngine {
   readonly reflexRegistry: ReflexRegistry;
   readonly habitLayer: HabitLayer;
   readonly loop: BrainLoop;
+  readonly hormone: HormoneSystem;
 
   private llm: LLMClient;
   private turnCount = 0;
@@ -66,6 +68,8 @@ export class BrainEngine {
     this.stateEvolution = new StateEvolution();
     this.reflexRegistry = new ReflexRegistry();
     this.habitLayer = new HabitLayer();
+    this.hormone = new HormoneSystem();
+    this.predictiveLayer.setHormone(this.hormone);
     this.loop = new BrainLoop({ onTick: (s) => this.handleTick(s) });
 
     this.state = {
@@ -84,8 +88,11 @@ export class BrainEngine {
   async tick(snapshot: WorldSnapshot): Promise<TickResult> {
     const start = Date.now();
 
-    // 1. Reflex (0 LLM, <1ms)
-    const reflex = this.reflexRegistry.check(snapshot);
+    // 0. Hormone update (every tick)
+    this.hormone.tick(this.state.emo, this.state.rew);
+
+    // 1. Reflex — with hormone-modulated thresholds
+    const reflex = this.reflexRegistry.check(snapshot, this.hormone);
     if (reflex) {
       this.stateEvolution.tick(this.state, 50);
       return { type: 'reflex', action: reflex, handler: reflex.action, latency: Date.now() - start };
@@ -175,6 +182,9 @@ export class BrainEngine {
 
     // ── 6. Reward update ──
     this.state.rew = this.reward.update(this.state.rew, { success: true });
+
+    // ── 6b. Hormone update ──
+    this.hormone.tick(this.state.emo, this.state.rew);
 
     // ── 7. Persistence ──
     if (this.persistence) this.persistence.saveEpisodic(`ep-${Date.now()}`, `Input: ${input}`, 0.5);

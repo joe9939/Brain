@@ -218,7 +218,7 @@ export interface ReflexAction {
 export interface ReflexHandler {
   name: string;
   priority: number;
-  check(snapshot: WorldSnapshot): ReflexAction | null;
+  check(snapshot: WorldSnapshot, hormone?: { modulateReflexThreshold(base: number): number }): ReflexAction | null;
 }
 
 /** What the predictor predicted */
@@ -263,4 +263,14 @@ export interface HomeostasisState {
   energy: number;      // 0-100, higher = more rested
   boredom: number;     // 0-100, higher = more bored
   lastInputTime: number;
+}
+
+/** Hormone system — global modulator for all subsystems */
+export interface HormoneState {
+  adrenaline: number;   // 0-1, fight/flight — spikes on URGENT, fast decay
+  cortisol: number;     // 0-1, chronic stress — builds on CAUTION, slow decay
+  endorphin: number;    // 0-1, pleasure — reward success, medium decay
+  dopamine: number;     // 0-1, motivation — goal progress, baseline 0.5
+  serotonin: number;    // 0-1, wellbeing — baseline 0.5, slow changes
+  oxytocin: number;     // 0-1, bonding — social/support, slow decay
 }

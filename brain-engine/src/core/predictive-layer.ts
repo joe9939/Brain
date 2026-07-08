@@ -46,6 +46,7 @@ export class PhysicsPredictor implements PredictionEngine {
 /**
  * PredictiveLayer — 预测编码核心
  * 每个 tick: 预测 → 比较 → 决策是否需要认知唤醒
+ * 激素影响: cortisol ↑ → 阈值↓(更敏感), endorphin ↑ → 阈值↑(放松)
  */
 export class PredictiveLayer {
   private engine: PredictionEngine;
@@ -54,11 +55,17 @@ export class PredictiveLayer {
   private lastPrediction: PredictedState | null = null;
   private surpriseHistory: number[] = [];
   private maxHistory = 20;
+  private hormone?: { modulateSurpriseThreshold(base: number): number };
 
   constructor(config: PredictiveLayerConfig = {}) {
     this.engine = new PhysicsPredictor();
     this.threshold = config.surpriseThreshold ?? 0.3;
     this.decayFactor = config.decayFactor ?? 0.95;
+  }
+
+  /** 注入激素系统用于阈值调制 */
+  setHormone(h: { modulateSurpriseThreshold(base: number): number }): void {
+    this.hormone = h;
   }
 
   /** 切换预测引擎 (Physics → Latent) */
@@ -83,7 +90,12 @@ export class PredictiveLayer {
 
     this.lastPrediction = prediction;
 
-    if (surprise.total < this.threshold) {
+    // 用激素调制阈值
+    const effectiveThreshold = this.hormone
+      ? this.hormone.modulateSurpriseThreshold(this.threshold)
+      : this.threshold;
+
+    if (surprise.total < effectiveThreshold) {
       return { level: 'predictive_pass' };
     }
 

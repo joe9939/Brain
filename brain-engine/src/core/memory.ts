@@ -22,12 +22,14 @@ export class MemorySystem {
   }
 
   // ─── Episodic Memory (§2.2.3 Long-term) ───
-  addEpisodic(memory: Omit<EpisodicMemory, 'id' | 'timestamp'>): EpisodicMemory {
+  addEpisodic(memory: Omit<EpisodicMemory, 'id' | 'timestamp'>, hormone?: { modulateMemoryImportance(base: number): number }): EpisodicMemory {
+    const baseImp = memory.importance ?? 0.5;
+    const finalImportance = hormone ? hormone.modulateMemoryImportance(baseImp) : baseImp;
     const entry: EpisodicMemory = {
       id: `ep-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       timestamp: Date.now(),
       ...memory,
-      importance: memory.importance ?? 0.5,
+      importance: finalImportance,
       tags: memory.tags ?? [],
     };
     this.episodicStore.unshift(entry);
