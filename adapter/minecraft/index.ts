@@ -8,7 +8,7 @@
 
 import { BrainEngine } from '../../brain-engine/src/core/brain-engine';
 import { SurvivalReflex } from '../../brain-engine/src/core/reflex-arc';
-import { perceive } from './mc-perceive';
+import { MinecraftPerceiver } from './mc-perceive';
 import { act, ActAction } from './mc-act';
 import { MineflayerBotLike } from './mc-perceive';
 
@@ -57,13 +57,16 @@ export async function mcBot(config: MCBotConfig) {
     brain.reflexRegistry.register(new SurvivalReflex());
   }
 
-  // 3. 事件: bot 生成后启动 tick 循环
+  // 3. 状态追踪的 perceive 实例 (支持 healthDelta)
+  const perceiver = new MinecraftPerceiver();
+
+  // 4. 事件: bot 生成后启动 tick 循环
   bot.once('spawn', () => {
     console.log(`✅ Bot spawned at ${bot.entity.position}`);
 
     if (brain) {
       brain.start({
-        perceive: () => perceive(bot as MineflayerBotLike),
+        perceive: () => perceiver.perceive(bot as MineflayerBotLike),
         act: (action: ActAction) => act(bot, action, bot.entities),
       });
       console.log('🧠 Brain Engine tick loop started');

@@ -1,7 +1,7 @@
 // Minecraft Perceive Tests — Mineflayer → WorldSnapshot 映射
 // RED: mc-perceive.ts 不存在
 
-import { perceive } from '../adapter/minecraft/mc-perceive';
+import { perceive, MinecraftPerceiver } from '../adapter/minecraft/mc-perceive';
 import { WorldSnapshot } from '../brain-engine/src/core/types';
 
 let passed = 0, failed = 0;
@@ -149,6 +149,50 @@ function testEntitiesMapping() {
   assert(snap.entities[0].type === 'zombie', 'entity type maps');
 }
 
+// ─── HealthDelta Tests ───
+
+function testHealthDeltaFirstCallZero() {
+  console.log('\n🆕 HealthDelta — First call = 0');
+  const p = new MinecraftPerceiver();
+  const bot = makeMockBot({ health: 20 });
+  const snap = p.perceive(bot);
+  assert(snap.healthDelta === 0, 'first perceive has delta 0');
+}
+
+function testHealthDeltaTracksChanges() {
+  console.log('\n📉 HealthDelta — Tracks decreases');
+  const p = new MinecraftPerceiver();
+  p.perceive(makeMockBot({ health: 20 }));
+  const snap = p.perceive(makeMockBot({ health: 14 }));
+  assert(snap.healthDelta === -6, 'healthDelta = -6 after damage');
+  assert(snap.health === 14, 'current health is 14');
+}
+
+function testHealthDeltaMultipleCalls() {
+  console.log('\n📈 HealthDelta — Multiple calls accumulate');
+  const p = new MinecraftPerceiver();
+  p.perceive(makeMockBot({ health: 20 }));
+  p.perceive(makeMockBot({ health: 15 }));
+  const snap = p.perceive(makeMockBot({ health: 18 }));
+  assert(snap.healthDelta === 3, 'healing: healthDelta = +3');
+}
+
+function testHealthDeltaReset() {
+  console.log('\n🔄 HealthDelta — Reset() clears history');
+  const p = new MinecraftPerceiver();
+  p.perceive(makeMockBot({ health: 20 }));
+  p.reset();
+  const snap = p.perceive(makeMockBot({ health: 5 }));
+  assert(snap.healthDelta === 0, 'after reset, delta = 0 again');
+}
+
+function testHealthDeltaWithClass() {
+  console.log('\n🏗️ MinecraftPerceiver class');
+  const p = new MinecraftPerceiver();
+  assert(typeof p.perceive === 'function', 'has perceive method');
+  assert(typeof p.reset === 'function', 'has reset method');
+}
+
 // ─── RUN ───
 console.log('🧠 MC PERCEIVE TESTS');
 console.log('='.repeat(50));
@@ -165,6 +209,11 @@ testInventoryMapping();
 testEmptyInventory();
 testBlocksAround();
 testEntitiesMapping();
+testHealthDeltaFirstCallZero();
+testHealthDeltaTracksChanges();
+testHealthDeltaMultipleCalls();
+testHealthDeltaReset();
+testHealthDeltaWithClass();
 
 console.log(`\n${'='.repeat(50)}`);
 console.log(`Perceive: ${passed} passed, ${failed} failed, ${passed + failed} total`);
