@@ -1,6 +1,6 @@
-// Brain Engine v2 — 完整人脑架构 + 流式改造
-// 50ms tick 循环: 反射→预测→习惯→认知(异步)
-// 参考: predictive-mind §8 main loop, xagent fused kernel
+// Brain Engine v2 — Complete brain architecture + streaming upgrade
+// 50ms tick loop: reflex → prediction → habit → cognition (async)
+// Reference: predictive-mind §8 main loop, xagent fused kernel
 
 import { MentalState, OutputRouter, BrainComponent, GateResult, WorldSnapshot, TickResult, ReflexHandler, CognitiveDemand } from './types';
 import { SessionPool } from './session-pool';
@@ -231,6 +231,9 @@ export class BrainEngine {
     // Amygdala → emotion state (§2.5)
     const amy = results.get('amygdala');
     if (amy?.state?.emo) Object.assign(this.state.emo, amy.state.emo);
+
+    // Apply hormone-modulated emotion decay
+    this.state.emo = this.emotion.update(this.state.emo, '', this.hormone.state);
 
     // Hippocampus → working memory (§2.2)
     this.memory.addToWorking(this.state, input);
