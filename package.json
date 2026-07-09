@@ -30,7 +30,8 @@
   "repository": "github:joe9939/brain-agent",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
-    "better-sqlite3": "^11.0.0"
+    "better-sqlite3": "^11.0.0",
+    "mineflayer": "^4.37.1"
   },
   "devDependencies": {
     "@agentesting/agentest": "^0.0.22",
