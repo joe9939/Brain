@@ -101,10 +101,21 @@ export class BrainEngine {
       return { type: 'reflex', action: reflex, handler: reflex.action, latency: Date.now() - start };
     }
 
+    // 1b. Drive System — Maslow motivation (runs every tick, generates goals)
+    const driveGoal = this.drive.tick(snapshot);
+
     // 2. Predictive coding (0 LLM, <1ms)
     const demand = this.predictiveLayer.tick(snapshot);
     if (demand.level === 'none' || demand.level === 'predictive_pass') {
       this.stateEvolution.tick(this.state, 50, this.hormone.state);
+      // Drive goal overrides idle when prediction succeeds
+      if (driveGoal && driveGoal.action !== 'idle') {
+        return {
+          type: 'drive' as any,
+          action: { action: driveGoal.action, params: { reason: driveGoal.reason } },
+          latency: Date.now() - start,
+        } as any;
+      }
       return { type: 'predictive_pass', latency: Date.now() - start };
     }
 
@@ -115,12 +126,11 @@ export class BrainEngine {
       return { type: 'habit', action: habit.action, latency: Date.now() - start };
     }
 
-    // 3b. Drive System — Maslow motivation (0 LLM)
-    const driveGoal = this.drive.tick(snapshot);
-    if (driveGoal && driveGoal.action !== 'idle') {
+    // 4b. Drive System (fallback when prediction fails but no habit)
+    if (driveGoal && driveGoal.action !== 'idle' && demand.level === 'cognitive') {
       this.stateEvolution.tick(this.state, 50);
       return {
-        type: 'drive',
+        type: 'drive' as any,
         action: { action: driveGoal.action, params: { reason: driveGoal.reason } },
         latency: Date.now() - start,
       } as any;
