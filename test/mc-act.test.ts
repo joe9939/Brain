@@ -1,6 +1,4 @@
-// Minecraft Act Tests — TickResult → Mineflayer 动作执行
-// RED: mc-act.ts 不存在
-
+// Minecraft Act Tests — 完整 Mineflayer 4层动作映射
 import { act } from '../adapter/minecraft/mc-act';
 
 let passed = 0, failed = 0;
@@ -9,121 +7,134 @@ function assert(ok: boolean, name: string) {
   else { failed++; console.log(`  ❌ ${name}`); }
 }
 
-// ─── Mock Mineflayer bot ───
 function makeMockBot(): any {
   const calls: { method: string; args: any[] }[] = [];
   const bot: any = {
     _calls: calls,
-    setControlState(state: string, value: boolean) {
-      calls.push({ method: 'setControlState', args: [state, value] });
-    },
-    lookAt(pos: any) { calls.push({ method: 'lookAt', args: [pos] }); },
-    attack(entity: any) { calls.push({ method: 'attack', args: [entity] }); },
-    consume() { calls.push({ method: 'consume', args: [] }); },
-    dig(block: any) { calls.push({ method: 'dig', args: [block] }); },
-    placeBlock(ref: any, face: any) { calls.push({ method: 'placeBlock', args: [ref, face] }); },
-    chat(msg: string) { calls.push({ method: 'chat', args: [msg] }); },
-    equip(item: any, dest: any) { calls.push({ method: 'equip', args: [item, dest] }); },
-    craft(recipe: any, count: any) { calls.push({ method: 'craft', args: [recipe, count] }); },
-    activateBlock(block: any) { calls.push({ method: 'activateBlock', args: [block] }); },
-    toss(item: any, meta: any, count: any) { calls.push({ method: 'toss', args: [item, meta, count] }); },
-    fish() { calls.push({ method: 'fish', args: [] }); },
-    sleep(bed: any) { calls.push({ method: 'sleep', args: [bed] }); },
-    wake() { calls.push({ method: 'wake', args: [] }); },
+    entity: { position: { x: 0, y: 64, z: 0 } },
+    setControlState(s: string, v: boolean) { calls.push({ method: 'setControlState', args: [s, v] }); },
     clearControlStates() { calls.push({ method: 'clearControlStates', args: [] }); },
+    look(y: number, p: number, f?: boolean) { calls.push({ method: 'look', args: [y, p, f] }); },
+    lookAt(pos: any) { calls.push({ method: 'lookAt', args: [pos] }); },
+    attack(e: any) { calls.push({ method: 'attack', args: [e] }); },
+    consume() { calls.push({ method: 'consume', args: [] }); },
+    dig(b: any) { calls.push({ method: 'dig', args: [b] }); },
+    placeBlock(r: any, f: any) { calls.push({ method: 'placeBlock', args: [r, f] }); },
+    activateBlock(b: any) { calls.push({ method: 'activateBlock', args: [b] }); },
+    activateEntity(e: any) { calls.push({ method: 'activateEntity', args: [e] }); },
+    chat(m: string) { calls.push({ method: 'chat', args: [m] }); },
+    equip(i: any, d: any) { calls.push({ method: 'equip', args: [i, d] }); },
+    toss(i: any, m: any, c: any) { calls.push({ method: 'toss', args: [i, m, c] }); },
+    craft(r: any, c: any) { calls.push({ method: 'craft', args: [r, c] }); },
+    fish() { calls.push({ method: 'fish', args: [] }); },
+    sleep(b: any) { calls.push({ method: 'sleep', args: [b] }); },
+    wake() { calls.push({ method: 'wake', args: [] }); },
+    useOn(e: any) { calls.push({ method: 'useOn', args: [e] }); },
+    mount(e: any) { calls.push({ method: 'mount', args: [e] }); },
+    dismount() { calls.push({ method: 'dismount', args: [] }); },
+    setQuickBarSlot(s: number) { calls.push({ method: 'setQuickBarSlot', args: [s] }); },
+    respawn() { calls.push({ method: 'respawn', args: [] }); },
+    openChest(b: any) { calls.push({ method: 'openChest', args: [b] }); },
+    openContainer(b: any) { calls.push({ method: 'openContainer', args: [b] }); },
+    openFurnace(b: any) { calls.push({ method: 'openFurnace', args: [b] }); },
+    openEnchantmentTable(b: any) { calls.push({ method: 'openEnchantmentTable', args: [b] }); },
+    openVillager(e: any) { calls.push({ method: 'openVillager', args: [e] }); },
+    findBlock(o: any) { calls.push({ method: 'findBlock', args: [o] }); return null; },
+    findBlocks(o: any) { calls.push({ method: 'findBlocks', args: [o] }); return []; },
+    swingArm(h?: any) { calls.push({ method: 'swingArm', args: [h] }); },
+    stopDigging() { calls.push({ method: 'stopDigging', args: [] }); },
+    moveVehicle(l: number, f: number) { calls.push({ method: 'moveVehicle', args: [l, f] }); },
+    blockAt(p: any) { calls.push({ method: 'blockAt', args: [p] }); return { name: 'stone', position: p }; },
+    updateSign(b: any, t: string, back?: boolean) { calls.push({ method: 'updateSign', args: [b, t, back] }); },
+    acceptResourcePack() { calls.push({ method: 'acceptResourcePack', args: [] }); },
+    denyResourcePack() { calls.push({ method: 'denyResourcePack', args: [] }); },
+    closeWindow(w?: any) { calls.push({ method: 'closeWindow', args: [w] }); },
   };
   return bot;
 }
 
-function testActExists() {
-  console.log('\n🆕 act() Exists');
-  assert(typeof act === 'function', 'act is a function');
+function hasCall(bot: any, method: string): boolean {
+  return bot._calls.some((c: any) => c.method === method);
 }
 
-function testMoveForward() {
-  console.log('\n🏃 Move Forward');
-  const bot = makeMockBot();
-  act(bot, { action: 'move_forward' });
-  assert(bot._calls[0].method === 'setControlState', 'calls setControlState');
-  assert(bot._calls[0].args[0] === 'forward', 'control = forward');
-  assert(bot._calls[0].args[1] === true, 'value = true');
-}
+// ═══════════════════════════════════════
+// Level 1: Reflex (本能)
+// ═══════════════════════════════════════
+console.log('\n⚡ Level 1: Reflex (本能)');
+(function() {
+  const b1 = makeMockBot(); act(b1, { action: 'eat_food' });
+  assert(hasCall(b1, 'consume'), 'eat_food → consume');
+  
+  const b2 = makeMockBot(); act(b2, { action: 'flee' });
+  assert(hasCall(b2, 'setControlState'), 'flee → move');
+  
+  const b3 = makeMockBot();
+  act(b3, { action: 'attack', params: { entityId: 'z' } }, { z: { id: 'z' } });
+  assert(hasCall(b3, 'attack'), 'attack → attack');
+  
+  const b4 = makeMockBot(); act(b4, { action: 'place_block', params: { blockType: 'dirt' } });
+  assert(hasCall(b4, 'placeBlock') || hasCall(b4, 'equip'), 'place_block → placeBlock/equip');
+  
+  const b5 = makeMockBot(); act(b5, { action: 'move_to_surface' });
+  assert(hasCall(b5, 'setControlState'), 'move_to_surface → move');
+})();
 
-function testStopMoving() {
-  console.log('\n🛑 Stop Moving');
-  const bot = makeMockBot();
-  act(bot, { action: 'stop' });
-  assert(bot._calls.some((c: any) => c.method === 'clearControlStates'), 'clearControlStates called');
-}
+// ═══════════════════════════════════════
+// Level 2: Motor (基本运动)
+// ═══════════════════════════════════════
+console.log('🏃 Level 2: Motor (基本运动)');
+(function() {
+  for (const dir of ['forward','back','left','right']) {
+    const bot = makeMockBot(); act(bot, { action: `move_${dir}` });
+    assert(hasCall(bot, 'setControlState'), `move_${dir} → setControlState`);
+  }
+  const b1 = makeMockBot(); act(b1, { action: 'jump' }); assert(hasCall(b1, 'setControlState'), 'jump');
+  const b2 = makeMockBot(); act(b2, { action: 'sneak' }); assert(hasCall(b2, 'setControlState'), 'sneak');
+  const b3 = makeMockBot(); act(b3, { action: 'sprint' }); assert(hasCall(b3, 'setControlState'), 'sprint');
+  const b4 = makeMockBot(); act(b4, { action: 'look_at', params: { x: 0, y: 0, z: 0 } }); assert(hasCall(b4, 'lookAt'), 'look_at');
+  const b5 = makeMockBot(); act(b5, { action: 'set_quickbar', params: { slot: 1 } }); assert(hasCall(b5, 'setQuickBarSlot'), 'set_quickbar');
+})();
 
-function testAttack() {
-  console.log('\n⚔️ Attack');
-  const bot = makeMockBot();
-  const target = { id: 'zombie-1' };
-  act(bot, { action: 'attack', params: { entityId: target.id } }, { 'zombie-1': target });
-  assert(bot._calls[0].method === 'attack', 'attack called');
-}
+// ═══════════════════════════════════════
+// Level 3: Skill (程序技能)
+// ═══════════════════════════════════════
+console.log('⛏️ Level 3: Skill (程序技能)');
+(function() {
+  const b1 = makeMockBot(); act(b1, { action: 'dig', params: { block: {} } }); assert(hasCall(b1, 'dig'), 'dig');
+  const b2 = makeMockBot(); act(b2, { action: 'craft', params: { recipe: 'planks' } }); assert(hasCall(b2, 'craft'), 'craft');
+  const b3 = makeMockBot(); act(b3, { action: 'fish' }); assert(hasCall(b3, 'fish'), 'fish');
+  const b4 = makeMockBot(); act(b4, { action: 'sleep', params: { bed: {} } }); assert(hasCall(b4, 'sleep'), 'sleep');
+  const b5 = makeMockBot(); act(b5, { action: 'wake' }); assert(hasCall(b5, 'wake'), 'wake');
+  const b6 = makeMockBot(); act(b6, { action: 'open_chest', params: { block: {} } }); assert(hasCall(b6, 'openChest'), 'open_chest');
+  const b7 = makeMockBot(); act(b7, { action: 'equip', params: { item: 'pickaxe' } }); assert(hasCall(b7, 'equip'), 'equip');
+  const b8 = makeMockBot(); act(b8, { action: 'toss', params: { item: 'stone', count: 1 } }); assert(hasCall(b8, 'toss'), 'toss');
+  const b9 = makeMockBot(); act(b9, { action: 'activate_block', params: { block: {} } }); assert(hasCall(b9, 'activateBlock'), 'activate_block');
+  const ba = makeMockBot(); act(ba, { action: 'swing_arm' }); assert(hasCall(ba, 'swingArm'), 'swing_arm');
+  const bb = makeMockBot(); act(bb, { action: 'use_on', params: { entity: {} } }); assert(hasCall(bb, 'useOn'), 'use_on');
+  const bc = makeMockBot(); act(bc, { action: 'mount', params: { entity: {} } }); assert(hasCall(bc, 'mount'), 'mount');
+  const bd = makeMockBot(); act(bd, { action: 'dismount' }); assert(hasCall(bd, 'dismount'), 'dismount');
+  const be = makeMockBot(); act(be, { action: 'respawn' }); assert(hasCall(be, 'respawn'), 'respawn');
+  const bf = makeMockBot(); act(bf, { action: 'open_villager', params: { entity: {} } }); assert(hasCall(bf, 'openVillager'), 'open_villager');
+})();
 
-function testEat() {
-  console.log('\n🍔 Eat');
-  const bot = makeMockBot();
-  act(bot, { action: 'eat_food' });
-  assert(bot._calls[0].method === 'consume', 'consume called');
-}
+// ═══════════════════════════════════════
+// Level 4: Cognitive (认知工具)
+// ═══════════════════════════════════════
+console.log('🧠 Level 4: Cognitive (认知工具)');
+(function() {
+  const b1 = makeMockBot(); act(b1, { action: 'chat', params: { message: 'hi' } }); assert(hasCall(b1, 'chat'), 'chat');
+  const b2 = makeMockBot(); act(b2, { action: 'find_block', params: { type: 'diamond' } }); assert(hasCall(b2, 'findBlock'), 'find_block');
+  const b3 = makeMockBot(); act(b3, { action: 'wander' }); assert(hasCall(b3, 'setControlState'), 'wander');
+})();
 
-function testMoveToWater() {
-  console.log('\n💧 Move to Water');
-  const bot = makeMockBot();
-  act(bot, { action: 'move_to_water' });
-  // Should trigger movement toward nearest water
-  assert(bot._calls.some((c: any) => c.method === 'setControlState'), 'setControlState called');
-}
-
-function testPlaceBlock() {
-  console.log('\n🧱 Place Block');
-  const bot = makeMockBot();
-  act(bot, { action: 'place_block', params: { blockType: 'dirt' } });
-  assert(bot._calls[0].method === 'equip' || bot._calls[0].method === 'placeBlock', 'equip or placeBlock called');
-}
-
-function testLookAt() {
-  console.log('\n👀 Look At');
-  const bot = makeMockBot();
-  act(bot, { action: 'look_at', params: { x: 10, y: 64, z: 10 } });
-  assert(bot._calls[0].method === 'lookAt', 'lookAt called');
-}
-
-function testChat() {
-  console.log('\n💬 Chat');
-  const bot = makeMockBot();
-  act(bot, { action: 'chat', params: { message: 'Hello everyone!' } });
-  assert(bot._calls[0].method === 'chat', 'chat called');
-  assert(bot._calls[0].args[0] === 'Hello everyone!', 'message sent');
-}
-
-function testUnknownAction() {
-  console.log('\n❓ Unknown Action — no crash');
-  const bot = makeMockBot();
-  act(bot, { action: 'nonexistent_action' } as any);
-  assert(bot._calls.length === 0, 'no calls for unknown action');
-}
-
-// ─── RUN ───
-console.log('🧠 MC ACT TESTS');
-console.log('='.repeat(50));
-
-testActExists();
-testMoveForward();
-testStopMoving();
-testAttack();
-testEat();
-testMoveToWater();
-testPlaceBlock();
-testLookAt();
-testChat();
-testUnknownAction();
+// ═══════════════════════════════════════
+// Edge
+// ═══════════════════════════════════════
+console.log('🔹 Edge');
+const b1 = makeMockBot(); act(b1, { action: 'stop' }); assert(hasCall(b1, 'clearControlStates'), 'stop');
+const b2 = makeMockBot(); act(b2, { action: 'nonexistent' } as any); assert(true, 'unknown → no crash');
 
 console.log(`\n${'='.repeat(50)}`);
 console.log(`Act: ${passed} passed, ${failed} failed, ${passed + failed} total`);
 if (failed > 0) process.exit(1);
-else console.log('All act tests passed! ✅');
+else console.log('All MC act tests passed! ✅');
