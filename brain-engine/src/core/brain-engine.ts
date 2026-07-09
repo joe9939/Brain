@@ -20,6 +20,7 @@ import { ReflexRegistry } from './reflex-arc';
 import { HabitLayer } from './habit-layer';
 import { BrainLoop, WorldInterface } from './brain-loop';
 import { HormoneSystem } from './brain-hormone';
+import { DriveSystem } from './brain-drive';
 
 export interface BrainEngineConfig {
   apiKey: string; baseUrl: string; model: string; persistencePath?: string;
@@ -44,6 +45,7 @@ export class BrainEngine {
   readonly habitLayer: HabitLayer;
   readonly loop: BrainLoop;
   readonly hormone: HormoneSystem;
+  readonly drive: DriveSystem;
 
   private llm: LLMClient;
   private turnCount = 0;
@@ -69,6 +71,7 @@ export class BrainEngine {
     this.reflexRegistry = new ReflexRegistry();
     this.habitLayer = new HabitLayer();
     this.hormone = new HormoneSystem();
+    this.drive = new DriveSystem();
     this.predictiveLayer.setHormone(this.hormone);
     this.loop = new BrainLoop({ onTick: (s) => this.handleTick(s) });
 
@@ -108,8 +111,19 @@ export class BrainEngine {
     // 3. Habit (0 LLM, ~10ms)
     const habit = this.habitLayer.match(this.serializeSnapshot(snapshot));
     if (habit) {
-      this.stateEvolution.tick(this.state, 50, this.hormone.state);
+      this.stateEvolution.tick(this.state, 50);
       return { type: 'habit', action: habit.action, latency: Date.now() - start };
+    }
+
+    // 3b. Drive System — Maslow motivation (0 LLM)
+    const driveGoal = this.drive.tick(snapshot);
+    if (driveGoal && driveGoal.action !== 'idle') {
+      this.stateEvolution.tick(this.state, 50);
+      return {
+        type: 'drive',
+        action: { action: driveGoal.action, params: { reason: driveGoal.reason } },
+        latency: Date.now() - start,
+      } as any;
     }
 
     // 4. Cognitive (LLM, ~2-5s) — async, don't block tick

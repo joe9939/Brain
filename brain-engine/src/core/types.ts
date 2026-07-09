@@ -199,7 +199,7 @@ export type CognitiveDemand =
 
 /** Result of one engine tick */
 export interface TickResult {
-  type: 'reflex' | 'predictive_pass' | 'habit' | 'cognitive';
+  type: 'reflex' | 'predictive_pass' | 'habit' | 'drive' | 'cognitive';
   latency: number;
   action?: any;
   output?: string;

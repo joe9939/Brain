@@ -18,6 +18,7 @@ export { StateEvolution } from './core/state-evolution';
 export { SurvivalReflex, ReflexRegistry } from './core/reflex-arc';
 export { HabitLayer } from './core/habit-layer';
 export { BrainLoop } from './core/brain-loop';
+export { DriveSystem } from './core/brain-drive';
 
 export type {
   MentalState,
