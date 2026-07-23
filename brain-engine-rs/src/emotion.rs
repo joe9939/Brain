@@ -8,6 +8,7 @@
 //! Appraisal computed from situation evaluation
 
 use crate::types::{EmotionState, EmotionMode, HormoneState, AppraisalDimensions};
+use crate::bus::ComponentBus;
 
 pub struct EmotionEngine;
 
@@ -66,6 +67,49 @@ impl EmotionEngine {
                 state.mode = EmotionMode::Normal;
             }
         }
+    }
+
+    /// v6: Bus mode — read/write ComponentBus
+    pub fn tick(&self, bus: &mut ComponentBus) {
+        // Read from bus
+        let cortisol = bus.cortisol;
+        let adrenaline = bus.adrenaline;
+        let dopamine = bus.dopamine;
+        let cognitive_label = &bus.cognitive_emotion;
+        let action = bus.cognitive_action.clone();
+
+        // Core affect from hormone (same math as before, but from bus)
+        bus.emo_valence = bus.emo_valence * 0.90 + (-cortisol * 0.3 + (dopamine - 0.5) * 0.4) * 0.10;
+        bus.emo_valence = bus.emo_valence.clamp(-1.0, 1.0);
+        bus.emo_arousal = bus.emo_arousal * 0.90 + adrenaline * 0.10;
+        bus.emo_arousal = bus.emo_arousal.clamp(0.0, 1.0);
+
+        // Cognitive broadcast overrides emotion mode (Barrett concept construction)
+        if !cognitive_label.is_empty() {
+            bus.emo_label = cognitive_label.clone();
+            if cognitive_label.contains("fear") || cognitive_label.contains("anxious") {
+                bus.emo_mode = "Caution".into();
+            } else if cognitive_label.contains("satisfied") || cognitive_label.contains("happy") {
+                bus.emo_mode = "Explore".into();
+            } else {
+                bus.emo_mode = "Normal".into();
+            }
+        } else if adrenaline > 0.5 {
+            bus.emo_mode = "Urgent".into();
+        } else if cortisol > 0.6 {
+            bus.emo_mode = "Caution".into();
+        } else {
+            bus.emo_mode = "Normal".into();
+        }
+
+        // Action feedback to emotion
+        if let Some(a) = &action {
+            if a == "flee" || a == "attack" {
+                bus.emo_intensity = (bus.emo_intensity + 0.2).min(1.0);
+            }
+        }
+
+        bus.emo_intensity = (bus.emo_arousal * 0.6 + bus.emo_valence.abs() * 0.4).clamp(0.0, 1.0);
     }
 
     /// Detect environment-driven emotion changes

@@ -15,6 +15,7 @@ pub mod cerebellum;
 pub mod dmn;
 pub mod thalamus;
 pub mod interoception;
+pub mod bus;
 pub mod llm;
 pub mod brain;
 pub mod utils;

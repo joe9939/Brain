@@ -5,6 +5,7 @@
 //! Allostatic load: cumulative wear from chronic stress
 
 use crate::types::{HormoneState, EmotionState, EmotionMode, RewardState};
+use crate::bus::ComponentBus;
 
 pub struct HormoneSystem;
 
@@ -44,6 +45,29 @@ impl HormoneSystem {
 
         // Receptor sensitivity decreases with allostatic load
         state.receptor_sensitivity = 1.0 / (1.0 + state.allostatic_load * 2.0);
+    }
+
+    /// v6: Bus mode — read/write ComponentBus
+    pub fn bus_tick(&self, bus: &mut crate::bus::ComponentBus) {
+        bus.adrenaline *= 0.90;
+        bus.cortisol *= 0.95;
+        bus.dopamine = bus.dopamine * 0.99 + (bus.dopamine - 0.5) * 0.01 + 0.5;
+
+        if let Some(action) = &bus.cognitive_action {
+            match action.as_str() {
+                "flee" | "attack" => bus.adrenaline = (bus.adrenaline + 0.3).min(1.0),
+                "eat" => bus.dopamine = (bus.dopamine + 0.1).min(1.0),
+                _ => {}
+            }
+        }
+        if bus.cognitive_insight.contains("danger") || bus.cognitive_insight.contains("threat") {
+            bus.cortisol = (bus.cortisol + 0.05).min(1.0);
+        }
+        if bus.emo_mode == "Urgent" { bus.adrenaline = (bus.adrenaline + 0.2).min(1.0); }
+        else if bus.emo_mode == "Caution" { bus.cortisol = (bus.cortisol + 0.1).min(1.0); }
+        if bus.cortisol > 0.6 { bus.allostatic_load = (bus.allostatic_load + 0.005).min(1.0); }
+        else { bus.allostatic_load *= 0.998; }
+        bus.receptor_sensitivity = 1.0 / (1.0 + bus.allostatic_load * 2.0);
     }
 }
 
