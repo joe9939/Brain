@@ -35,6 +35,29 @@ impl HierarchicalPredictor {
 
     pub fn get_surprise(&self) -> f32 { self.last_surprise }
 
+    /// v6: Bus mode — read world from bus, write surprise
+    pub fn bus_tick(&mut self, bus: &mut crate::bus::ComponentBus) {
+        let health_pe = (bus.health - self.levels[0][0].expected).abs() / 20.0;
+        let hunger_pe = (bus.hunger - self.levels[0][1].expected).abs() / 20.0;
+        let threat = bus.threat_count as f32 / 5.0;
+        let threat_pe = (threat - self.levels[0][2].expected).abs();
+
+        self.levels[0][0].error = health_pe;
+        self.levels[0][1].error = hunger_pe;
+        self.levels[0][2].error = threat_pe;
+
+        let total_fe: f32 = self.levels.iter().flat_map(|l| l.iter())
+            .map(|n| n.precision * n.error * n.error).sum();
+        let surprise = total_fe.min(1.0);
+        self.last_surprise = surprise;
+        bus.surprise = surprise;
+
+        // Update expectations
+        self.levels[0][0].expected = self.levels[0][0].expected * 0.9 + bus.health * 0.1;
+        self.levels[0][1].expected = self.levels[0][1].expected * 0.9 + bus.hunger * 0.1;
+        self.levels[0][2].expected = self.levels[0][2].expected * 0.9 + threat * 0.1;
+    }
+
     pub fn observe(&mut self, snapshot: &WorldSnapshot) -> f32 {
         if !self.initialized {
             self.levels[0][0].expected = snapshot.health;

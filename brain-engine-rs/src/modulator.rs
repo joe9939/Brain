@@ -58,6 +58,17 @@ impl ModulatorSystem {
         else { 1.0 - (ne - 0.6).powi(2) * 4.0 }
     }
 
+    /// v6: Bus mode — read td_error, write γ/β/α
+    pub fn bus_tick(&self, bus: &mut crate::bus::ComponentBus) {
+        bus.gamma = 0.3 + bus.serotonin * 0.6;
+        bus.beta = 1.0 + bus.norepinephrine * 5.0;
+        bus.alpha = 0.1 + bus.acetylcholine * 0.4;
+        bus.serotonin += (0.5 - bus.serotonin) * 0.01;
+        bus.norepinephrine *= 0.95;
+        bus.norepinephrine = bus.norepinephrine.max(0.1);
+        bus.acetylcholine *= 0.95;
+    }
+
     /// Softmax action selection with inverse temperature β
     pub fn softmax<T, F>(&self, items: &[T], score_fn: F, beta: f32) -> usize
     where F: Fn(&T) -> f32 {

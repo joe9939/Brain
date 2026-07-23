@@ -15,6 +15,7 @@ use crate::habit::HabitLayer;
 use crate::attention::AttentionEngine;
 use crate::modulator::ModulatorSystem;
 use crate::basal::{BasalGangliaArbiter, ProposedAction};
+use crate::bus::ComponentBus;
 use crate::llm::{CognitiveAgent, LlmContext, LlmProvider, parse_llm_action};
 use rig_core::completion::Prompt;
 use crate::utils;
@@ -341,6 +342,68 @@ impl BrainEngine {
             if self.state.mem.working.len() > 20 {
                 self.state.mem.working.remove(0);
             }
+        }
+    }
+
+    /// v6: Convergence tick — all components read/write bus in rounds
+    pub async fn bus_tick(&mut self, snapshot: &WorldSnapshot) -> TickResult {
+        let start = utils::now();
+        self.turn_count += 1;
+        let mut bus = ComponentBus::new();
+
+        // Phase 1: Fill bus from world
+        bus.health = snapshot.health;
+        bus.hunger = snapshot.hunger;
+        bus.threat_count = snapshot.entities.iter()
+            .filter(|e| HOSTILE_TYPES.contains(&e.entity_type.as_str())).count() as u32;
+
+        // Phase 2: Convergence rounds (all components read/write bus)
+        for _round in 0..3 {
+            self.predictor.bus_tick(&mut bus);
+            self.modulator.bus_tick(&mut bus);
+            self.reflexes.bus_tick(&mut bus);
+            self.emotion.tick(&mut bus);
+            self.hormone.bus_tick(&mut bus);
+        }
+
+        // Phase 3: Cognitive (every 10 ticks)
+        if self.turn_count % 10 == 0 && self.config.has_llm() {
+            // Build prompt from bus
+            let prompt = format!(
+                "=== World ===\nHealth: {:.1}, Hunger: {:.1}\n\n=== Internal ===\nSurprise: {:.2}\nEmotion: {} ({:.2})\nAttention: {} ({:.2})\n\n=== Tools ===\n1. recall_memory(query)\n2. get_emotion_state()\n3. get_hormone_status()\n\nDecide: {{\"action\":\"...\",\"emotion\":\"...\",\"insight\":\"...\"}}",
+                bus.health, bus.hunger, bus.surprise,
+                bus.emo_mode, bus.emo_intensity,
+                bus.attention_focus, bus.attention_intensity,
+            );
+
+            if let Some(cog) = &self.cognitive {
+                if let Ok(Ok(response)) = tokio::time::timeout(
+                    std::time::Duration::from_secs(15), cog.inner.prompt(&prompt)
+                ).await {
+                    if let Some(json_start) = response.find('{') {
+                        if let Some(json_end) = response.rfind('}') {
+                            if let Ok(parsed) = serde_json::from_str::<serde_json::Value>(&response[json_start..=json_end]) {
+                                bus.cognitive_action = parsed.get("action").and_then(|v| v.as_str()).map(String::from);
+                                bus.cognitive_emotion = parsed.get("emotion").and_then(|v| v.as_str()).unwrap_or("").to_string();
+                                bus.cognitive_insight = parsed.get("insight").and_then(|v| v.as_str()).unwrap_or("").to_string();
+                            }
+                        }
+                    }
+                }
+            }
+            // Post-cognitive convergence
+            for _round in 0..2 {
+                self.emotion.tick(&mut bus);
+                self.hormone.bus_tick(&mut bus);
+                self.modulator.bus_tick(&mut bus);
+            }
+        }
+
+        TickResult {
+            result_type: bus.cognitive_action.as_deref().unwrap_or("waiting").into(),
+            latency_ms: (utils::now() - start) * 1000.0,
+            action: bus.cognitive_action.as_ref().map(|a| Action { action_type: a.clone(), params: HashMap::new() }),
+            output: None,
         }
     }
 

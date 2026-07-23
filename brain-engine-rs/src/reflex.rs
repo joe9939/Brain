@@ -46,6 +46,23 @@ impl ReflexRegistry {
         }
     }
 
+    /// v6: Bus mode — check from bus, write reflex_fired
+    pub fn bus_tick(&self, bus: &mut crate::bus::ComponentBus) {
+        let suppress = bus.surprise > 0.3; // high surprise → reflex more likely
+        let threshold_override = (100.0 - bus.serotonin * 20.0) as u32;
+
+        for reflex in &self.reflexes {
+            if self.cognitive_suppress && reflex.priority < threshold_override {
+                continue;
+            }
+            // We don't have full snapshot in bus, so use simplified reflex check
+            if reflex.name == "eat_urgent" && bus.hunger < 3.0 {
+                bus.reflex_fired = Some("eat_urgent".into());
+                return;
+            }
+        }
+    }
+
     /// Check reflexes in priority order. Presynaptic inhibition can block transmission.
     pub fn check(&self, snapshot: &WorldSnapshot, hormone: &HormoneState, serotonin: f32) -> Option<Action> {
         let suppress_threshold = (100.0 - serotonin * 20.0) as u32;
