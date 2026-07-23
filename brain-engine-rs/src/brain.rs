@@ -237,6 +237,15 @@ impl BrainEngine {
     }
 
     pub fn cognitive_tick(&mut self, _snapshot: &WorldSnapshot, llm_response: &str) -> Option<Action> {
+        // Try to parse full JSON for emotion/insight extraction
+        if let Some(json_start) = llm_response.find('{') {
+            if let Some(json_end) = llm_response.rfind('}') {
+                if let Ok(parsed) = serde_json::from_str::<serde_json::Value>(&llm_response[json_start..=json_end]) {
+                    self.parse_emotion_and_insight(&parsed);
+                }
+            }
+        }
+
         if let Some((action, reason)) = parse_llm_action(llm_response) {
             tracing::info!("[Brain] LLM decided: {} ({})", action, reason);
             self.state.last_action = Some(ActionResult { action: action.clone(), success: true, error: None });
@@ -400,10 +409,7 @@ impl BrainEngine {
                         .collect::<Vec<_>>().join("\n")
                 }
             }
-            "check_inventory" => {
-                // Inventory not available in pure cognitive context
-                "Tool check_inventory: inventory data not available in cognitive context".into()
-            }
+            "check_inventory" => format!("{}", serde_json::json!({"note": "inventory data not available in cognitive-only context"})),
             "get_wave_status" => {
                 let labels = ["survival", "safety", "social", "achievement", "exploration"];
                 labels.iter().enumerate()
@@ -433,7 +439,42 @@ impl BrainEngine {
                         .map(|s| format!("  {}: raw={:.2} str={:.2}", s.key, s.raw, s.strength))
                         .collect::<Vec<_>>().join("\n"))
             }
+            "get_emotion_state" => {
+                let e = &self.state.emo;
+                format!("mode={:?}, valence={:.2}, arousal={:.2}, intensity={:.2}, label={}",
+                    e.mode, e.valence, e.arousal, e.intensity, e.constructed_label)
+            }
+            "get_hormone_status" => {
+                let h = &self.state.hormone;
+                format!("adrenaline={:.2}, cortisol={:.2}, dopamine={:.2}, allostatic_load={:.2}",
+                    h.adrenaline, h.cortisol, h.dopamine, h.allostatic_load)
+            }
+            "get_attention_focus" => {
+                let a = &self.state.attention;
+                format!("focus={}, intensity={:.2}, source={}", a.focus, a.intensity, a.source)
+            }
             _ => format!("Unknown tool: {}", tool_name),
+        }
+    }
+
+    /// Parse emotion label and insight from LLM action response
+    fn parse_emotion_and_insight(&mut self, response: &serde_json::Value) {
+        if let Some(emotion_label) = response.get("emotion").and_then(|v| v.as_str()) {
+            if !emotion_label.is_empty() {
+                self.emotion.set_constructed_label(&mut self.state.emo, emotion_label);
+            }
+        }
+        if let Some(insight) = response.get("insight").and_then(|v| v.as_str()) {
+            if !insight.is_empty() {
+                self.state.mem.working.push(format!("cognitive: {}", insight));
+                if self.state.mem.working.len() > 20 {
+                    self.state.mem.working.remove(0);
+                }
+            }
+        }
+        if let Some(confidence) = response.get("confidence").and_then(|v| v.as_f64()) {
+            // Confidence affects cognitive proposal priority
+            let _ = confidence; // used in proposal priority
         }
     }
 

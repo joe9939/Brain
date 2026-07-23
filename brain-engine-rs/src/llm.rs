@@ -48,19 +48,33 @@ Available actions: find_food, find_wood, explore, flee, craft_tools, eat, attack
 You have access to internal brain modules via tool calls.
 To call a tool, output: {"tool":"tool_name","args":{...}}
 The tool result will be provided in the next message.
-When you have enough information, output: {"action":"...","reason":"..."}
+When ready to decide, output: {"action":"...","reason":"...","emotion":"...","insight":"..."}
+
+=== EMOTION CONSTRUCTION ===
+After deciding, label your current emotional state (emotion field):
+- This is Barrett's constructed emotion: core_affect + conceptual_label
+- Examples: "frustrated_from_failure", "anxious_about_health", "curious_about_exploration", "satisfied_with_progress", "fearful_of_threats"
+- The label will be written to the emotion system and affects future processing
+
+=== INSIGHT ===
+The insight field writes to working memory (lasting ~20 ticks).
+Use it to record important observations for future reference.
 
 Available tools:
 1. recall_memory(query): Search episodic memory for relevant past events
 2. check_inventory(item): Check if you have a specific item
-3. get_wave_status(): Get current need/motivation state
+3. get_wave_status(): Get current need/motivation state (5 needs)
 4. get_goal_progress(): Check active goal progress
 5. get_signal_summary(): Get current signal competition state
+6. get_emotion_state(): Get current emotion: valence, arousal, mode, constructed_label
+7. get_hormone_status(): Get adrenaline, cortisol, dopamine levels
+8. get_attention_focus(): Get current attention focus and intensity
 
 Rules:
 - Prioritize survival (health < 5, hunger < 3) above all else.
 - If healthy and fed, progress through tech tree.
 - Use tools to gather information before deciding.
+- Always include emotion and insight in your final output.
 - Keep reasoning concise."#;
 
 // ── Cognitive Agent ──
