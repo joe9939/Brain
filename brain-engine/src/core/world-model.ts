@@ -1,7 +1,7 @@
-// World Model — §2.3: Codebase dependency graph + predictions
-// M^wm — internal representation of environment dynamics
+// World Model �?§2.3: Codebase dependency graph + predictions
+// M^wm �?internal representation of environment dynamics
 
-import { WorldModelState, MentalState } from './types';
+import { WorldModelState, MentalState } from './types.js';
 
 export class WorldModel {
   static default(): WorldModelState {

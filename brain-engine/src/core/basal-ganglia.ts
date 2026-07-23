@@ -1,7 +1,7 @@
-// Basal Ganglia — §3.3.4: Signal competition + Go/NoGo gate
+// Basal Ganglia �?§3.3.4: Signal competition + Go/NoGo gate
 // arXiv 2504.01990v2: The winning signal determines action selection
 
-import { MentalState, SignalResult, GateResult, TOOL_MAP, ToolCategory } from './types';
+import { MentalState, SignalResult, GateResult, TOOL_MAP, ToolCategory } from './types.js';
 
 interface SignalDef {
   key: string;
@@ -81,7 +81,7 @@ const SIGNALS: SignalDef[] = [
 
 export class BasalGanglia {
   /**
-   * Compute all signal strengths — §2.4
+   * Compute all signal strengths �?§2.4
    * Returns sorted results, winner first
    */
   computeSignals(state: MentalState): SignalResult[] {
@@ -106,12 +106,12 @@ export class BasalGanglia {
    */
   getWinner(state: MentalState): SignalResult | null {
     const signals = this.computeSignals(state);
-    // Only return winner if strength is significant (≥0.5) to avoid noise
+    // Only return winner if strength is significant (�?.5) to avoid noise
     return signals[0]?.strength >= 0.5 ? signals[0] : null;
   }
 
   /**
-   * Basal Ganglia gate — §3.3.4 Go/NoGo
+   * Basal Ganglia gate �?§3.3.4 Go/NoGo
    * The winning signal determines which tools are allowed
    */
   getGate(state: MentalState, tool: string): GateResult {
@@ -135,7 +135,7 @@ export class BasalGanglia {
           return {
             allowAll: false,
             allowedTools: ['task', 'read', 'grep', 'glob', 'look_at'],
-            reason: `${winner.key} mode — read only`,
+            reason: `${winner.key} mode �?read only`,
             signal: winner.key,
           };
         }
@@ -153,7 +153,7 @@ export class BasalGanglia {
         return {
           allowAll: false,
           allowedTools: ['task', 'read', 'grep', 'glob'],
-          reason: `low score (${state.rew.score}) — deep reasoning needed`,
+          reason: `low score (${state.rew.score}) �?deep reasoning needed`,
           signal: 'reward',
         };
 

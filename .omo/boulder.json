@@ -1,13 +1,13 @@
 {
   "schema_version": 2,
-  "active_work_id": "brain-agent-paper-upgrade",
+  "active_work_id": "maslow-wave-integration",
   "works": {
-    "brain-agent-paper-upgrade": {
-      "work_id": "brain-agent-paper-upgrade",
-      "active_plan": ".omo/plans/brain-agent-paper-upgrade.md",
-      "plan_name": "brain-agent-paper-upgrade",
-      "session_ids": ["current"],
-      "status": "completed",
+    "maslow-wave-integration": {
+      "work_id": "maslow-wave-integration",
+      "active_plan": ".omo/maslow-wave-three-layer.md",
+      "plan_name": "maslow-wave-three-layer",
+      "session_ids": ["ses_ab1b9c0399f6468ca4474e9553315e9e"],
+      "status": "active",
       "worktree_path": null
     }
   }

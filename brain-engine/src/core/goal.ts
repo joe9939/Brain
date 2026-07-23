@@ -1,7 +1,7 @@
-// Goal System — §1.3A: Goal management
-// M^goal — tracks active/completed goals, enables planning
+// Goal System �?§1.3A: Goal management
+// M^goal �?tracks active/completed goals, enables planning
 
-import { Goal, GoalState } from './types';
+import { Goal, GoalState } from './types.js';
 
 export class GoalSystem {
   static default(): GoalState {

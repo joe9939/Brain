@@ -1,8 +1,8 @@
-// Reward System — §2.4: Reward/learning signals
+// Reward System �?§2.4: Reward/learning signals
 // M^rew = {score, total, td_error, history}
 // §2.4.3: Extrinsic + Intrinsic rewards, TD learning
 
-import { RewardState } from './types';
+import { RewardState } from './types.js';
 
 export class RewardSystem {
   static default(): RewardState {

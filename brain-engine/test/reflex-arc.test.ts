@@ -2,7 +2,7 @@
 // RED: SurvivalReflex 不存在
 // GREEN: 创建最小实现
 
-import { SurvivalReflex, ReflexRegistry } from '../src/core/reflex-arc';
+import { SurvivalReflex, ReflexRegistry } from '../../adapter/minecraft/reflex-arc.js';
 import { WorldSnapshot, ReflexHandler } from '../src/core/types';
 
 let passed = 0, failed = 0;

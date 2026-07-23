@@ -11,6 +11,7 @@ export interface MentalState {
   emo: EmotionState;     // M^emo — emotion component
   goal: GoalState;       // M^goal — goal component
   rew: RewardState;      // M^rew — reward/learning component
+  lastAction: { action: string; success: boolean; error?: string } | null;  // Last action execution result
 }
 
 export interface MemoryState {
@@ -26,6 +27,7 @@ export interface EpisodicMemory {
   content: string;
   importance: number;   // 0-1, affects consolidation priority
   tags: string[];
+  position?: { x: number; y: number; z: number };  // where this memory was formed
 }
 
 export interface SemanticMemory {
@@ -114,6 +116,15 @@ export interface BrainComponent {
   model?: string;
   prompt: string;
   run?(input: string, state: MentalState): Promise<ComponentOutput>;
+  /**
+   * Sensory afferent — extracts component-specific input from raw data.
+   * Analogous to hard-wired sensory pathways in the brain:
+   * - Visual cortex only gets visual data (terrain/blocks)
+   * - Amygdala only gets threat-relevant data (entities/health)
+   * - Insula only gets interoceptive data (health/hunger/oxygen)
+   * If omitted, the component receives the full raw input (default).
+   */
+  extractAfferent?(rawInput: string, state: MentalState): string;
 }
 
 export interface ComponentOutput {
@@ -122,6 +133,59 @@ export interface ComponentOutput {
   signals: Record<string, number>;   // signal key → raw strength
   state: Partial<MentalState>;
   metadata?: Record<string, any>;
+  /**
+   * Maslow need levels output by this component.
+   * Analogous to: amygdala → L2(safety), hypothalamus → L1(physiological)
+   * Key = Maslow level (1-5), Value = urgency (0-1)
+   */
+  needs?: Partial<Record<1|2|3|4|5, number>>;
+}
+
+/**
+ * DriveState — unified motivational state from all component outputs.
+ * Emerges from component needs + hormone modulation, NOT computed centrally.
+ * Each drive is 0-1, representing intensity of that motivational signal.
+ */
+export interface DriveState {
+  hunger: number;     // L1: need food
+  fear: number;       // L2: threat detected
+  fatigue: number;    // L1: exhausted
+  curiosity: number;  // L5: exploration/learning
+  social: number;     // L3: social belonging
+  mastery: number;    // L4: achievement/competence
+}
+
+/**
+ * Circuit Stage — sequential processing stage in a brain circuit.
+ * Components within a stage run in parallel; stages run sequentially.
+ * Analogous to: L1 (perception) → L1.5 (integration) → L2 (gating) → L3 (action)
+ */
+export interface CircuitStage {
+  id: string;
+  label: string;
+  /** Component IDs in this stage */
+  componentIds: string[];
+  /**
+   * How this stage receives input:
+   * - 'raw': the original input (for sensory reception)
+   * - 'previous': outputs from the previous stage only
+   * - 'combined': raw input + previous stage summaries
+   */
+  inputSource: 'raw' | 'previous' | 'combined';
+  /**
+   * Optional mapper: transforms previous stage outputs into context for this stage.
+   * Analogy: thalamus → amygdala fast path, cortex → hippocampus memory encoding
+   */
+  inputMapper?: (previousOutputs: Map<string, ComponentOutput>, rawInput: string) => string;
+}
+
+/**
+ * A complete brain circuit — sequential stages with defined connectivity
+ */
+export interface BrainCircuit {
+  id: string;
+  name: string;
+  stages: CircuitStage[];
 }
 
 /**
@@ -158,29 +222,9 @@ export const TOOL_MAP: Record<string, ToolCategory> = {
 // Streaming Architecture Types
 // ═══════════════════════════════════════════════════════
 
-/** Minecraft-style world snapshot — what the agent perceives */
-export interface WorldSnapshot {
-  position: { x: number; y: number; z: number };
-  velocity: { x: number; y: number; z: number };
-  health: number;
-  healthDelta: number;
-  hunger: number;
-  oxygen: number;
-  onFire: boolean;
-  inLava: boolean;
-  falling: boolean;
-  blocks: { type: string; position: { x: number; y: number; z: number } }[];
-  entities: { id: string; type: string; position: { x: number; y: number; z: number }; velocity: { x: number; y: number; z: number } }[];
-  inventory: { item: string; count: number }[];
-  timeOfDay: number;
-  dimension: string;
-}
-
-/** Action the agent can take */
-export interface Action {
-  type: string;
-  params: Record<string, any>;
-}
+// WorldSnapshot, Action, BotEvent 定义已移到 world-interface/types
+import { WorldSnapshot, Action, BotEvent } from '../../../world-interface/types.js';
+export type { WorldSnapshot, Action, BotEvent };
 
 /** Multi-dimensional prediction error signal */
 export interface SurpriseSignal {
@@ -199,7 +243,7 @@ export type CognitiveDemand =
 
 /** Result of one engine tick */
 export interface TickResult {
-  type: 'reflex' | 'predictive_pass' | 'habit' | 'drive' | 'cognitive';
+  type: 'reflex' | 'predictive_pass' | 'habit' | 'drive' | 'cognitive' | 'waiting';
   latency: number;
   action?: any;
   output?: string;

@@ -1,7 +1,7 @@
-// Habit Layer — Online habit learning + Skill Memory
+// Habit Layer �?Online habit learning + Skill Memory
 // Reference: brain v2 SOP system + Skill acquisition via practice
 
-import { Action, Habit } from './types';
+import { Action, Habit } from './types.js';
 
 export interface SkillDetail {
   trigger: string;
@@ -20,7 +20,7 @@ export class HabitLayer {
   private habits: Map<string, Habit> = new Map();
   private successCount: Map<string, number> = new Map();
   private failCount: Map<string, number> = new Map();
-  // Skill Memory: trigger → detailed skill info
+  // Skill Memory: trigger �?detailed skill info
   private skills: Map<string, SkillDetail> = new Map();
 
   // ── Legacy Habit Learning ──

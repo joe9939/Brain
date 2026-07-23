@@ -1,13 +1,10 @@
-// Brain Loop — 50ms tick 调度器
-// 流式核心循环: 感知 → 反射 → 预测 → 习惯 → 认知 (异步)
-// 参考: predictive-mind §8 main loop, xagent fused kernel
+// Brain Loop — 50ms tick scheduler
+// Streaming core: perceive → reflex → predict → habit → cognitive (async)
 
-import { WorldSnapshot, TickResult } from './types';
+import { WorldSnapshot, TickResult } from './types.js';
+import type { WorldInterface } from '../../../world-interface/interface.js';
 
-export interface WorldInterface {
-  perceive(): WorldSnapshot;
-  act(action: any): void;
-}
+export type { WorldInterface };
 
 export interface BrainLoopConfig {
   tickInterval?: number;
@@ -31,13 +28,17 @@ export class BrainLoop {
     this.world = world;
     this.running = true;
 
-    this.timer = setInterval(async () => {
+    const loop = async () => {
       if (!this.world || !this.running) return;
-      const snapshot = this.world.perceive();
+      const snapshot = await this.world.perceive();
       if (this.onTick) {
         await this.onTick(snapshot);
       }
-    }, this.interval);
+      // 等当前 tick 完全跑完, 再安排下一个
+      // 避免 setInterval 并发执行 (find_wood 的 await bot.dig 要 1 秒)
+      this.timer = setTimeout(loop, this.interval) as any;
+    };
+    this.timer = setTimeout(loop, this.interval) as any;
   }
 
   stop(): void {

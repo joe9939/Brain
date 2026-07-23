@@ -31,7 +31,13 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
     "better-sqlite3": "^11.0.0",
-    "mineflayer": "^4.37.1"
+    "canvas": "^3.2.3",
+    "mineflayer": "^4.37.1",
+    "mineflayer-armor-manager": "^2.0.1",
+    "mineflayer-collectblock": "^1.6.0",
+    "mineflayer-pathfinder": "^2.4.5",
+    "mineflayer-pvp": "^1.3.2",
+    "mineflayer-tool": "^1.2.0"
   },
   "devDependencies": {
     "@agentesting/agentest": "^0.0.22",

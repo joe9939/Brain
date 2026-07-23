@@ -1,8 +1,8 @@
-// Emotion Engine — §2.5: Emotion modeling
+// Emotion Engine �?§2.5: Emotion modeling
 // M^emo = {mode, intensity, valence, arousal, dominance}
 // Emotion influences signal priorities and behavior
 
-import { EmotionState } from './types';
+import { EmotionState } from './types.js';
 
 export interface HormoneModulator {
   adrenaline: number;
@@ -31,7 +31,7 @@ export class EmotionEngine {
     if (support) {
       return { ...state, mode: 'SUPPORT', intensity: 0.6, valence: 0.7, arousal: 0.3 };
     }
-    // Decay to normal — hormone modulated
+    // Decay to normal �?hormone modulated
     const adr = hormone?.adrenaline ?? 0;
     const cort = hormone?.cortisol ?? 0;
     const endo = hormone?.endorphin ?? 0;

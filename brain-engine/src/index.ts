@@ -1,24 +1,25 @@
-// Brain Engine v2 — barrel export
+// Brain Engine v2 �?barrel export
 // arXiv 2504.01990v2: All public API surfaces
 
-export { BrainEngine } from './core/brain-engine';
-export { BasalGanglia } from './core/basal-ganglia';
-export { MemorySystem } from './core/memory';
-export { EmotionEngine } from './core/emotion';
-export { RewardSystem } from './core/reward';
-export { GoalSystem } from './core/goal';
-export { WorldModel } from './core/world-model';
-export { SessionPool } from './core/session-pool';
-export { LLMClient } from './core/llm-client';
-export { Persistence } from './core/persistence';
-export { getAllComponents } from './core/brain-components';
-export { PredictiveLayer, PhysicsPredictor } from './core/predictive-layer';
-export { BeliefStore } from './core/belief-store';
-export { StateEvolution } from './core/state-evolution';
-export { SurvivalReflex, ReflexRegistry } from './core/reflex-arc';
-export { HabitLayer } from './core/habit-layer';
-export { BrainLoop } from './core/brain-loop';
-export { DriveSystem } from './core/brain-drive';
+export { BrainEngine } from './core/brain-engine.js';
+export { BasalGanglia } from './core/basal-ganglia.js';
+export { MemorySystem } from './core/memory.js';
+export { EmotionEngine } from './core/emotion.js';
+export { RewardSystem } from './core/reward.js';
+export { GoalSystem } from './core/goal.js';
+export { WorldModel } from './core/world-model.js';
+export { SessionPool } from './core/session-pool.js';
+export { LLMClient } from './core/llm-client.js';
+export { Persistence } from './core/persistence.js';
+export { getAllComponents } from './core/brain-components.js';
+export { PredictiveLayer, PhysicsPredictor } from './core/predictive-layer.js';
+export { BeliefStore } from './core/belief-store.js';
+export { StateEvolution } from './core/state-evolution.js';
+export { ReflexRegistry } from '../../world-interface/reflex.js';
+export type { ReflexHandler, ReflexAction } from '../../world-interface/reflex.js';
+export { HabitLayer } from './core/habit-layer.js';
+export { BrainLoop } from './core/brain-loop.js';
+export { DriveSystem } from './core/brain-drive.js';
 
 export type {
   MentalState,
@@ -49,4 +50,4 @@ export type {
   Habit,
   Belief,
   HomeostasisState,
-} from './core/types';
+} from './core/types.js';

@@ -1,8 +1,8 @@
-// Memory System — §2.2: Full memory lifecycle
-// Types: Sensory → Short-term(working) → Long-term(episodic/semantic/procedural)
-// Lifecycle: Acquisition → Encoding → Consolidation → Retrieval → Forgetting
+// Memory System �?§2.2: Full memory lifecycle
+// Types: Sensory �?Short-term(working) �?Long-term(episodic/semantic/procedural)
+// Lifecycle: Acquisition �?Encoding �?Consolidation �?Retrieval �?Forgetting
 
-import { EpisodicMemory, SemanticMemory, SOP, MentalState } from './types';
+import { EpisodicMemory, SemanticMemory, SOP, MentalState } from './types.js';
 
 export class MemorySystem {
   private episodicStore: EpisodicMemory[] = [];
@@ -128,5 +128,10 @@ export class MemorySystem {
       semantic: this.semanticStore.length,
       procedural: this.proceduralStore.length,
     };
+  }
+
+  /** Get all episodic memories (for testing and inspection). */
+  getEpisodicMemories(): EpisodicMemory[] {
+    return [...this.episodicStore];
   }
 }

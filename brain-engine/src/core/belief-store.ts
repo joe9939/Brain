@@ -1,8 +1,6 @@
-// Belief Store — 持久化信念存储
-// 参考: predictive-mind §4.1 belief-store MCP
-// 使用倒排索引 (tag → beliefs) 加速 k-NN 检索
-
-import { Belief } from './types';
+// Belief Store �?持久化信念存�?// 参�? predictive-mind §4.1 belief-store MCP
+// 使用倒排索引 (tag �?beliefs) 加�?k-NN 检�?
+import { Belief } from './types.js';
 
 export interface BeliefStoreConfig {
   maxSize?: number;
@@ -10,14 +8,14 @@ export interface BeliefStoreConfig {
 
 export class BeliefStore {
   private beliefs: Belief[] = [];
-  private tagIndex: Map<string, Set<string>> = new Map(); // tag → belief IDs
+  private tagIndex: Map<string, Set<string>> = new Map(); // tag �?belief IDs
   private maxSize: number;
 
   constructor(config: BeliefStoreConfig = {}) {
     this.maxSize = config.maxSize ?? 100;
   }
 
-  /** 执行前记录"我预测会怎样" */
+  /** 执行前记�?我预测会怎样" */
   storePrediction(context: string, prediction: any, confidence: number, tags: string[] = []): string {
     const id = `blf-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
     const belief: Belief = {
@@ -36,7 +34,7 @@ export class BeliefStore {
     return id;
   }
 
-  /** 执行后记录"实际怎样" + 误差 */
+  /** 执行后记�?实际怎样" + 误差 */
   recordObservation(beliefId: string, outcome: any, surprise: number): void {
     const belief = this.beliefs.find(b => b.id === beliefId);
     if (!belief) return;
@@ -45,13 +43,13 @@ export class BeliefStore {
     belief.confidence = Math.max(0, belief.confidence - surprise * 0.5);
   }
 
-  /** 按 context 检索信念 */
+  /** �?context 检索信�?*/
   retrieveBeliefs(context: string): Belief[] {
     if (!context) return [...this.beliefs];
     return this.beliefs.filter(b => b.context.includes(context) || context.includes(b.context));
   }
 
-  /** k-NN 检索 — 通过标签 */
+  /** k-NN 检�?�?通过标签 */
   recallSimilar(context: string, k: number): Belief[] {
     // 先查 tag 索引
     const candidateIds = new Set<string>();
