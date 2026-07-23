@@ -258,6 +258,19 @@ impl MemorySystem {
 
     pub fn record_outcome(&mut self, memory_id: &str, success: bool) { self.graphs.update_utility(memory_id, success); }
     pub fn consolidate(&mut self) -> u32 { self.graphs.prune_low_utility(0.1) }
+
+    /// v6: Bus mode — recall memories based on cognitive insight
+    pub fn bus_tick(&mut self, bus: &mut crate::bus::ComponentBus) {
+        let query = if !bus.cognitive_insight.is_empty() {
+            &bus.cognitive_insight
+        } else if let Some(ref action) = bus.cognitive_action {
+            action
+        } else { return; };
+        let h = crate::types::HormoneState::default();
+        let results = self.retrieve(query, 3, &h);
+        bus.recall_results = results.iter().map(|m| format!("{} (imp={:.2})", m.content, m.importance)).collect();
+        bus.episodic_count = self.graphs.nodes.len() as u32;
+    }
 }
 
 #[cfg(test)]

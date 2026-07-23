@@ -56,6 +56,15 @@ impl AttentionEngine {
         (best_focus, best_score.min(1.0))
     }
 
+    /// v6: Bus mode — compute attention from bus
+    pub fn bus_tick(&self, bus: &mut crate::bus::ComponentBus) {
+        let saliency = Self::compute_saliency(bus.surprise, bus.threat_count, bus.surprise * 0.5);
+        let dom = bus.dominant_level.map(|l| (l, bus.wave_state.get(l).copied().unwrap_or(0.0)));
+        let (focus, intensity) = Self::biased_competition(&saliency, &std::collections::HashMap::new(), bus.surprise, dom);
+        bus.attention_focus = focus;
+        bus.attention_intensity = intensity;
+    }
+
     /// Full attention update
     pub fn update(
         &self,

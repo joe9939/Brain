@@ -19,6 +19,13 @@ pub struct Cerebellum {
 impl Cerebellum {
     pub fn new() -> Self { Self { sequences: vec![] } }
 
+    /// v6: Bus mode — predict next action from bus state
+    pub fn bus_tick(&self, bus: &mut crate::bus::ComponentBus) {
+        if let Some(ref action) = bus.cognitive_action {
+            bus.predicted_next_action = self.predict_next(action);
+        }
+    }
+
     /// Learn (or update) a motor sequence
     pub fn learn(&mut self, seq: MotorSequence) {
         if let Some(existing) = self.sequences.iter_mut().find(|s| s.id == seq.id) {

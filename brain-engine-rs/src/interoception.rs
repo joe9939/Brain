@@ -17,6 +17,14 @@ impl InteroceptiveSystem {
         Self { predicted_health: 20.0, predicted_hunger: 20.0, prediction_horizon: 10, error: 0.0 }
     }
 
+    /// v6: Bus mode — read health/hunger from bus, write predictions
+    pub fn bus_tick(&mut self, bus: &mut crate::bus::ComponentBus) {
+        self.predict(bus.health, bus.hunger);
+        bus.predicted_health = self.predicted_health;
+        bus.predicted_hunger = self.predicted_hunger;
+        bus.interoceptive_alert = self.predicted_hunger < 3.0 || self.predicted_health < 5.0;
+    }
+
     /// Predict future health/hunger based on current values and decay rates
     pub fn predict(&mut self, current_health: f32, current_hunger: f32) {
         let health_decay = 0.02;  // slow health decay

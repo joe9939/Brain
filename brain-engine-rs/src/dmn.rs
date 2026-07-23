@@ -19,6 +19,18 @@ impl DefaultModeNetwork {
     }
 
     /// Check if DMN should activate (low surprise, low urgency, no threats)
+    /// v6: Bus mode — check activation from bus
+    pub fn bus_tick(&mut self, bus: &mut crate::bus::ComponentBus) {
+        self.active = self.should_activate(bus.surprise, &EmotionState {
+            intensity: bus.emo_intensity, arousal: bus.emo_arousal,
+            ..Default::default()
+        });
+        bus.dmn_active = self.active;
+        if self.active && !bus.cognitive_insight.is_empty() {
+            bus.dmn_counterfactual = Some(format!("what_if: {}", bus.cognitive_insight));
+        }
+    }
+
     pub fn should_activate(&self, surprise: f32, emotion: &EmotionState) -> bool {
         surprise < 0.05 && emotion.intensity < 0.3 && emotion.arousal < 0.4
     }

@@ -64,6 +64,12 @@ impl MaslowWave {
         }
     }
 
+    /// v6: Bus mode — write wave state to bus
+    pub fn bus_tick(&self, bus: &mut crate::bus::ComponentBus) {
+        bus.wave_state = self.state;
+        bus.dominant_level = self.get_dominant().map(|(l, _)| l);
+    }
+
     pub fn apply_delta(&mut self, level: usize, delta: f32) {
         if level < 5 {
             self.state[level] = f32::min(self.state[level], 1.0) + delta;
