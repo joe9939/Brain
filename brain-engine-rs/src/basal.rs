@@ -74,6 +74,32 @@ pub struct BasalGangliaArbiter;
 impl BasalGangliaArbiter {
     pub fn new() -> Self { Self }
 
+    /// v6: Bus mode — read cognitive action + reflex, run arbitration
+    pub fn bus_tick(&self, bus: &mut crate::bus::ComponentBus) {
+        let mut candidates: Vec<ProposedAction> = Vec::new();
+
+        // Add cognitive as proposal
+        if let Some(ref action) = bus.cognitive_action {
+            candidates.push(ProposedAction {
+                action: Action { action_type: action.clone(), params: std::collections::HashMap::new() },
+                source: "cognitive".into(), confidence: bus.cognitive_confidence, priority: 30, latency_ms: 500.0,
+            });
+        }
+
+        // Add reflex as proposal if any fired
+        if let Some(ref reflex_action) = bus.reflex_fired {
+            candidates.push(ProposedAction {
+                action: Action { action_type: reflex_action.clone(), params: std::collections::HashMap::new() },
+                source: "reflex".into(), confidence: 0.95, priority: 100, latency_ms: 0.0,
+            });
+        }
+
+        if let Some(selected) = self.select(&candidates, bus.emo_intensity, bus.serotonin) {
+            bus.arbiter_selected = Some(selected.action.action_type);
+            bus.arbiter_confidence = selected.confidence;
+        }
+    }
+
     /// Select using drift diffusion process
     pub fn select(&self, candidates: &[ProposedAction], urgency: f32, serotonin: f32) -> Option<ProposedAction> {
         if candidates.is_empty() { return None; }

@@ -19,6 +19,23 @@ impl ThalamicGate {
         Self { relay_gain: HashMap::new(), gating_mode: GateMode::Passthrough }
     }
 
+    /// v6: Bus mode — modulate channel gains from attention focus
+    pub fn bus_tick(&mut self, bus: &mut crate::bus::ComponentBus) {
+        let focus = &bus.attention_focus;
+        let intensity = bus.attention_intensity;
+
+        // Amplify focused channel, suppress others
+        for channel in &["survival", "safety", "explore", "social", "achievement"] {
+            let gain = if channel == focus { 1.0 + intensity * 0.5 } else { 1.0 - intensity * 0.3 };
+            self.set_gain(channel, gain.max(0.1));
+        }
+
+        // Write gains to bus
+        for (ch, g) in &self.relay_gain {
+            bus.thalamic_gain.insert(ch.clone(), *g);
+        }
+    }
+
     /// Set gain for a specific channel
     pub fn set_gain(&mut self, channel: &str, gain: f32) {
         self.relay_gain.insert(channel.to_string(), gain.clamp(0.0, 2.0));

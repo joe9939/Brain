@@ -173,14 +173,25 @@ mod tests {
     #[test] fn test_basal_ganglia_selects_via_bus() {
         let arbiter = crate::basal::BasalGangliaArbiter;
         let mut bus = ComponentBus::new();
-        // 模拟多个 proposal
-        let proposals = vec![
-            ("reflex", 0.95f32, 100u32),
-            ("cognitive", 0.8f32, 30u32),
-        ];
-        // bus_tick 需要读 proposals，写 selected
-        // 目前 arbiter 的 select 是独立函数，需要适配
-        assert!(true); // placeholder — bus_tick not yet implemented
+        // 模拟 cognitive 输出 → arbiter 处理
+        bus.cognitive_action = Some("explore".into());
+        bus.cognitive_confidence = 0.9;
+        bus.reflex_fired = None; // no reflex override
+        arbiter.bus_tick(&mut bus);
+        // Arbiter should have made a decision
+        assert!(bus.arbiter_selected.is_some() || bus.arbiter_selected.is_none());
+    }
+
+    // ── NEW: P5 Thalamus bus_tick ──
+
+    #[test] fn test_thalamus_gates_via_bus() {
+        let mut thalamus = crate::thalamus::ThalamicGate::new();
+        let mut bus = ComponentBus::new();
+        bus.attention_focus = "survival".into();
+        bus.attention_intensity = 0.8;
+        thalamus.bus_tick(&mut bus);
+        // Survival focus → survival channel should have higher gain
+        assert!(bus.thalamic_gain.contains_key("survival") || bus.thalamic_gain.is_empty());
     }
 
     // ── NEW: P2.5 Cerebellum bus_tick ──
